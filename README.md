@@ -1,2 +1,2 @@
-# paf_androidsdk_client
+# paf_androidsdk_client Quiz Client mit Android Java API Framework
 
