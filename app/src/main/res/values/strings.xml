@@ -1,11 +1,10 @@
 <resources>
-    <string name="app_name">Gruppe B - Quiz Application - PaF WS21</string>
+    <string name="app_name">Quizzler</string>
     <string name="et_username">Username</string>
     <string name="btn_login">Login</string>
     <string name="btn_register">Register</string>
     <string name="et_password">Password</string>
     <string name="tv_login_headline">Account Login</string>
-    <string name="tv_main_headline">PaF Quiz - Gruppe B</string>
-    <string name="tv_main_manual">join to start playing</string>
-    <string name="tv_register_headline">Register Account</string>
+    <string name="tv_main_headline">Join to start playing</string>
+    <string name="tv_register_headline">Create Account</string>
 </resources>

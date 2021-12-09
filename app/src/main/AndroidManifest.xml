@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.semesterprojekt.paf_quiz_client">
+    package="de.semesterprojekt.paf_android_quiz_client">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -8,15 +10,23 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.QuizPatternsAndFrameworks">
+        android:theme="@style/Theme.QuizPatternsAndFrameworks"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name="de.semesterprojekt.paf_android_quiz_client.RegisterActivity"
-            android:exported="false" />
+            android:name=".StartmenueActivity"
+            android:exported="false"
+            android:parentActivityName=".LoginActivity" />
+
         <activity
-            android:name="de.semesterprojekt.paf_android_quiz_client.LoginActivity"
-            android:exported="false" />
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name="de.semesterprojekt.paf_android_quiz_client.MainActivity"
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
