@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 public class User {
 
-    //private int userId;
+   //private int userId;
     private String username;
     private String token;
     //private boolean status;

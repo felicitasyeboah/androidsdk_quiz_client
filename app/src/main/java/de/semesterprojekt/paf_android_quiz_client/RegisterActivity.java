@@ -16,7 +16,6 @@ import de.semesterprojekt.paf_android_quiz_client.model.User;
 public class RegisterActivity extends AppCompatActivity {
     Button btn_register;
     EditText et_username, et_password;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

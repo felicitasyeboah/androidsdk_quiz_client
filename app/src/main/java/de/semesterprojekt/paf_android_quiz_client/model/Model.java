@@ -8,7 +8,6 @@ public class Model {
     private final RestServiceClient restServiceClient;
     private static Context ctx;
     private User user;
-
     // Contructor
     private Model(Context context) {
         ctx = context;
@@ -53,7 +52,6 @@ public class Model {
     public User getUser() {
         return this.user;
     }
-
     public void setUser(User user) {
         this.user = user;
     }

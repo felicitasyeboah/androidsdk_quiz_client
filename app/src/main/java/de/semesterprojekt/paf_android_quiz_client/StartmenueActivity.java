@@ -13,7 +13,6 @@ public class StartmenueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_startmenue);
     }
-
     /**
      * Called when the user taps the Register button
      */
