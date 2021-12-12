@@ -1,6 +1,14 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-public interface RestServiceListener {
-    void onLogin(User user);
-    void onRegister(String username);
+public abstract class RestServiceListener {
+
+
+    public void onLogin(User user) {
+
+    }
+
+
+    public void onRegister(String username) {
+
+    }
 }
