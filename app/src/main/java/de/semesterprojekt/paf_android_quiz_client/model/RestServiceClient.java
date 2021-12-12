@@ -6,7 +6,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -20,9 +19,11 @@ import org.json.JSONObject;
 public class RestServiceClient {
 
     // Base URL to Rest API Server
+    //TODO: Hier bitte eure lokale Server API IP-Adresse eingeben. Localhost verweist auf das Androidgerät,
+    // auf dem die App ausgeführt wird, nicht auf das Gerät, auf dem der Server läuft
     public static final String BASE_URL = "http://192.168.77.106:8080/";
     private final Context ctx;
-    private RequestQueue requestQueue;
+    private final RequestQueue requestQueue;
 
     //Constructor
     public RestServiceClient(Context context) {
@@ -35,6 +36,7 @@ public class RestServiceClient {
      *
      * @param username UserName
      * @param password UserPassword
+     * @param listener reacts on loginresponse from the restAPI
      */
     public void login(String username, String password, RestServiceListener listener) {
         String url = BASE_URL + "auth/login";
@@ -67,6 +69,13 @@ public class RestServiceClient {
         }
     }
 
+    /**
+     * Registers a new User
+     *
+     * @param username username user typed in
+     * @param password password user typed in
+     * @param listener reacts on the registerresponse from the restAPI
+     */
     public void register(String username, String password, RestServiceListener listener) {
 
         String url = BASE_URL + "auth/register";
