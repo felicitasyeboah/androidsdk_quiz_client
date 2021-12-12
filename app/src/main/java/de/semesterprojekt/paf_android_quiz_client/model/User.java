@@ -1,24 +1,19 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-import android.media.Image;
-
-import androidx.annotation.NonNull;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * represents the logged in User and his token
+ */
 public class User {
 
-   //private int userId;
     private String username;
     private String token;
-    //private boolean status;
 
     //Contructor
     public User(String username, String token) {
-        //this.userId = userId;
         this.username = username;
-        //this.status = status;
         this.token = token;
 
     }
@@ -27,16 +22,15 @@ public class User {
      * Takes an JSONObject and returns an User Object
      */
     public static User getUser(JSONObject jsonObject) throws JSONException {
-        //int userId = Integer.parseInt(jsonObject.getString("userId"));
         String username = jsonObject.getString("userName");
-        //boolean status = Boolean.getBoolean(jsonObject.getString("ready"));
         String token = jsonObject.getString("token");
-        User user = new User(username, token);
 
-        return user;
+        return new User(username, token);
 
     }
 
+
+    //TODO: prüfen, warum habe ich das nochmal drin?
     @Override
     public boolean equals(Object obj) {
         boolean result = false;
