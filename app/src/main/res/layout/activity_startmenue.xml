@@ -11,13 +11,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="24dp"
         android:text="Profil"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_profilUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_startmenuUsername" />
 
     <Button
         android:id="@+id/btn_start_game"
@@ -68,18 +68,28 @@
         android:layout_marginTop="60dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/ic_user_default" />
 
     <TextView
-        android:id="@+id/tv_profilUsername"
+        android:id="@+id/tv_startmenuUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:text="@string/et_username"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.021"
+        app:layout_constraintStart_toEndOf="@+id/iv_profil"
+        app:layout_constraintTop_toBottomOf="@+id/tv_startmenuLoggedIn" />
+
+    <TextView
+        android:id="@+id/tv_startmenuLoggedIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="68dp"
+        android:text="You are logged in as:"
         app:layout_constraintStart_toEndOf="@+id/iv_profil"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

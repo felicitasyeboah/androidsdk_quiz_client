@@ -55,14 +55,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 final RestServiceSingleton restServiceSingleton = RestServiceSingleton.getInstance(LoginActivity.this.getApplication());
+
                 restServiceSingleton.login(username, password, new RestServiceListener() {
                     @Override
                     public void onLogin(User user) {
                         super.onLogin(user);
-                        restServiceSingleton.setUser(user);
-                        Intent intent = new Intent(getApplicationContext(), StartmenueActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(LoginActivity.this, "User " + user.getUsername() + " logged in", Toast.LENGTH_SHORT).show();
+                        if (user != null) {
+                            restServiceSingleton.setUser(user);
+                            Intent intent = new Intent(getApplicationContext(), StartmenueActivity.class);
+                            startActivity(intent);
+                            Toast.makeText(LoginActivity.this, "User " + user.getUsername() + " logged in", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Invalid login", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }

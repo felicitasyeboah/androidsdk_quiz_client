@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -19,8 +20,6 @@ import org.json.JSONObject;
 public class RestServiceClient {
 
     // Base URL to Rest API Server
-    //TODO: Hier bitte eure lokale Server API IP-Adresse eingeben. Localhost verweist auf das Androidgerät,
-    // auf dem die App ausgeführt wird, nicht auf das Gerät, auf dem der Server läuft
     public static final String BASE_URL = "http://192.168.77.106:8080/";
     private final Context ctx;
     private final RequestQueue requestQueue;
@@ -55,17 +54,22 @@ public class RestServiceClient {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(ctx, "JSON Exception oben", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx, "JSON Exception oben: " + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             };
 
-            Response.ErrorListener errorListener = error -> Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
+                }
+            };
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
             requestQueue.add(request);
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(ctx, "JSON Exception unten", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "JSON Exception unten: " + e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,7 +98,7 @@ public class RestServiceClient {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(ctx, "JSON Exception oben", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ctx, "JSON Exception oben: " + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             };
 
@@ -104,7 +108,7 @@ public class RestServiceClient {
             requestQueue.add(request);
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(ctx, "JSON Exception unten", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ctx, "JSON Exception unten: " + e.toString(), Toast.LENGTH_SHORT).show();
         }
 
     }

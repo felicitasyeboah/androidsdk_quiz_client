@@ -3,6 +3,7 @@
     package="de.semesterprojekt.paf_android_quiz_client">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -13,10 +14,12 @@
         android:theme="@style/Theme.QuizPatternsAndFrameworks"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".InGameActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartmenueActivity"
             android:exported="false"
             android:parentActivityName=".LoginActivity" />
-
         <activity
             android:name=".RegisterActivity"
             android:exported="false"

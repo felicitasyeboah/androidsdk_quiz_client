@@ -32,7 +32,6 @@ public class RestServiceSingleton {
 
     // DataServiceSingleton or RequestSingleton
 
-
     // Singleton
 
     /**
@@ -70,7 +69,6 @@ public class RestServiceSingleton {
     public void register(String username, String password, RestServiceListener listener) {
         restServiceClient.register(username, password, listener);
     }
-
 
     // Getters & Setters
     public Context getCtx() {
