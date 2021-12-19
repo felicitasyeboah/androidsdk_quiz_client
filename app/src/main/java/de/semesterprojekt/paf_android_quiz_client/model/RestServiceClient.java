@@ -1,17 +1,23 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -110,6 +116,35 @@ public class RestServiceClient {
             e.printStackTrace();
             Toast.makeText(ctx, "JSON Exception unten: " + e.toString(), Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    public void getHighscore(String userToken, RestServiceListener listener) {
+        String url = BASE_URL + "highscoreGlobal";
+
+        Response.Listener<JSONArray> successListener = response -> {
+
+            listener.onGetHighscore(response);
+
+        };
+
+        Response.ErrorListener errorListener = error -> Log.i("GetRequest", error.toString());//Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_LONG).show();
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, successListener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                headers.put("Authorization", "Bearer " + userToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+        //JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, successListener, errorListener );
+        //JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
+
 
     }
 }
