@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ public class StartmenueActivity extends AppCompatActivity {
 
         btn_startGame = findViewById(R.id.btn_start_game);
         btn_getHighscore = findViewById(R.id.btn_getHighscore);
+        btn_logout = findViewById(R.id.btn_logout);
 
         btn_startGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +45,13 @@ public class StartmenueActivity extends AppCompatActivity {
                 getHighscore(view);
             }
         });
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logout(view);
+            }
+        });
+
     }
 
 
@@ -63,5 +72,16 @@ public class StartmenueActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), InGameActivity.class);
         startActivity(intent);
 
+    }
+
+    public void logout(View view) {
+        RestServiceSingleton.getInstance(getApplicationContext()).getUser().setToken("");
+        Log.i("Token", RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
+        RestServiceSingleton.getInstance(getApplicationContext()).setUser(null);
+        if (RestServiceSingleton.getInstance(getApplicationContext()).getUser() != null) {
+            Log.i("nicht null", "User");
+        }
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }

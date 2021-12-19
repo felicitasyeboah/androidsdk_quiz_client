@@ -142,8 +142,6 @@ public class RestServiceClient {
         };
 
         requestQueue.add(request);
-        //JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, successListener, errorListener );
-        //JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
 
 
     }

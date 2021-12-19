@@ -2,6 +2,7 @@ package de.semesterprojekt.paf_android_quiz_client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;

@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 
 import java.net.URI;
@@ -16,7 +18,7 @@ import tech.gusavila92.websocketclient.WebSocketClient;
 public class InGameActivity extends AppCompatActivity {
 
     private WebSocketClient webSocketClient;
-
+    Button btn_answer1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +26,17 @@ public class InGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_in_game);
         Log.i("WebSocket", "passier thier was?");
         Log.i("WebSocket", RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
+        btn_answer1 = findViewById(R.id.btn_answer1);
 
-
-        createWebSocketClient();
+        btn_answer1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("WebbSocket", "button clicked");
+                createWebSocketClient();
+            }
+        });
     }
+
 
     private void createWebSocketClient() {
         URI uri;
@@ -70,6 +79,7 @@ public class InGameActivity extends AppCompatActivity {
             @Override
             public void onException(Exception e) {
                 System.out.println(e.getMessage());
+                Log.i("Websocket", "exception");
             }
 
             @Override
@@ -80,11 +90,15 @@ public class InGameActivity extends AppCompatActivity {
 
         webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
-        webSocketClient.addHeader("Origin", "http://localhost:8080");
-        webSocketClient.addHeader("Host", "http://localhost:8080");
-        webSocketClient.addHeader("Content-Type", "application/json");
-        webSocketClient.addHeader("Accept", "application/json");
+/*      webSocketClient.addHeader("Connection", "Upgrade");
+        webSocketClient.addHeader("Host", "http://192.168.77.106:8080");
+        webSocketClient.addHeader("Origin", "http://192.168.77.106:8080");
+        webSocketClient.addHeader("Sec-WebSocket-Version", "13");
+        //webSocketClient.addHeader("Content-Type", "application/json");
+        //webSocketClient.addHeader("Accept", "application/json");
+        webSocketClient.addHeader("Upgrade", "websocket");
         webSocketClient.addHeader("Authorization", "Bearer " + RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
+*/
         webSocketClient.enableAutomaticReconnection(5000);
         webSocketClient.connect();
     }
