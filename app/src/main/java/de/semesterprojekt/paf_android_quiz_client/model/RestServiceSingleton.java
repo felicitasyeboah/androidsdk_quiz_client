@@ -70,6 +70,12 @@ public class RestServiceSingleton {
         restServiceClient.register(username, password, listener);
     }
 
+    public void getHighscore(RestServiceListener listener) {
+        String userToken = this.getUser().getToken();
+        restServiceClient.getHighscore(userToken, listener);
+
+    }
+
     // Getters & Setters
     public Context getCtx() {
         return ctx;
@@ -82,4 +88,6 @@ public class RestServiceSingleton {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }

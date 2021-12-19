@@ -28,6 +28,7 @@ public class StartmenueActivity extends AppCompatActivity {
         iv_user_icon.setImageResource(R.drawable.ic_user_default);
 
         btn_startGame = findViewById(R.id.btn_start_game);
+        btn_getHighscore = findViewById(R.id.btn_getHighscore);
 
         btn_startGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +36,24 @@ public class StartmenueActivity extends AppCompatActivity {
                 startGame(view);
             }
         });
+
+        btn_getHighscore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getHighscore(view);
+            }
+        });
+    }
+
+
+    /**
+     * Called when the user taps the Highscore button
+     *
+     * @param view
+     */
+    public void getHighscore(View view) {
+        Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
+        startActivity(intent);
     }
 
     /**
