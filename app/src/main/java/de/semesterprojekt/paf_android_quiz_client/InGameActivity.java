@@ -4,25 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import android.view.View;
 import android.widget.Button;
 
 import java.net.URI;
 
-import de.semesterprojekt.paf_android_quiz_client.stomp.StompFrame;
-import de.semesterprojekt.paf_android_quiz_client.stomp.client.StompClient;
-import de.semesterprojekt.paf_android_quiz_client.stomp.client.listener.StompMessageListener;
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompMessageListener;
 
 
 public class InGameActivity extends AppCompatActivity {
 
-    private static final String TAG = "Websocket";
     Button btn_answer1;
+    public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
+    final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
-        final StompClient stompSocket = new StompClient(URI.create("ws://192.168.77.106:8080/websocket"));
 
         // Wait for a connection to establish
         boolean connected;
@@ -52,9 +53,15 @@ public class InGameActivity extends AppCompatActivity {
         // Sending JSON message to a server
         String message = "{\"name\": \"Jack\"}";
         stompSocket.send("/app/game", message);
+
+
     }
 
 
+    public void sendMessage(String message) {
+        stompSocket.send("/app/game", message);
+
+    }
         /*webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
         webSocketClient.addHeader("Connection", "Upgrade");

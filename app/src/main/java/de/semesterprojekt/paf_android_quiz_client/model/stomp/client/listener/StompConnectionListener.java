@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.stomp.client.listener;
+package de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener;
 
 /**
  * STOMP connection established listener.

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.semesterprojekt.paf_android_quiz_client.stomp;
+package de.semesterprojekt.paf_android_quiz_client.model.stomp;
 
 import java.util.HashMap;
 import java.util.Map;

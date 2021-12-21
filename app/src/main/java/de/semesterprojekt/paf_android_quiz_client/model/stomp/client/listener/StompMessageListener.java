@@ -19,33 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.semesterprojekt.paf_android_quiz_client.stomp.client;
+package de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener;
 
-import de.semesterprojekt.paf_android_quiz_client.stomp.client.listener.StompMessageListener;
+
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
 
 /**
- * STOMP subscription POJO
+ * STOMP message subscription listener interface.
  */
-public class StompSubscription {
-    private final Integer id;
-    private final String destination;
-    private final StompMessageListener listener;
+public interface StompMessageListener {
 
-    public StompSubscription(Integer id, String destination, StompMessageListener listener) {
-        this.id = id;
-        this.destination = destination;
-        this.listener = listener;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public StompMessageListener getListener() {
-        return listener;
-    }
+    /**
+     * Subscription message received callback.
+     *
+     * @param stompFrame STOMP message frame
+     */
+    void onMessage(StompFrame stompFrame);
 }

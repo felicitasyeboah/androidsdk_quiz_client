@@ -10,7 +10,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -20,6 +19,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.semesterprojekt.paf_android_quiz_client.ServerData;
+
 
 /**
  * Sends requests to the REST Server API
@@ -27,7 +28,8 @@ import java.util.Map;
 public class RestServiceClient {
 
     // Base URL to Rest API Server
-    public static final String BASE_URL = "http://192.168.77.106:8080/";
+    public static final String BASE_URL = "http://" + ServerData.SERVER_ADDRESS;
+
     private final Context ctx;
     private final RequestQueue requestQueue;
 
@@ -45,7 +47,7 @@ public class RestServiceClient {
      * @param listener reacts on loginresponse from the restAPI
      */
     public void login(String username, String password, RestServiceListener listener) {
-        String url = BASE_URL + "auth/login";
+        String url = BASE_URL + "/auth/login";
 
         JSONObject jsonObject = new JSONObject();
 
@@ -89,7 +91,7 @@ public class RestServiceClient {
      */
     public void register(String username, String password, RestServiceListener listener) {
 
-        String url = BASE_URL + "auth/register";
+        String url = BASE_URL + "/auth/register";
         JSONObject jsonObject = new JSONObject();
 
         // JSON Request
@@ -121,7 +123,7 @@ public class RestServiceClient {
     }
 
     public void getHighscore(String userToken, RestServiceListener listener) {
-        String url = BASE_URL + "highscoreGlobal";
+        String url = BASE_URL + "/highscoreGlobal";
 
         Response.Listener<JSONArray> successListener = response -> {
 

@@ -19,39 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.semesterprojekt.paf_android_quiz_client.stomp;
+package de.semesterprojekt.paf_android_quiz_client.model.stomp.client;
+
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompMessageListener;
 
 /**
- * STOMP commands.
+ * STOMP subscription POJO
  */
-public enum StompCommand {
-    CONNECT("CONNECT"),
-    CONNECTED("CONNECTED"),
-    DISCONNECT("DISCONNECT"),
-    ERROR("ERROR"),
-    MESSAGE("MESSAGE"),
-    RECEIPT("RECEIPT"),
-    SEND("SEND"),
-    SUBSCRIBE("SUBSCRIBE"),
-    UNSUBSCRIBE("UNSUBSCRIBE");
+public class StompSubscription {
+    private final Integer id;
+    private final String destination;
+    private final StompMessageListener listener;
 
-    private final String value;
-
-    public static StompCommand fromValue(String value) {
-        for (StompCommand c : StompCommand.values()) {
-            if (c.value.equals(value)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException("Unknown STOMP command: " + value);
+    public StompSubscription(Integer id, String destination, StompMessageListener listener) {
+        this.id = id;
+        this.destination = destination;
+        this.listener = listener;
     }
 
-    private StompCommand(String value) {
-        this.value = value;
+    public Integer getId() {
+        return id;
     }
 
-    @Override
-    public String toString() {
-        return this.value;
+    public String getDestination() {
+        return destination;
+    }
+
+    public StompMessageListener getListener() {
+        return listener;
     }
 }
