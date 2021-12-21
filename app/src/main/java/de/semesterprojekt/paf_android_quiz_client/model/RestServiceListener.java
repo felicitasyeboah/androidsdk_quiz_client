@@ -18,4 +18,8 @@ public abstract class RestServiceListener {
     public void onGetHighscore(JSONArray getHighscore) {
 
     }
+
+    public void onSendWsMessage(JSONObject response) {
+
+    }
 }

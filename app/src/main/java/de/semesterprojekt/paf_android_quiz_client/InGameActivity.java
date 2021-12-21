@@ -3,94 +3,61 @@ package de.semesterprojekt.paf_android_quiz_client;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+
 import android.widget.Button;
 
-
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
-import tech.gusavila92.websocketclient.WebSocketClient;
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompFrame;
+import de.semesterprojekt.paf_android_quiz_client.stomp.client.StompClient;
+import de.semesterprojekt.paf_android_quiz_client.stomp.client.listener.StompMessageListener;
 
 
 public class InGameActivity extends AppCompatActivity {
 
-    private WebSocketClient webSocketClient;
+    private static final String TAG = "Websocket";
     Button btn_answer1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
-        Log.i("WebSocket", "passier thier was?");
-        Log.i("WebSocket", RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
-        btn_answer1 = findViewById(R.id.btn_answer1);
+        final StompClient stompSocket = new StompClient(URI.create("ws://192.168.77.106:8080/websocket"));
 
-        btn_answer1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("WebbSocket", "button clicked");
-                createWebSocketClient();
-            }
-        });
-    }
-
-
-    private void createWebSocketClient() {
-        URI uri;
+        // Wait for a connection to establish
+        boolean connected;
         try {
-            uri = new URI("ws://192.168.77.106:8080/websocket");
-        } catch (URISyntaxException e) {
+            connected = stompSocket.connectBlocking();
+        } catch (InterruptedException e) {
             e.printStackTrace();
             return;
         }
 
-        webSocketClient = new WebSocketClient(uri) {
-            @Override
-            public void onOpen() {
-                Log.i("WebSocket", "onOpen?");
-
-                System.out.println("onOpen");
-                webSocketClient.send("Hello, World!");
-            }
+        if (!connected) {
+            System.out.println("Failed to connect to the socket");
+            return;
+        }
+        // Subscribing to a topic once STOMP connection is established
+        stompSocket.subscribe("/topic/game", new StompMessageListener() {
 
             @Override
-            public void onTextReceived(String message) {
-                System.out.println("onTextReceived");
-            }
+            public void onMessage(StompFrame stompFrame) {
+                System.out.println("Server message: " + stompFrame.getBody());
 
-            @Override
-            public void onBinaryReceived(byte[] data) {
-                System.out.println("onBinaryReceived");
+                // Disconnect
+                //stompSocket.close();
             }
+        });
 
-            @Override
-            public void onPingReceived(byte[] data) {
-                System.out.println("onPingReceived");
-            }
+        // Sending JSON message to a server
+        String message = "{\"name\": \"Jack\"}";
+        stompSocket.send("/app/game", message);
+    }
 
-            @Override
-            public void onPongReceived(byte[] data) {
-                System.out.println("onPongReceived");
-            }
 
-            @Override
-            public void onException(Exception e) {
-                System.out.println(e.getMessage());
-                Log.i("Websocket", "exception");
-            }
-
-            @Override
-            public void onCloseReceived() {
-                System.out.println("onCloseReceived");
-            }
-        };
-
-        webSocketClient.setConnectTimeout(10000);
+        /*webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
-/*      webSocketClient.addHeader("Connection", "Upgrade");
+        webSocketClient.addHeader("Connection", "Upgrade");
         webSocketClient.addHeader("Host", "http://192.168.77.106:8080");
         webSocketClient.addHeader("Origin", "http://192.168.77.106:8080");
         webSocketClient.addHeader("Sec-WebSocket-Version", "13");
@@ -98,8 +65,7 @@ public class InGameActivity extends AppCompatActivity {
         //webSocketClient.addHeader("Accept", "application/json");
         webSocketClient.addHeader("Upgrade", "websocket");
         webSocketClient.addHeader("Authorization", "Bearer " + RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
-*/
         webSocketClient.enableAutomaticReconnection(5000);
         webSocketClient.connect();
-    }
+    }*/
 }

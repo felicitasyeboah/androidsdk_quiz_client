@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -142,7 +143,29 @@ public class RestServiceClient {
         };
 
         requestQueue.add(request);
-
-
     }
+
+//    public void sendWsMessage(RestServiceListener listener) {
+//        String url = BASE_URL + "/app/game";
+//        try {
+//            String message = "test";
+//
+//
+//            StringRequest request = new StringRequest(Request.Method.POST, url, message, new Response.Listener<StringRequest>() {
+//                @Override
+//                public void onResponse(JSONObject response) {
+//                    listener.onSendWsMessage(response);
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Toast.makeText(ctx, "JSON Exception unten: " + e.toString(), Toast.LENGTH_SHORT).show();
+//
+//        }
+//    }
 }

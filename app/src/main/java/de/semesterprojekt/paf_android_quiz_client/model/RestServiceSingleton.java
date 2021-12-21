@@ -2,6 +2,7 @@ package de.semesterprojekt.paf_android_quiz_client.model;
 
 import android.content.Context;
 
+
 /**
  * Singleton class to set up an single instance to the RestAPI Service
  */
@@ -73,6 +74,11 @@ public class RestServiceSingleton {
     public void getHighscore(RestServiceListener listener) {
         String userToken = this.getUser().getToken();
         restServiceClient.getHighscore(userToken, listener);
+
+    }
+
+    public void onSendWsMesage(RestServiceListener listener) {
+        //restServiceClient.sendWsMessage(listener);
 
     }
 
