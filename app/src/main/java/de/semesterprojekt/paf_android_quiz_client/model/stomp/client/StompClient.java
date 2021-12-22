@@ -166,6 +166,9 @@ public class StompClient extends WebSocketClient {
      * @param message     text message
      */
     public void send(String destination, String message) {
+        if (message == null) {
+            message = "";
+        }
         send(destination, message, null);
     }
 
@@ -187,19 +190,44 @@ public class StompClient extends WebSocketClient {
         send(frame.toString());
     }
 
+    //Edited, added new mthod
+
+    /**
+     * Send text message to the server.
+     *
+     * @param destination destination
+     * @param message     text message
+     * @param token       jwt auth token
+     * @param headers     (optional) additional headers
+     */
+    public void send(String destination, String message, String token, Map<String, String> headers) {
+        if (headers == null) {
+            headers = new HashMap<>();
+        }
+
+        headers.put(StompHeader.DESTINATION.toString(), destination);
+        headers.put(StompHeader.TOKEN.toString(), token);
+        StompFrame frame = new StompFrame(StompCommand.SEND, headers, message);
+
+        send(frame.toString());
+    }
+
     /**
      * Subscribe to a specific topic.
      *
      * @param destination topic destination
+     * @param token       jwt auth token
      * @param listener    listener
      * @return STOMP subscription data that can be used to unsubscribe
      */
-    public StompSubscription subscribe(String destination, StompMessageListener listener) {
+    public StompSubscription subscribe(String destination, String token, StompMessageListener listener) {
         StompSubscription subscription = new StompSubscription(UUID.randomUUID().hashCode(), destination, listener);
 
         Map<String, String> headers = new HashMap<>();
         headers.put(StompHeader.ID.toString(), String.valueOf(subscription.getId()));
         headers.put(StompHeader.DESTINATION.toString(), subscription.getDestination());
+        // Edited
+        headers.put(StompHeader.TOKEN.toString(), token);
 
         StompFrame frame = new StompFrame(StompCommand.SUBSCRIBE, headers);
         send(frame.toString());

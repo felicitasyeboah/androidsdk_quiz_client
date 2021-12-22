@@ -35,7 +35,9 @@ public enum StompHeader {
     RECEIPT_ID("receipt-id"),
     RECEIPT("receipt"),
     SUBSCRIPTION("subscription"),
-    VERSION("version");
+    VERSION("version"),
+    //Edited
+    TOKEN("token");
 
     private final String value;
 
