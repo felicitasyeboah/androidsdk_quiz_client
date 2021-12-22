@@ -61,7 +61,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:height="140dp"
+        android:height="100dp"
         android:text="Einen Feinschmecker nennt man auch?"
         android:textAlignment="textStart"
         android:textSize="24sp"
@@ -74,11 +74,10 @@
         android:id="@+id/linearLayout2"
         android:layout_width="363dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question">
+        app:layout_constraintTop_toBottomOf="@+id/btn_getQuestion">
 
         <Button
             android:id="@+id/btn_answer1"
@@ -139,5 +138,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <Button
+        android:id="@+id/btn_getQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:text="Get Question"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
+
+    <Button
+        android:id="@+id/btn_quitSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:text="Quit Session"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_getQuestion"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
