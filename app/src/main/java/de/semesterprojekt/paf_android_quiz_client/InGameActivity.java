@@ -30,8 +30,9 @@ public class InGameActivity extends AppCompatActivity {
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_getQuestion, btn_quitSession;
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
-    JSONObject gameObject;
+    JSONObject jsonObject;
     String userToken;
+    GameMessageObject gameMessageObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +75,13 @@ public class InGameActivity extends AppCompatActivity {
                         showQuestion(stompFrame.getBody());
 
                         try {
-                            gameObject = new JSONObject(stompFrame.getBody());
+                            jsonObject = new JSONObject(stompFrame.getBody());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        System.out.println("Gameobject: " + gameObject);
+                        System.out.println("Gameobject: " + jsonObject);
                         try {
-                            System.out.println("Gameobject: " + gameObject.getString("question"));
+                            btn_answer1.setText(jsonObject.get("category").toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -89,6 +90,7 @@ public class InGameActivity extends AppCompatActivity {
                 });
             }
         });
+        requestQuestion("isReady");
         Log.d("Websocket", "Channel Subscribed.");
         System.out.println("usertoken: " + userToken);
 
@@ -97,6 +99,7 @@ public class InGameActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Request question from server
                 requestQuestion("Antwort", userToken);
+                Log.d("Websocket", "Requested Question.");
                 System.out.println("usertoken: " + userToken);
 
             }
