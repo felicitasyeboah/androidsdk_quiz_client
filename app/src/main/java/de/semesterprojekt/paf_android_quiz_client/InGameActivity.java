@@ -90,7 +90,7 @@ public class InGameActivity extends AppCompatActivity {
                 });
             }
         });
-        requestQuestion("isReady");
+        requestQuestion("isReady", userToken);
         Log.d("Websocket", "Channel Subscribed.");
         System.out.println("usertoken: " + userToken);
 
