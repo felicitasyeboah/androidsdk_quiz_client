@@ -77,9 +77,10 @@ public class InGameActivity extends AppCompatActivity {
                         showQuestion(stompFrame.getBody());
                         System.out.println("gamemessage: " + stompFrame.getBody());
 
+                        // Converts JSONObject String into GameMessageObject
                         gameMessageObject = gson.fromJson(stompFrame.getBody(), GameMessageObject.class);
 
-                        // Update Login User Instance
+                        // Updates Login User Instance
                         restServiceSingleton.setUser(gameMessageObject.getUser());
 
                         //{"message":"{\"category\":\"Kultur\",\"question\":\"Wann lebte William Shakespeare?\",\"answer1\":\"im 16. bis 17. Jahrhundert\",\"answer2\":\"im 13. bis 14. Jahrhundert\",\"answer3\":\"im 18. Jahrhundert\",\"answer4\":\"im 17. bis 18. Jahrhundert\",\"userScore\":0,\"opponentScore\":0,\"user\":{\"userId\":0,\"userName\":\"Bernd\",\"isReady\":false},\"opponent\":{\"userId\":0,\"userName\":\"Beate\",\"isReady\":false}}"}
@@ -99,7 +100,7 @@ public class InGameActivity extends AppCompatActivity {
                 });
             }
         });
-        requestQuestion("isReady", userToken);
+        requestQuestion();
         Log.d("Websocket", "Channel Subscribed.");
         System.out.println("usertoken: " + userToken);
 
