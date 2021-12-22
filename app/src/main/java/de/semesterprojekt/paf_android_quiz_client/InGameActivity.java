@@ -67,7 +67,7 @@ public class InGameActivity extends AppCompatActivity {
             return;
         }
         // Subscribing to a topic once STOMP connection is established
-        stompSocket.subscribe("/topic/game", userToken, new StompMessageListener() {
+        stompSocket.subscribe("/user/topic/game", userToken, new StompMessageListener() {
             @Override
             public void onMessage(StompFrame stompFrame) {
                 runOnUiThread(new Runnable() {
