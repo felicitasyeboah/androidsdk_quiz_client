@@ -21,6 +21,9 @@
  */
 package de.semesterprojekt.paf_android_quiz_client.model.stomp.client;
 
+import android.app.Application;
+
+import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompCommand;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
@@ -62,6 +65,10 @@ public class StompClient extends WebSocketClient {
      * STOMP connection listener.
      */
     private StompConnectionListener stompConnectionListener;
+
+
+    // Edit
+    public RestServiceSingleton restServiceSingleton;
 
     /**
      * {@inheritDoc}
@@ -144,9 +151,13 @@ public class StompClient extends WebSocketClient {
         Map<String, String> headers = new HashMap<>();
         headers.put(StompHeader.ACCEPT_VERSION.toString(), STOMP_VERSION);
         headers.put(StompHeader.HOST.toString(), uri.getHost());
+        //edit aded token header
+        //headers.put(StompHeader.TOKEN.toString(), restServiceSingleton.getUser().getToken());
+
 
         send(new StompFrame(StompCommand.CONNECT, headers).toString());
     }
+
 
     /**
      * Disconnect STOMP.

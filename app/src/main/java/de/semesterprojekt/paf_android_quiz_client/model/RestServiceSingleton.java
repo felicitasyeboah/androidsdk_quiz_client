@@ -77,10 +77,6 @@ public class RestServiceSingleton {
 
     }
 
-    public void onSendWsMesage(RestServiceListener listener) {
-        //restServiceClient.sendWsMessage(listener);
-
-    }
 
     // Getters & Setters
     public Context getCtx() {

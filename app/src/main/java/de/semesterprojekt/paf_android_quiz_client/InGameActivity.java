@@ -7,19 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.User;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompMessageListener;
@@ -28,10 +26,12 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.St
 public class InGameActivity extends AppCompatActivity {
 
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_getQuestion, btn_quitSession;
+    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore;
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
-    JSONObject jsonObject;
     String userToken;
+    Gson gson = new Gson();
+    RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
 
     @Override
@@ -45,16 +45,18 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer4 = findViewById(R.id.btn_answer4);
         btn_getQuestion = findViewById(R.id.btn_getQuestion);
         btn_quitSession = findViewById(R.id.btn_quitSession);
-        userToken = RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken();
 
-        //GameMessageObject gameMessageObjekct = Js
-        //Gson g = new Gson();
-        //GameMessageObject gameMessageObject = gameMessageObject.fromJson(jsonString, GameMessageObject.class)
-        //JSONParser parser = new JSONParser();
-        //{"category":"Essen & Trinken","question":"Aus welchem Land kommt der Gouda?","answer":["Ghana","Niederlande","Frankreich","Luxemburg"],"userScore":0,"opponentScore":0,"user":{"userId":0,"userName":"Bernd","profileImage":null,"ready":false},"opponent":{"userId":0,"userName":"Beate","profileImage":null,"ready":false}}
+        tv_question = findViewById(R.id.tv_question);
+        tv_timer = findViewById(R.id.tv_timer);
+        tv_userScore = findViewById(R.id.tv_userScore);
+        tv_opponentScore = findViewById(R.id.tv_opponentScore);
+
+        restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
+        userToken = RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken();
 
         // Wait for a connection to establish
         boolean connected;
+        stompSocket.addHeader("token", userToken);
         try {
             connected = stompSocket.connectBlocking();
         } catch (InterruptedException e) {
@@ -73,18 +75,25 @@ public class InGameActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         showQuestion(stompFrame.getBody());
+                        System.out.println("gamemessage: " + stompFrame.getBody());
 
-                        try {
-                            jsonObject = new JSONObject(stompFrame.getBody());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        System.out.println("Gameobject: " + jsonObject);
-                        try {
-                            btn_answer1.setText(jsonObject.get("category").toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        gameMessageObject = gson.fromJson(stompFrame.getBody(), GameMessageObject.class);
+
+                        // Update Login User Instance
+                        restServiceSingleton.setUser(gameMessageObject.getUser());
+
+                        //{"message":"{\"category\":\"Kultur\",\"question\":\"Wann lebte William Shakespeare?\",\"answer1\":\"im 16. bis 17. Jahrhundert\",\"answer2\":\"im 13. bis 14. Jahrhundert\",\"answer3\":\"im 18. Jahrhundert\",\"answer4\":\"im 17. bis 18. Jahrhundert\",\"userScore\":0,\"opponentScore\":0,\"user\":{\"userId\":0,\"userName\":\"Bernd\",\"isReady\":false},\"opponent\":{\"userId\":0,\"userName\":\"Beate\",\"isReady\":false}}"}
+
+                        btn_answer1.setText(gameMessageObject.getAnswer1());
+                        btn_answer2.setText(gameMessageObject.getAnswer2());
+                        btn_answer3.setText(gameMessageObject.getAnswer3());
+                        btn_answer4.setText(gameMessageObject.getAnswer4());
+
+                        tv_question.setText(gameMessageObject.getQuestion());
+                        String timer = "22s";
+                        tv_timer.setText(timer);
+                        String txtFieldUserScore = restServiceSingleton.getUser().getUsername() + " " + gameMessageObject.getUserScore() + "pts";
+                        tv_userScore.setText(txtFieldUserScore);
 
                     }
                 });

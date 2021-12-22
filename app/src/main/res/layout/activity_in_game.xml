@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_timer"
+        android:id="@+id/tv_userScore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/tv_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -39,12 +39,12 @@
         android:layout_marginEnd="24dp"
         android:text="10s"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_score"
-        app:layout_constraintStart_toEndOf="@+id/tv_timer"
+        app:layout_constraintEnd_toStartOf="@+id/tv_opponentScore"
+        app:layout_constraintStart_toEndOf="@+id/tv_userScore"
         app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
 
     <TextView
-        android:id="@+id/tv_score"
+        android:id="@+id/tv_opponentScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -68,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_timer" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_userScore" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"

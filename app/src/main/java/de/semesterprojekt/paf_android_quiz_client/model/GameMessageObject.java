@@ -1,7 +1,7 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import com.google.gson.Gson;
+
 
 public class GameMessageObject {
 
@@ -10,24 +10,109 @@ public class GameMessageObject {
     private int opponentScore;
     private String category;
     private String question;
-    private ArrayList<String> answers;
-    private String userName;
+    private String answer1;
+    private String answer2;
+    private String answer3;
+    private String answer4;
+    User user;
 
     public GameMessageObject() {
 
     }
 
-    public GameMessageObject(String userName, String opponentName, int userScore, int opponentScore, String category, String question, ArrayList<String> answers) {
-
-        this.userName = userName;
-        this.opponentName = opponentName;
+    public GameMessageObject(String category, String question, String answer1, String answer2, String answer3, String answer4, int userScore, int opponentScore, User user, String opponent) {
+        this.opponentName = opponent;
         this.userScore = userScore;
         this.opponentScore = opponentScore;
         this.category = category;
         this.question = question;
-        this.answers = answers;
+        this.answer1 = answer1;
+        this.answer2 = answer2;
+        this.answer3 = answer3;
+        this.answer4 = answer4;
+        this.user = user;
     }
 
     // {"category":"Essen & Trinken","question":"Aus welchem Land kommt der Gouda?","answer":["Ghana","Niederlande","Frankreich","Luxemburg"],"userScore":0,"opponentScore":0,"user":{"userId":0,"userName":"Bernd","profileImage":null,"ready":false},"opponent":{"userId":0,"userName":"Beate","profileImage":null,"ready":false}}
 
+
+    public String getOpponentName() {
+        return opponentName;
+    }
+
+    public void setOpponentName(String opponentName) {
+        this.opponentName = opponentName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getUserScore() {
+        return userScore;
+    }
+
+    public void setUserScore(int userScore) {
+        this.userScore = userScore;
+    }
+
+    public int getOpponentScore() {
+        return opponentScore;
+    }
+
+    public void setOpponentScore(int opponentScore) {
+        this.opponentScore = opponentScore;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer1() {
+        return answer1;
+    }
+
+    public void setAnswer1(String answer1) {
+        this.answer1 = answer1;
+    }
+
+    public String getAnswer2() {
+        return answer2;
+    }
+
+    public void setAnswer2(String answer2) {
+        this.answer2 = answer2;
+    }
+
+    public String getAnswer3() {
+        return answer3;
+    }
+
+    public void setAnswer3(String answer3) {
+        this.answer3 = answer3;
+    }
+
+    public String getAnswer4() {
+        return answer4;
+    }
+
+    public void setAnswer4(String answer4) {
+        this.answer4 = answer4;
+    }
 }

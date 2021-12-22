@@ -1,5 +1,7 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
+import android.media.Image;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,25 +10,42 @@ import org.json.JSONObject;
  */
 public class User {
 
-    private String username;
+    private String userName = "test";
     private String token;
+    private int userId;
+    private boolean ready = true;
 
+
+    //"user":{"userId":0,"userName":"Bernd","profileImage":null,"ready":false
     //Contructor
-    public User(String username, String token) {
-        this.username = username;
-        this.token = token;
 
+
+    public User(int userId, String userName, boolean ready) {
+        this.userName = userName;
+        this.userId = userId;
+        this.ready = ready;
+    }
+
+    public User(String userName, String token) {
+        this.userName = userName;
+        this.token = token;
     }
 
     /**
      * Takes an JSONObject and returns an User Object
      */
     public static User getUser(JSONObject jsonObject) throws JSONException {
-        String username = jsonObject.getString("userName");
+        String userName = jsonObject.getString("userName");
         String token = jsonObject.getString("token");
 
-        return new User(username, token);
+        return new User(userName, token);
 
+    }
+
+    public void updateUser(User user) {
+        this.userName = user.userName;
+        this.userId = user.userId;
+        this.ready = user.ready;
     }
 
 
@@ -36,7 +55,7 @@ public class User {
         boolean result = false;
         if (obj != null && obj instanceof User) {
             User that = (User) obj;
-            if (this.username.equalsIgnoreCase(that.username)) {
+            if (this.userName.equalsIgnoreCase(that.userName)) {
                 result = true;
             }
         }
@@ -45,15 +64,15 @@ public class User {
 
     @Override
     public String toString() {
-        return this.username + "(" + this.token + ")";
+        return this.userName + "(" + this.token + ")";
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getToken() {
@@ -64,4 +83,20 @@ public class User {
         this.token = token;
     }
 
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public boolean getIsReady() {
+        return ready;
+    }
+
+    public void setIsReady(boolean ready) {
+        this.ready = ready;
+    }
 }
