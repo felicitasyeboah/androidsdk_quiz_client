@@ -13,6 +13,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URI;
 
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
@@ -39,6 +42,7 @@ public class InGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
 
+        // assigning values to button and textView ID's on layout
         btn_answer1 = findViewById(R.id.btn_answer1);
         btn_answer2 = findViewById(R.id.btn_answer2);
         btn_answer3 = findViewById(R.id.btn_answer3);
@@ -51,7 +55,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore = findViewById(R.id.tv_userScore);
         tv_opponentScore = findViewById(R.id.tv_opponentScore);
 
+        // Get RestServerSingleton-Instance
         restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
+        // Get Usertoken from instance
         userToken = RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken();
 
         // Wait for a connection to establish
@@ -74,43 +80,39 @@ public class InGameActivity extends AppCompatActivity {
             public void onMessage(StompFrame stompFrame) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        showQuestion(stompFrame.getBody());
+                        loadQuestion(stompFrame.getBody());
                         System.out.println("gamemessage: " + stompFrame.getBody());
-
-                        // Converts JSONObject String into GameMessageObject
-                        gameMessageObject = gson.fromJson(stompFrame.getBody(), GameMessageObject.class);
-
-                        // Updates Login User Instance
-                        restServiceSingleton.setUser(gameMessageObject.getUser());
-
-                        //{"message":"{\"category\":\"Kultur\",\"question\":\"Wann lebte William Shakespeare?\",\"answer1\":\"im 16. bis 17. Jahrhundert\",\"answer2\":\"im 13. bis 14. Jahrhundert\",\"answer3\":\"im 18. Jahrhundert\",\"answer4\":\"im 17. bis 18. Jahrhundert\",\"userScore\":0,\"opponentScore\":0,\"user\":{\"userId\":0,\"userName\":\"Bernd\",\"isReady\":false},\"opponent\":{\"userId\":0,\"userName\":\"Beate\",\"isReady\":false}}"}
-
-                        btn_answer1.setText(gameMessageObject.getAnswer1());
-                        btn_answer2.setText(gameMessageObject.getAnswer2());
-                        btn_answer3.setText(gameMessageObject.getAnswer3());
-                        btn_answer4.setText(gameMessageObject.getAnswer4());
-
-                        tv_question.setText(gameMessageObject.getQuestion());
-                        String timer = "22s";
-                        tv_timer.setText(timer);
-                        String txtFieldUserScore = restServiceSingleton.getUser().getUsername() + " " + gameMessageObject.getUserScore() + "pts";
-                        tv_userScore.setText(txtFieldUserScore);
-
                     }
                 });
             }
         });
-        requestQuestion();
+        initGame(userToken);
         Log.d("Websocket", "Channel Subscribed.");
-        System.out.println("usertoken: " + userToken);
 
+        btn_answer1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send answer and expired time to Server
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("answer1", btn_answer1.getText().toString());
+                    jsonObject.put("expired time", 7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Json object: " + jsonObject);
+                System.out.println("Json object to string: " + jsonObject.toString());
+                sendAnswer(jsonObject.toString());
+                Log.d("Websocket", "Requested Question.");
+
+            }
+        });
         btn_getQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Request question from server
                 requestQuestion("Antwort", userToken);
                 Log.d("Websocket", "Requested Question.");
-                System.out.println("usertoken: " + userToken);
 
             }
         });
@@ -130,17 +132,38 @@ public class InGameActivity extends AppCompatActivity {
 
     }
 
-    public void showQuestion(String message) {
-        Toast.makeText(InGameActivity.this, "Server message: " + message, Toast.LENGTH_LONG).show();
+    public void loadQuestion(String message) {
+        // Converts JSONObject String into GameMessageObject
+        gameMessageObject = gson.fromJson(message, GameMessageObject.class);
+
+        // Updates Login User Instance
+        restServiceSingleton.setUser(gameMessageObject.getUser());
+
+        // Set Button and TextView values from gameMessageObject
+        btn_answer1.setText(gameMessageObject.getAnswer1());
+        btn_answer2.setText(gameMessageObject.getAnswer2());
+        btn_answer3.setText(gameMessageObject.getAnswer3());
+        btn_answer4.setText(gameMessageObject.getAnswer4());
+
+        tv_question.setText(gameMessageObject.getQuestion());
+        String timer = "22s";
+        tv_timer.setText(timer);
+        String txtFieldUserScore = restServiceSingleton.getUser().getUsername() + " " + gameMessageObject.getUserScore() + "pts";
+        tv_userScore.setText(txtFieldUserScore);
     }
 
 
-    public void requestQuestion(String message) {
+    public void sendAnswer(String message) {
         stompSocket.send("/app/game", message);
     }
 
-    public void requestQuestion() {
-        stompSocket.send("/app/game", null);
+    // Iniit game by loading first Question, when view-load is completed
+    public void initGame(String userToken) {
+        stompSocket.send("/app/game", null, userToken, null);
+    }
+
+    public void initGame(String message, String token) {
+        stompSocket.send("/app/game", message, token, null);
     }
 
     public void requestQuestion(String message, String headers) {

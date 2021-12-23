@@ -178,7 +178,7 @@ public class StompClient extends WebSocketClient {
      */
     public void send(String destination, String message) {
         if (message == null) {
-            message = "";
+            message = " ";
         }
         send(destination, message, null);
     }
@@ -194,7 +194,9 @@ public class StompClient extends WebSocketClient {
         if (headers == null) {
             headers = new HashMap<>();
         }
-
+        if (message == null) {
+            message = " ";
+        }
         headers.put(StompHeader.DESTINATION.toString(), destination);
         StompFrame frame = new StompFrame(StompCommand.SEND, headers, message);
 
@@ -215,7 +217,9 @@ public class StompClient extends WebSocketClient {
         if (headers == null) {
             headers = new HashMap<>();
         }
-
+        if (message == null) {
+            message = " ";
+        }
         headers.put(StompHeader.DESTINATION.toString(), destination);
         headers.put(StompHeader.TOKEN.toString(), token);
         StompFrame frame = new StompFrame(StompCommand.SEND, headers, message);
