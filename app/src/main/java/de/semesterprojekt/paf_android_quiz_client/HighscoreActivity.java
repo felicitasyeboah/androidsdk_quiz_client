@@ -2,16 +2,13 @@ package de.semesterprojekt.paf_android_quiz_client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 
 public class HighscoreActivity extends AppCompatActivity {
 

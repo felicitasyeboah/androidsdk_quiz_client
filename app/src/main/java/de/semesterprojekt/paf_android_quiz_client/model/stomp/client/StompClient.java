@@ -21,9 +21,7 @@
  */
 package de.semesterprojekt.paf_android_quiz_client.model.stomp.client;
 
-import android.app.Application;
-
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompCommand;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
@@ -65,10 +63,6 @@ public class StompClient extends WebSocketClient {
      * STOMP connection listener.
      */
     private StompConnectionListener stompConnectionListener;
-
-
-    // Edit
-    public RestServiceSingleton restServiceSingleton;
 
     /**
      * {@inheritDoc}
@@ -201,8 +195,7 @@ public class StompClient extends WebSocketClient {
         send(frame.toString());
     }
 
-    //Edited, added new mthod
-
+    //Edited, added new method
     /**
      * Send text message to the server.
      *
@@ -229,18 +222,15 @@ public class StompClient extends WebSocketClient {
      * Subscribe to a specific topic.
      *
      * @param destination topic destination
-     * @param token       jwt auth token
      * @param listener    listener
      * @return STOMP subscription data that can be used to unsubscribe
      */
-    public StompSubscription subscribe(String destination, String token, StompMessageListener listener) {
+    public StompSubscription subscribe(String destination, StompMessageListener listener) {
         StompSubscription subscription = new StompSubscription(UUID.randomUUID().hashCode(), destination, listener);
 
         Map<String, String> headers = new HashMap<>();
         headers.put(StompHeader.ID.toString(), String.valueOf(subscription.getId()));
         headers.put(StompHeader.DESTINATION.toString(), subscription.getDestination());
-        // Edited
-        headers.put(StompHeader.TOKEN.toString(), token);
 
         StompFrame frame = new StompFrame(StompCommand.SUBSCRIBE, headers);
         send(frame.toString());

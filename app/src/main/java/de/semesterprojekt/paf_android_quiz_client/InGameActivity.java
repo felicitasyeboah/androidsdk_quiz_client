@@ -19,9 +19,10 @@ import org.json.JSONObject;
 import java.net.URI;
 
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
+import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompMessageListener;
 
@@ -36,6 +37,7 @@ public class InGameActivity extends AppCompatActivity {
     Gson gson = new Gson();
     RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
+    int timer = 7; //TODO: implement timer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +59,13 @@ public class InGameActivity extends AppCompatActivity {
 
         // Get RestServerSingleton-Instance
         restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
-        // Get Usertoken from instance
+        // Get userToken from instance
         userToken = RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken();
+
 
         // Wait for a connection to establish
         boolean connected;
-        stompSocket.addHeader("token", userToken);
+        stompSocket.addHeader(StompHeader.TOKEN.toString(), userToken);
         try {
             connected = stompSocket.connectBlocking();
         } catch (InterruptedException e) {
@@ -75,104 +78,56 @@ public class InGameActivity extends AppCompatActivity {
             return;
         }
         // Subscribing to a topic once STOMP connection is established
-        stompSocket.subscribe("/user/topic/game", userToken, new StompMessageListener() {
+        stompSocket.subscribe("/user/topic/game", new StompMessageListener() {
             @Override
             public void onMessage(StompFrame stompFrame) {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         loadQuestion(stompFrame.getBody());
-                        System.out.println("gamemessage: " + stompFrame.getBody());
+                        Log.d("Quiz", "gamemessage: " + stompFrame.getBody());
                     }
                 });
             }
         });
         initGame();
-        Log.d("Websocket", "Channel Subscribed.");
+        Log.d("Quiz", "Websocket channel subscribed.");
 
-        // OnClick Listener
+        // OnClick Listeners
         btn_answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send answer and expired time to Server
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("answer1", btn_answer1.getText().toString());
-                    jsonObject.put("expired time", 7);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Json object: " + jsonObject);
-                System.out.println("Json object to string: " + jsonObject.toString());
-                sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Sent answer.");
-
+                sendAnswer(btn_answer1, "1", timer);
             }
         });
         btn_answer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send answer and expired time to Server
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("answer2", btn_answer2.getText().toString());
-                    jsonObject.put("expired time", 7);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Json object: " + jsonObject);
-                System.out.println("Json object to string: " + jsonObject.toString());
-                sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Sent answer.");
-
+                sendAnswer(btn_answer2, "2", timer);
             }
         });
         btn_answer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send answer and expired time to Server
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("answer3", btn_answer3.getText().toString());
-                    jsonObject.put("expired time", 7);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Json object: " + jsonObject);
-                System.out.println("Json object to string: " + jsonObject.toString());
-                sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Sent answer.");
-
+                sendAnswer(btn_answer3, "3", timer);
             }
         });
         btn_answer4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send answer and expired time to Server
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("answer4", btn_answer4.getText().toString());
-                    jsonObject.put("expired time", 7);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Json object: " + jsonObject);
-                System.out.println("Json object to string: " + jsonObject.toString());
-                sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Sent answer.");
-
+                sendAnswer(btn_answer4, "4", timer);
             }
         });
 
+        //TODO: Buttons entfernen
+        //Die Button erstmal noch zum Testen drin, kommen später weg
         btn_getQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Request question from server
-                requestQuestion("Antwort", userToken);
-                Log.d("Websocket", "Requested Question.");
-
+                initGame();
+                Log.d("Quiz", "Requested Question.");
             }
         });
-
         btn_quitSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,32 +160,43 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer2.setText(gameMessageObject.getAnswer2());
         btn_answer3.setText(gameMessageObject.getAnswer3());
         btn_answer4.setText(gameMessageObject.getAnswer4());
-
         tv_question.setText(gameMessageObject.getQuestion());
         String timer = "22s";
         tv_timer.setText(timer);
         String txtFieldUserScore = restServiceSingleton.getUser().getUsername() + " " + gameMessageObject.getUserScore() + "pts";
-        tv_userScore.setText(txtFieldUserScore);
-    }
+        String txtFieldOpponentScore = gameMessageObject.getOpponent().getUsername() + " " + gameMessageObject.getOpponentScore() + "pts";
 
+        tv_userScore.setText(txtFieldUserScore);
+        tv_opponentScore.setText(txtFieldOpponentScore);
+    }
 
     /**
-     * Sends picked answer an expired time to server
+     * Send selected answer and time needed to server
      *
-     * @param message
+     * @param button       selected button
+     * @param answerNumber selected answerNumber
+     * @param timer        needed time for selecting an answer
      */
-    public void sendAnswer(String message) {
+    public void sendAnswer(Button button, String answerNumber, int timer) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("answer" + answerNumber, button.getText().toString());
+            jsonObject.put("time needed", timer);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String message = jsonObject.toString();
         stompSocket.send("/app/game", message);
+        Log.d("Quiz", "Sent answer" + answerNumber + ": " + jsonObject.toString());
+
     }
 
-    // Iniit game by loading first Question, when view-load is completed
+    /**
+     * Iniit game by loading first Question, when view-load is completed
+     */
     public void initGame() {
         stompSocket.send("/app/game", null, null);
     }
-
-/*    public void initGame(String message, String token) {
-        stompSocket.send("/app/game", message, token, null);
-    }*/
 
     public void requestQuestion(String message, String token) {
         stompSocket.send("/app/game", message, token, null);

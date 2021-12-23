@@ -1,11 +1,10 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-import com.google.gson.Gson;
-
-
+/**
+ * Creates an GameMessageobject from JSONString-Data received from the server via Websocket
+ */
 public class GameMessageObject {
 
-    private String opponentName;
     private int userScore;
     private int opponentScore;
     private String category;
@@ -15,13 +14,13 @@ public class GameMessageObject {
     private String answer3;
     private String answer4;
     User user;
+    User opponent;
 
     public GameMessageObject() {
 
     }
 
-    public GameMessageObject(String category, String question, String answer1, String answer2, String answer3, String answer4, int userScore, int opponentScore, User user, String opponent) {
-        this.opponentName = opponent;
+    public GameMessageObject(String category, String question, String answer1, String answer2, String answer3, String answer4, int userScore, int opponentScore, User user, User opponent) {
         this.userScore = userScore;
         this.opponentScore = opponentScore;
         this.category = category;
@@ -31,21 +30,19 @@ public class GameMessageObject {
         this.answer3 = answer3;
         this.answer4 = answer4;
         this.user = user;
+        this.opponent = opponent;
     }
 
     // {"category":"Essen & Trinken","question":"Aus welchem Land kommt der Gouda?","answer":["Ghana","Niederlande","Frankreich","Luxemburg"],"userScore":0,"opponentScore":0,"user":{"userId":0,"userName":"Bernd","profileImage":null,"ready":false},"opponent":{"userId":0,"userName":"Beate","profileImage":null,"ready":false}}
 
 
-    public String getOpponentName() {
-        return opponentName;
-    }
-
-    public void setOpponentName(String opponentName) {
-        this.opponentName = opponentName;
-    }
-
+    // Getter & Setter
     public User getUser() {
         return user;
+    }
+
+    public User getOpponent() {
+        return opponent;
     }
 
     public void setUser(User user) {

@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 
 public class StartmenueActivity extends AppCompatActivity {
 

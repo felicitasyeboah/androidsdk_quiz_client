@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
 
 
 public class MainActivity extends AppCompatActivity {

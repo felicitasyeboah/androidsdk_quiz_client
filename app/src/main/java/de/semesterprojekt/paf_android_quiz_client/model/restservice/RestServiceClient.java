@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.restservice;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,6 +18,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
+import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 
 /**
@@ -129,7 +132,7 @@ public class RestServiceClient {
 
         };
 
-        Response.ErrorListener errorListener = error -> Log.i("GetRequest", error.toString());//Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_LONG).show();
+        Response.ErrorListener errorListener = error -> Log.d("GetRequest", error.toString());
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, successListener, errorListener) {
             @Override
@@ -144,28 +147,4 @@ public class RestServiceClient {
 
         requestQueue.add(request);
     }
-
-//    public void sendWsMessage(RestServiceListener listener) {
-//        String url = BASE_URL + "/app/game";
-//        try {
-//            String message = "test";
-//
-//
-//            StringRequest request = new StringRequest(Request.Method.POST, url, message, new Response.Listener<StringRequest>() {
-//                @Override
-//                public void onResponse(JSONObject response) {
-//                    listener.onSendWsMessage(response);
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Toast.makeText(ctx, "JSON Exception unten: " + e.toString(), Toast.LENGTH_SHORT).show();
-//
-//        }
-//    }
 }

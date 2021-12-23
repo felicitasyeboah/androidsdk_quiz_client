@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 public class LoginActivity extends AppCompatActivity {

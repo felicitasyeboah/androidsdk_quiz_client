@@ -1,12 +1,10 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-import android.media.Image;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * represents the logged in User and his token
+ * represents the logged in User and his token and his opponent
  */
 public class User {
 
@@ -16,10 +14,7 @@ public class User {
     private boolean ready = true;
 
 
-    //"user":{"userId":0,"userName":"Bernd","profileImage":null,"ready":false
     //Contructor
-
-
     public User(int userId, String userName, boolean ready) {
         this.userName = userName;
         this.userId = userId;
@@ -33,6 +28,7 @@ public class User {
 
     /**
      * Takes an JSONObject and returns an User Object
+     *
      */
     public static User getUser(JSONObject jsonObject) throws JSONException {
         String userName = jsonObject.getString("userName");
@@ -41,13 +37,6 @@ public class User {
         return new User(userName, token);
 
     }
-
-    public void updateUser(User user) {
-        this.userName = user.userName;
-        this.userId = user.userId;
-        this.ready = user.ready;
-    }
-
 
     //TODO: prüfen, warum habe ich das nochmal drin?
     @Override
@@ -82,7 +71,6 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
-
 
     public int getUserId() {
         return userId;

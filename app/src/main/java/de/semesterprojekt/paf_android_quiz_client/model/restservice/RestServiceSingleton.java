@@ -1,6 +1,8 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.restservice;
 
 import android.content.Context;
+
+import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 
 /**
