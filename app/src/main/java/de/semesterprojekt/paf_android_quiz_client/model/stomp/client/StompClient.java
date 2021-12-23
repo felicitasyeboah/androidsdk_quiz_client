@@ -151,8 +151,6 @@ public class StompClient extends WebSocketClient {
         Map<String, String> headers = new HashMap<>();
         headers.put(StompHeader.ACCEPT_VERSION.toString(), STOMP_VERSION);
         headers.put(StompHeader.HOST.toString(), uri.getHost());
-        //edit aded token header
-        //headers.put(StompHeader.TOKEN.toString(), restServiceSingleton.getUser().getToken());
 
 
         send(new StompFrame(StompCommand.CONNECT, headers).toString());

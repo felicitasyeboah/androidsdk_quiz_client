@@ -82,3 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+
+
+//TODO: Absicherung, dass man sich nciht doppelt einloggen kann. Was ist mit if (user!= null);

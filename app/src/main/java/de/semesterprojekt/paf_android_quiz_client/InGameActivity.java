@@ -86,9 +86,10 @@ public class InGameActivity extends AppCompatActivity {
                 });
             }
         });
-        initGame(userToken);
+        initGame();
         Log.d("Websocket", "Channel Subscribed.");
 
+        // OnClick Listener
         btn_answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,10 +104,65 @@ public class InGameActivity extends AppCompatActivity {
                 System.out.println("Json object: " + jsonObject);
                 System.out.println("Json object to string: " + jsonObject.toString());
                 sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Requested Question.");
+                Log.d("Websocket", "Sent answer.");
 
             }
         });
+        btn_answer2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send answer and expired time to Server
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("answer1", btn_answer2.getText().toString());
+                    jsonObject.put("expired time", 7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Json object: " + jsonObject);
+                System.out.println("Json object to string: " + jsonObject.toString());
+                sendAnswer(jsonObject.toString());
+                Log.d("Websocket", "Sent answer.");
+
+            }
+        });
+        btn_answer4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send answer and expired time to Server
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("answer1", btn_answer4.getText().toString());
+                    jsonObject.put("expired time", 7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Json object: " + jsonObject);
+                System.out.println("Json object to string: " + jsonObject.toString());
+                sendAnswer(jsonObject.toString());
+                Log.d("Websocket", "Sent answer.");
+
+            }
+        });
+        btn_answer4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send answer and expired time to Server
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("answer1", btn_answer4.getText().toString());
+                    jsonObject.put("expired time", 7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Json object: " + jsonObject);
+                System.out.println("Json object to string: " + jsonObject.toString());
+                sendAnswer(jsonObject.toString());
+                Log.d("Websocket", "Sent answer.");
+
+            }
+        });
+
         btn_getQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +188,11 @@ public class InGameActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads GameMessageObject into Layout
+     *
+     * @param message GameMessageObject from Server
+     */
     public void loadQuestion(String message) {
         // Converts JSONObject String into GameMessageObject
         gameMessageObject = gson.fromJson(message, GameMessageObject.class);
@@ -153,21 +214,26 @@ public class InGameActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Sends picked answer an expired time to server
+     *
+     * @param message
+     */
     public void sendAnswer(String message) {
         stompSocket.send("/app/game", message);
     }
 
     // Iniit game by loading first Question, when view-load is completed
-    public void initGame(String userToken) {
-        stompSocket.send("/app/game", null, userToken, null);
+    public void initGame() {
+        stompSocket.send("/app/game", null, null);
     }
 
-    public void initGame(String message, String token) {
+/*    public void initGame(String message, String token) {
         stompSocket.send("/app/game", message, token, null);
-    }
+    }*/
 
-    public void requestQuestion(String message, String headers) {
-        stompSocket.send("/app/game", message, headers, null);
+    public void requestQuestion(String message, String token) {
+        stompSocket.send("/app/game", message, token, null);
     }
 
     public void quitSession() {
