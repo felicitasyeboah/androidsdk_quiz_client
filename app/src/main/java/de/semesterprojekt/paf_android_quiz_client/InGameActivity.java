@@ -114,7 +114,25 @@ public class InGameActivity extends AppCompatActivity {
                 // Send answer and expired time to Server
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("answer1", btn_answer2.getText().toString());
+                    jsonObject.put("answer2", btn_answer2.getText().toString());
+                    jsonObject.put("expired time", 7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Json object: " + jsonObject);
+                System.out.println("Json object to string: " + jsonObject.toString());
+                sendAnswer(jsonObject.toString());
+                Log.d("Websocket", "Sent answer.");
+
+            }
+        });
+        btn_answer3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send answer and expired time to Server
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("answer3", btn_answer3.getText().toString());
                     jsonObject.put("expired time", 7);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -132,25 +150,7 @@ public class InGameActivity extends AppCompatActivity {
                 // Send answer and expired time to Server
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("answer1", btn_answer4.getText().toString());
-                    jsonObject.put("expired time", 7);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Json object: " + jsonObject);
-                System.out.println("Json object to string: " + jsonObject.toString());
-                sendAnswer(jsonObject.toString());
-                Log.d("Websocket", "Sent answer.");
-
-            }
-        });
-        btn_answer4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send answer and expired time to Server
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("answer1", btn_answer4.getText().toString());
+                    jsonObject.put("answer4", btn_answer4.getText().toString());
                     jsonObject.put("expired time", 7);
                 } catch (JSONException e) {
                     e.printStackTrace();
