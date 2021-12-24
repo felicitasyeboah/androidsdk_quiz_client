@@ -2,6 +2,8 @@ package de.semesterprojekt.paf_android_quiz_client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -38,11 +40,15 @@ public class InGameActivity extends AppCompatActivity {
     RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
     int timer = 7; //TODO: implement timer
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
+
+        // Open SharedPref file
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.pref_file_key), Context.MODE_PRIVATE);
 
         // assigning values to button and textView ID's on layout
         btn_answer1 = findViewById(R.id.btn_answer1);
@@ -89,6 +95,7 @@ public class InGameActivity extends AppCompatActivity {
                 });
             }
         });
+        // Load first question
         initGame();
         Log.d("Quiz", "Websocket channel subscribed.");
 
@@ -144,16 +151,23 @@ public class InGameActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads GameMessageObject into Layout
+     * Assign GameMessageObject to Layout
      *
      * @param message GameMessageObject from Server
      */
     public void loadQuestion(String message) {
         // Converts JSONObject String into GameMessageObject
         gameMessageObject = gson.fromJson(message, GameMessageObject.class);
+        gameMessageObject.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), restServiceSingleton.getUser().getToken()));
 
-        // Updates Login User Instance
+        // next line can be deleted, if right userobject is send within the gamemessageobject
+        gameMessageObject.getUser().setUsername(sharedPreferences.getString(getString(R.string.username), restServiceSingleton.getUser().getUsername()));
+
+        // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         restServiceSingleton.setUser(gameMessageObject.getUser());
+
+        Log.d("Quiz", restServiceSingleton.getUser().getToken());
+        Log.d("Quiz", restServiceSingleton.getUser().toString());
 
         // Set Button and TextView values from gameMessageObject
         btn_answer1.setText(gameMessageObject.getAnswer1());
@@ -192,12 +206,15 @@ public class InGameActivity extends AppCompatActivity {
     }
 
     /**
-     * Iniit game by loading first Question, when view-load is completed
+     * Iniit game by loading first question, when view-load is completed
      */
     public void initGame() {
         stompSocket.send("/app/game", null, null);
     }
 
+
+    //TODO: funktionen noch entfernen
+    // Erstmal nur zum Testen drin
     public void requestQuestion(String message, String token) {
         stompSocket.send("/app/game", message, token, null);
     }

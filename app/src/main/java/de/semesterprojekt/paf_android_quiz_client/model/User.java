@@ -10,11 +10,11 @@ public class User {
 
     private String userName = "test";
     private String token;
-    private int userId;
+    private int userId = 3454;
     private boolean ready = true;
 
 
-    //Contructor
+    //Contructors
     public User(int userId, String userName, boolean ready) {
         this.userName = userName;
         this.userId = userId;
@@ -53,7 +53,10 @@ public class User {
 
     @Override
     public String toString() {
-        return this.userName + "(" + this.token + ")";
+        return "userName: " + this.userName + "\n" +
+                "token: " + this.token + "\n" +
+                "userId: " + this.userId + "\n" +
+                "ready: " + this.ready;
     }
 
     public String getUsername() {

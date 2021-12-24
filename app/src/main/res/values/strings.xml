@@ -7,4 +7,7 @@
     <string name="tv_login_headline">Account Login</string>
     <string name="tv_main_headline">Join to start playing</string>
     <string name="tv_register_headline">Create Account</string>
+    <string name="pref_file_key">de.semesterprojekt.paf_android_quiz_client.userdata</string>
+    <string name="user_token">token</string>
+    <string name="username">username</string>
 </resources>
