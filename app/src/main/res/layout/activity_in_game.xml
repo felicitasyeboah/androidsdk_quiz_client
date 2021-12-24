@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:progress="45"
+        android:max="10"
+        android:progress="4"
         android:progressTint="@color/orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +38,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:text="10s"
+        android:text="10sec"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_opponentScore"
         app:layout_constraintStart_toEndOf="@+id/tv_userScore"
@@ -61,7 +62,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:height="100dp"
+        android:height="85dp"
         android:text="Einen Feinschmecker nennt man auch?"
         android:textAlignment="textStart"
         android:textSize="20sp"
@@ -74,10 +75,11 @@
         android:id="@+id/linearLayout2"
         android:layout_width="363dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_getQuestion">
+        app:layout_constraintTop_toBottomOf="@+id/tv_top_message_box">
 
         <Button
             android:id="@+id/btn_answer1"
@@ -85,7 +87,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green_light"
             android:minHeight="80dp"
-            android:text="Leckermäulchen"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -96,7 +97,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green_light"
             android:minHeight="80dp"
-            android:text="Genießer"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -107,7 +107,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green_light"
             android:minHeight="80dp"
-            android:text="Gourmed"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -118,36 +117,34 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/green_light"
             android:minHeight="80dp"
-            android:text="Gourmet"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_message_box"
+        android:id="@+id/tv_top_message_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="Correct! +10 pts"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Question x/y"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.453"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
 
     <Button
         android:id="@+id/btn_getQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
         android:layout_marginTop="8dp"
-        android:text="Get Question"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
+        android:layout_marginEnd="24dp"
+        android:text="Next Question"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <Button
         android:id="@+id/btn_quitSession"
@@ -155,10 +152,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
         android:text="Quit Session"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_getQuestion"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
+        app:layout_constraintEnd_toStartOf="@+id/btn_getQuestion"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

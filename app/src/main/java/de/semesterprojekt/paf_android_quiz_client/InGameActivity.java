@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,15 +35,53 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.St
 public class InGameActivity extends AppCompatActivity {
 
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_getQuestion, btn_quitSession;
-    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore;
+    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box;
+    ProgressBar prog_timer;
+
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
+
     String userToken;
     Gson gson = new Gson();
     RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
-    int timer = 7; //TODO: implement timer
     SharedPreferences sharedPreferences;
+
+    final int secondsToSolveQuestion = 10;
+    int secondsRemaining = secondsToSolveQuestion;
+
+    CountDownTimer solveQuestionTimer = new CountDownTimer(10000, 1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            tv_timer.setText(Integer.toString(secondsRemaining) + "sec"); //TODO: make Resource String for seconds
+            secondsRemaining--;
+
+            prog_timer.setProgress(secondsToSolveQuestion - secondsRemaining);
+        }
+
+        @Override
+        public void onFinish() {
+            btn_answer1.setEnabled(false);
+            btn_answer2.setEnabled(false);
+            btn_answer3.setEnabled(false);
+            btn_answer4.setEnabled(false);
+
+            tv_timer.setText("0sec");
+            tv_top_message_box.setText("Question X/Y - Time is up!"); //TODO: make Resource String for timeup message
+
+            final Handler handler = new Handler();
+
+            // Delay for getting next question after time is up
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    requestQuestion();
+                    //TODO: set text from top_message box to question x/y
+                }
+            }, 4000);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +103,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_timer = findViewById(R.id.tv_timer);
         tv_userScore = findViewById(R.id.tv_userScore);
         tv_opponentScore = findViewById(R.id.tv_opponentScore);
+        tv_top_message_box = findViewById(R.id.tv_top_message_box);
+
+        prog_timer = findViewById(R.id.prog_timer);
 
         // Get RestServerSingleton-Instance
         restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
@@ -89,41 +133,34 @@ public class InGameActivity extends AppCompatActivity {
             public void onMessage(StompFrame stompFrame) {
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        solveQuestionTimer.cancel();
                         loadQuestion(stompFrame.getBody());
                         Log.d("Quiz", "gamemessage: " + stompFrame.getBody());
+                        secondsRemaining = secondsToSolveQuestion;
+                        solveQuestionTimer.start();
                     }
+
                 });
             }
         });
         // Load first question
-        initGame();
+        requestQuestion();
         Log.d("Quiz", "Websocket channel subscribed.");
 
         // OnClick Listeners
-        btn_answer1.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener answerButtonClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendAnswer(btn_answer1, "1", timer);
+                Button answerButton = (Button) v;
+                solveQuestionTimer.cancel();
+                int timeNeeded = secondsToSolveQuestion - secondsRemaining;
+                sendAnswer(answerButton, timeNeeded);
             }
-        });
-        btn_answer2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnswer(btn_answer2, "2", timer);
-            }
-        });
-        btn_answer3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnswer(btn_answer3, "3", timer);
-            }
-        });
-        btn_answer4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendAnswer(btn_answer4, "4", timer);
-            }
-        });
+        };
+        btn_answer1.setOnClickListener(answerButtonClickListener);
+        btn_answer2.setOnClickListener(answerButtonClickListener);
+        btn_answer3.setOnClickListener(answerButtonClickListener);
+        btn_answer4.setOnClickListener(answerButtonClickListener);
 
         //TODO: Buttons entfernen
         //Die Button erstmal noch zum Testen drin, kommen später weg
@@ -131,7 +168,7 @@ public class InGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Request question from server
-                initGame();
+                requestQuestion();
                 Log.d("Quiz", "Requested Question.");
             }
         });
@@ -175,8 +212,12 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer3.setText(gameMessageObject.getAnswer3());
         btn_answer4.setText(gameMessageObject.getAnswer4());
         tv_question.setText(gameMessageObject.getQuestion());
-        String timer = "22s";
-        tv_timer.setText(timer);
+
+        btn_answer1.setEnabled(true);
+        btn_answer2.setEnabled(true);
+        btn_answer3.setEnabled(true);
+        btn_answer4.setEnabled(true);
+
         String txtFieldUserScore = restServiceSingleton.getUser().getUsername() + " " + gameMessageObject.getUserScore() + "pts";
         String txtFieldOpponentScore = gameMessageObject.getOpponent().getUsername() + " " + gameMessageObject.getOpponentScore() + "pts";
 
@@ -187,28 +228,27 @@ public class InGameActivity extends AppCompatActivity {
     /**
      * Send selected answer and time needed to server
      *
-     * @param button       selected button
-     * @param answerNumber selected answerNumber
-     * @param timer        needed time for selecting an answer
+     * @param button selected button
+     * @param timer  needed time for selecting an answer
      */
-    public void sendAnswer(Button button, String answerNumber, int timer) {
+    public void sendAnswer(Button button, int timer) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("answer" + answerNumber, button.getText().toString());
+            jsonObject.put("answer", button.getText().toString());
             jsonObject.put("time needed", timer);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         String message = jsonObject.toString();
         stompSocket.send("/app/game", message);
-        Log.d("Quiz", "Sent answer" + answerNumber + ": " + jsonObject.toString());
+        Log.d("Quiz", "Sent answer: " + jsonObject.toString());
 
     }
 
     /**
-     * Iniit game by loading first question, when view-load is completed
+     * Request question from server
      */
-    public void initGame() {
+    public void requestQuestion() {
         stompSocket.send("/app/game", null, null);
     }
 
