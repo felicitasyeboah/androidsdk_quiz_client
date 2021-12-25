@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="de.semesterprojekt.paf_android_quiz_client.LoginActivity">
 
+
     <EditText
         android:id="@+id/et_username"
         android:layout_width="0dp"
@@ -43,7 +44,9 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_rounded_corner_default"
         android:text="@string/btn_login"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_password" />
@@ -52,7 +55,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:text="@string/tv_login_headline"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"

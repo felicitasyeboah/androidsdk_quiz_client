@@ -4,56 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textAlignment="gravity"
     tools:context=".InGameActivity">
+
+
+    <TextView
+        android:id="@+id/tv_top_message_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Question x/y"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/prog_timer"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:max="10"
-        android:progress="4"
+        android:progress="10"
         android:progressTint="@color/orange"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
 
     <TextView
         android:id="@+id/tv_userScore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
         android:text="Player1: 25pts"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/tv_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:text="10sec"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_opponentScore"
-        app:layout_constraintStart_toEndOf="@+id/tv_userScore"
+        android:text="Time left: 10 s"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
 
     <TextView
         android:id="@+id/tv_opponentScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:text="Player2: 15pts"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_question"
@@ -63,9 +74,9 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:height="85dp"
+        android:gravity="center_horizontal|center_vertical"
         android:text="Einen Feinschmecker nennt man auch?"
-        android:textAlignment="textStart"
-        android:textSize="20sp"
+        android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,14 +90,16 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_top_message_box">
+        app:layout_constraintTop_toBottomOf="@+id/tv_timer">
 
         <Button
             android:id="@+id/btn_answer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green_light"
-            android:minHeight="80dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_rounded__corner_ingame"
+            android:minHeight="70dp"
+            android:text=" "
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -95,8 +108,9 @@
             android:id="@+id/btn_answer2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green_light"
-            android:minHeight="80dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_rounded__corner_ingame"
+            android:minHeight="70dp"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -105,8 +119,9 @@
             android:id="@+id/btn_answer3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green_light"
-            android:minHeight="80dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_rounded__corner_ingame"
+            android:minHeight="70dp"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -115,34 +130,24 @@
             android:id="@+id/btn_answer4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/green_light"
-            android:minHeight="80dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_rounded__corner_ingame"
+            android:minHeight="70dp"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textSize="16sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_top_message_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:text="Question x/y"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.453"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
-
     <Button
         android:id="@+id/btn_getQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/btn_rounded_corner_default"
         android:text="Next Question"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
@@ -151,10 +156,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/btn_rounded_corner_default"
         android:text="Quit Session"
-        app:layout_constraintEnd_toStartOf="@+id/btn_getQuestion"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
