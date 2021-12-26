@@ -203,7 +203,6 @@ public class InGameActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 public void run() {
                     Log.d("Quiz", "Questioncounter: " + questionCounter);
-
                     // creates GameMessageObject from STOMP message respond
                     createGameMessageObject(stompFrame.getBody());
                     if (questionCounter == 0) {
@@ -378,6 +377,7 @@ public class InGameActivity extends AppCompatActivity {
         stompSocket.close();
     }
 
+    //TODO: layout für kleine handys anzeigen, responsiv machen etc...
         /*webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
         webSocketClient.addHeader("Connection", "Upgrade");
