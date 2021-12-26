@@ -64,7 +64,7 @@ public class StartmenueActivity extends AppCompatActivity {
         });
 
     }
-
+    //TODO: make Activity and LayoutView for Profil
 
     /**
      * Called when the user taps the Highscore button

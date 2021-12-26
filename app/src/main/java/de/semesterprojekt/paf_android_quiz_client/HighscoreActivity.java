@@ -33,4 +33,5 @@ public class HighscoreActivity extends AppCompatActivity {
             }
         });
     }
+    //TODO: Make Layout for HighscoreView
 }

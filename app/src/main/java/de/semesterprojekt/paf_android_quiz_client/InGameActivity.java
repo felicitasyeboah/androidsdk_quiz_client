@@ -366,12 +366,13 @@ public class InGameActivity extends AppCompatActivity {
     }
 
 
-    //TODO: funktionen noch entfernen
-    // Erstmal nur zum Testen drin
+    //TODO: funktionen noch entfernen, nur zum Testen drin
+
     public void requestQuestion(String message, String token) {
         stompSocket.send("/app/game", message, token, null);
     }
 
+    //TODO: funktion nur zum testen drin, später entfernen
     public void quitSession() {
         //Disconnect
         stompSocket.close();
