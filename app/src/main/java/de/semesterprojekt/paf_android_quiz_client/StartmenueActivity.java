@@ -2,7 +2,9 @@ package de.semesterprojekt.paf_android_quiz_client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,14 +19,23 @@ public class StartmenueActivity extends AppCompatActivity {
     TextView tv_username;
     ImageView iv_user_icon;
     Button btn_startGame, btn_getHighscore, btn_profil, btn_logout;
-
+    SharedPreferences sharedPreferences;
+    String userToken;
+    String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Open SharedPref file
+        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.pref_file_key), Context.MODE_PRIVATE);
+        // Get JWT userToken from storage
+        userToken = sharedPreferences.getString(getString(R.string.user_token), "");
+        userName = sharedPreferences.getString(getString(R.string.username), "");
+
         setContentView(R.layout.activity_startmenue);
         tv_username = findViewById(R.id.tv_startmenuUsername);
-        tv_username.setText(RestServiceSingleton.getInstance(getApplicationContext()).getUser().getUsername());
+        tv_username.setText(userName);
         iv_user_icon = (ImageView) findViewById(R.id.iv_profil);
         iv_user_icon.setImageResource(R.drawable.ic_user_default);
 
