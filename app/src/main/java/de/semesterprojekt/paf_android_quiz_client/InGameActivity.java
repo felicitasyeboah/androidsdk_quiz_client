@@ -3,6 +3,7 @@ package de.semesterprojekt.paf_android_quiz_client;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,8 +25,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.util.Objects;
 
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
+import de.semesterprojekt.paf_android_quiz_client.model.TimeMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
@@ -48,14 +51,15 @@ public class InGameActivity extends AppCompatActivity {
     Gson gson = new Gson();
     RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
+    TimeMessageObject gameTimeMessageObject;
+    TimeMessageObject startTimeMessageObject;
     SharedPreferences sharedPreferences;
 
     final static public int SECONDS_TO_SOLVE_QUESTION = 10;
     int secondsRemaining = SECONDS_TO_SOLVE_QUESTION;
 
     int questionCounter = 0;
-
-    final static public int SECONDS_TILL_GAMESTART = 5;
+    final static public int SECONDS_TILL_GAMESTART = 2;
     CountDownTimer solveQuestionTimer;
     CountDownTimer startGameTimer;
 
@@ -112,55 +116,6 @@ public class InGameActivity extends AppCompatActivity {
         restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
         // Get userToken from instance
         // userToken = RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken();
-
-        solveQuestionTimer = new CountDownTimer(10000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - secondsRemaining);
-                tv_timer.setText("Time left: " + Integer.toString(secondsRemaining) + " s"); //TODO: make Resource String for seconds
-                secondsRemaining--;
-            }
-
-            @Override
-            public void onFinish() {
-                btn_answer1.setEnabled(false);
-                btn_answer2.setEnabled(false);
-                btn_answer3.setEnabled(false);
-                btn_answer4.setEnabled(false);
-
-                prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
-                tv_timer.setText("Time is up!");
-                //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
-
-                final Handler handler = new Handler();
-                // Delay for getting next question after time is up
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestQuestion();
-                        //TODO: set text from top_message box to question x/y
-                        //tv_timer.setText("Question x/y");
-                    }
-                }, 2000);
-            }
-        };
-
-        startGameTimer = new CountDownTimer(5000, 1000) {
-            int startGameCountdown = SECONDS_TILL_GAMESTART;
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                tv_startCounter.setText(Integer.toString(startGameCountdown));
-                tv_waiting.setText("Player found.\nPlaying vs. " + gameMessageObject.getOpponent().getUsername());
-                startGameCountdown--;
-            }
-
-            @Override
-            public void onFinish() {
-                layoutLobby.setVisibility(View.INVISIBLE);
-                layoutInGame.setVisibility(View.VISIBLE);
-            }
-        };
     }
 
     /**
@@ -201,53 +156,68 @@ public class InGameActivity extends AppCompatActivity {
         stompSocket.subscribe(destination, stompFrame -> {
             // new Runnable on UiThread
             runOnUiThread(new Runnable() {
+                @SuppressLint("SetTextI18n")
                 public void run() {
-                    Log.d("Quiz", "Questioncounter: " + questionCounter);
-                    // creates GameMessageObject from STOMP message respond
-                    createGameMessageObject(stompFrame.getBody());
-                    if (questionCounter == 0) {
-                        //start counter for gamestart
-                        tv_gameStartIn.setVisibility(View.VISIBLE);
-                        tv_startCounter.setVisibility(View.VISIBLE);
-                        startGameTimer.start();
-                        questionCounter++;
-                    }
-                    if (questionCounter == 1) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                // load GameMessageObject into UI
-                                loadQuestion(gameMessageObject);
-                                Log.d("Quiz", "gamemessage: " + stompFrame.getBody());
-                                // reset time to solve question and start solveQuestionTimer
-                                secondsRemaining = SECONDS_TO_SOLVE_QUESTION;
-                                solveQuestionTimer.start();
+                    String message = stompFrame.getBody();
+                    String messageType = stompFrame.getHeaders().get("type");
+                    Log.d("Quiz", messageType);
+                    switch (Objects.requireNonNull(messageType)) {
+                        case "START_TIMER_MESSAGE":
+                            Log.d("Quiz", "START_TIMER");
+                            tv_gameStartIn.setVisibility(View.VISIBLE);
+                            tv_startCounter.setVisibility(View.VISIBLE);
+                            startTimeMessageObject = gson.fromJson(message, TimeMessageObject.class);
+                            tv_startCounter.setText(Integer.toString(startTimeMessageObject.getTimeLeft()));
+                            tv_waiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessageObject.getOpponent().getUsername());
+                            if (startTimeMessageObject.getTimeLeft() == 1) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        layoutLobby.setVisibility(View.INVISIBLE);
+                                        layoutInGame.setVisibility(View.VISIBLE);
+                                    }
+                                }, 1000);
+
                             }
-                        }, 5000);
-                    }
-                    if (questionCounter > 1 && questionCounter <= 3) {
-                        // if a timer is already running, cancel it
-                        solveQuestionTimer.cancel();
-                        // load GameMessageObject into UI
-                        loadQuestion(gameMessageObject);
-                        Log.d("Quiz", "gamemessage: " + stompFrame.getBody());
-                        // reset time to solve question and start solveQuestionTimer
-                        secondsRemaining = SECONDS_TO_SOLVE_QUESTION;
+                            break;
+                        case "QUESTION_TIMER_MESSAGE":
+                            Log.d("Quiz", "SOLVE_QUESTION_TIMER");
+                            gameTimeMessageObject = gson.fromJson(message, TimeMessageObject.class);
+                            prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - gameTimeMessageObject.getTimeLeft());
+                            tv_timer.setText("Time left: " + Integer.toString(gameTimeMessageObject.getTimeLeft()) + " s");
+                            if (gameTimeMessageObject.getTimeLeft() == 1) {
+                                btn_answer1.setEnabled(false);
+                                btn_answer2.setEnabled(false);
+                                btn_answer3.setEnabled(false);
+                                btn_answer4.setEnabled(false);
+                                prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
+                                tv_timer.setText("Time is up!");
+                                //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
+                            }
+                            break;
+                        case "GAME_MESSAGE":
+                            Log.d("Quiz", "MESSAGE: GAMEMESSAGE ERHALTEN.");
+                            // creates GameMessageObject from STOMP message respond
+                            createGameMessageObject(message);
+                            // load GameMessageObject into UI
+                            loadQuestion(gameMessageObject);
 
-                        solveQuestionTimer.start();
+                            /*if(questionCounter == 3) {
+                                // wenn drei Fragen gesendet wurden, dann zeige Gewinner
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        "Es wurden drei Fragen ausgespielt. Es wird die Endresultat angezeigt. Dann zurueck zum Startmenue",
+                                        Toast.LENGTH_LONG).show();
 
+                                Log.d("Quiz:", "Es wurden drei Fragen ausgespielt. Es wird die " +
+                                        "Endresultat angezeigt. Dann zurueck zum Startmenue");
+                            }
+                            questionCounter++;*/
+                            break;
                     }
-                    if (questionCounter > 3) {
-                        // wenn drei Fragen gesendet wurden, dann zeige Gewinner
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Es wurden drei Fragen ausgespielt. Es wird die Endresultat angezeigt. Dann zurueck zum Startmenue",
-                                Toast.LENGTH_LONG).show();
-
-                        Log.d("Quiz:", "Es wurden drei Fragen ausgespielt. Es wird die " +
-                                "Endresultat angezeigt. Dann zurueck zum Startmenue");
-                    }
+                    Log.d("Quiz", "HEADERS: " + stompFrame.getHeaders().toString());
+                    Log.d("Quiz", "BODY: " + message);
                 }
             });
         });
@@ -264,7 +234,7 @@ public class InGameActivity extends AppCompatActivity {
             // if a timer is already running, cancel it
             solveQuestionTimer.cancel();
             // calculate time the user needed to answer
-            int timeNeeded = SECONDS_TO_SOLVE_QUESTION - secondsRemaining;
+            int timeNeeded = SECONDS_TO_SOLVE_QUESTION - gameTimeMessageObject.getTimeLeft();
             // send selected answer and time to pick the answer to server
             sendAnswer(answerButton, timeNeeded);
         };
@@ -302,7 +272,7 @@ public class InGameActivity extends AppCompatActivity {
         // Converts JSONObject String into GameMessageObject
         gameMessageObject = gson.fromJson(message, GameMessageObject.class);
         gameMessageObject.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), restServiceSingleton.getUser().getToken()));
-
+        Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessageObject.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         restServiceSingleton.setUser(gameMessageObject.getUser());
     }
