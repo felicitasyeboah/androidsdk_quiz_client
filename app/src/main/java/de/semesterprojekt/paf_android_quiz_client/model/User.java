@@ -9,21 +9,24 @@ import org.json.JSONObject;
 public class User {
 
     private String userName = "test";
+    private String profileImage; //TODO: bild auslesen
     private String token;
-    private int userId = 3454;
-    private boolean ready = true;
 
 
     //Contructors
-    public User(int userId, String userName, boolean ready) {
+/*   public User(String userName, String profileImage) {
         this.userName = userName;
-        this.userId = userId;
-        this.ready = ready;
-    }
+        this.profileImage = profileImage;
+    }*/
 
     public User(String userName, String token) {
         this.userName = userName;
-        this.token = token;
+        //TODO: Wenn bilddatei uebertragen wird, wieder wegenehmen.
+        if (token.endsWith(".png")) {
+            this.profileImage = token;
+        } else {
+            this.token = token;
+        }
     }
 
     /**
@@ -55,8 +58,7 @@ public class User {
     public String toString() {
         return "userName: " + this.userName + "\n" +
                 "token: " + this.token + "\n" +
-                "userId: " + this.userId + "\n" +
-                "ready: " + this.ready;
+                "profileImage: " + this.profileImage + "\n";
     }
 
     public String getUsername() {
@@ -75,19 +77,4 @@ public class User {
         this.token = token;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public boolean getIsReady() {
-        return ready;
-    }
-
-    public void setIsReady(boolean ready) {
-        this.ready = ready;
-    }
 }
