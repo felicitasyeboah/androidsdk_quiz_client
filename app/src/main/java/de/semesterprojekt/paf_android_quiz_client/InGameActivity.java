@@ -6,20 +6,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.RenderNode;
 import android.os.Bundle;
 
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,22 +28,27 @@ import java.net.URI;
 import java.util.Objects;
 
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
-import de.semesterprojekt.paf_android_quiz_client.model.TimeMessageObject;
+import de.semesterprojekt.paf_android_quiz_client.model.ResultMessageObject;
+import de.semesterprojekt.paf_android_quiz_client.model.ScoreMessageObject;
+import de.semesterprojekt.paf_android_quiz_client.model.StompMessageType;
+import de.semesterprojekt.paf_android_quiz_client.model.TimerMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
 
-
 public class InGameActivity extends AppCompatActivity {
 
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_getQuestion, btn_quitSession;
-    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_waiting, tv_gameStartIn, tv_startCounter;
+    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_waiting,
+            tv_gameStartIn, tv_startCounter, tv_loScoreUserName, tv_loScoreOpponentName,
+            tv_loScoreUserPoints, tv_loScoreOpponentPoints, tv_loScoreNextQuestionTimer,
+            tv_loResult;
     ProgressBar prog_timer;
-    LinearLayout layoutLobby;
-    ConstraintLayout layoutInGame;
-
-
+    LinearLayout layoutLobbyView;
+    ConstraintLayout layoutInGameView;
+    TableLayout layoutScoreView;
+    LinearLayout layoutResultView;
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
 
@@ -51,17 +56,14 @@ public class InGameActivity extends AppCompatActivity {
     Gson gson = new Gson();
     RestServiceSingleton restServiceSingleton;
     GameMessageObject gameMessageObject;
-    TimeMessageObject gameTimeMessageObject;
-    TimeMessageObject startTimeMessageObject;
+    TimerMessageObject gameTimerMessageObject;
+    TimerMessageObject startTimerMessageObject;
+    TimerMessageObject scoreTimerMessageObject;
     SharedPreferences sharedPreferences;
 
     final static public int SECONDS_TO_SOLVE_QUESTION = 10;
-    int secondsRemaining = SECONDS_TO_SOLVE_QUESTION;
 
     int questionCounter = 0;
-    final static public int SECONDS_TILL_GAMESTART = 2;
-    CountDownTimer solveQuestionTimer;
-    CountDownTimer startGameTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,19 +90,31 @@ public class InGameActivity extends AppCompatActivity {
         btn_getQuestion = findViewById(R.id.btn_getQuestion);
         btn_quitSession = findViewById(R.id.btn_quitSession);
         // TextViews
+        // at InGameView
         tv_question = findViewById(R.id.tv_question);
         tv_timer = findViewById(R.id.tv_timer);
         tv_userScore = findViewById(R.id.tv_userScore);
         tv_opponentScore = findViewById(R.id.tv_opponentScore);
         tv_top_message_box = findViewById(R.id.tv_top_message_box);
+        // at LobbyView
         tv_waiting = findViewById(R.id.tv_waiting);
         tv_gameStartIn = findViewById(R.id.tv_gameStartIn);
         tv_startCounter = findViewById(R.id.tv_startCounter);
+        // at ScoreView
+        tv_loScoreOpponentName = findViewById(R.id.tv_lo_score_opponentName);
+        tv_loScoreUserName = findViewById(R.id.tv_lo_score_userName);
+        tv_loScoreOpponentPoints = findViewById(R.id.tv_lo_score_opponentPoints);
+        tv_loScoreUserPoints = findViewById(R.id.tv_lo_score_userPoints);
+        tv_loScoreNextQuestionTimer = findViewById(R.id.tv_lo_score_nextQuestionCounter);
+        // at ResultView
+        tv_loResult = findViewById(R.id.tv_lo_result);
         // Progressbar
         prog_timer = findViewById(R.id.prog_timer);
 
-        layoutLobby = findViewById(R.id.lo_lobby);
-        layoutInGame = findViewById(R.id.lo_inGame);
+        layoutLobbyView = findViewById(R.id.lo_lobby);
+        layoutInGameView = findViewById(R.id.lo_inGame);
+        layoutScoreView = findViewById(R.id.lo_score);
+        layoutResultView = findViewById(R.id.lo_result);
     }
 
     /**
@@ -146,7 +160,7 @@ public class InGameActivity extends AppCompatActivity {
         // add JWToken to websocket STOMP Header
         stompSocket.addHeader(StompHeader.TOKEN.toString(), userToken);
     }
-
+    //TODO: komplette gamelogic refactorn
     /**
      * Subscribe to a topic once STOMP connection is established
      *
@@ -160,69 +174,127 @@ public class InGameActivity extends AppCompatActivity {
                 public void run() {
                     String message = stompFrame.getBody();
                     String messageType = stompFrame.getHeaders().get("type");
-                    Log.d("Quiz", messageType);
+
+                    //TODO: refactoring
+                    //Client gamelogic
                     switch (Objects.requireNonNull(messageType)) {
                         case "START_TIMER_MESSAGE":
-                            Log.d("Quiz", "START_TIMER");
+                            Log.d("Quiz", "START_TIMER_MESAGE erhalten.");
                             tv_gameStartIn.setVisibility(View.VISIBLE);
                             tv_startCounter.setVisibility(View.VISIBLE);
-                            startTimeMessageObject = gson.fromJson(message, TimeMessageObject.class);
-                            tv_startCounter.setText(Integer.toString(startTimeMessageObject.getTimeLeft()));
+                            startTimerMessageObject = initTimerMessageObject(message);
+                            tv_startCounter.setText(Integer.toString(startTimerMessageObject.getTimeLeft()));
                             tv_waiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessageObject.getOpponent().getUsername());
-                            if (startTimeMessageObject.getTimeLeft() == 1) {
+                            if (startTimerMessageObject.getTimeLeft() == 1) {
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        layoutLobby.setVisibility(View.INVISIBLE);
-                                        layoutInGame.setVisibility(View.VISIBLE);
+                                        layoutLobbyView.setVisibility(View.INVISIBLE);
+                                        layoutInGameView.setVisibility(View.VISIBLE);
+
                                     }
                                 }, 1000);
-
                             }
                             break;
                         case "QUESTION_TIMER_MESSAGE":
-                            Log.d("Quiz", "SOLVE_QUESTION_TIMER");
-                            gameTimeMessageObject = gson.fromJson(message, TimeMessageObject.class);
-                            prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - gameTimeMessageObject.getTimeLeft());
-                            tv_timer.setText("Time left: " + Integer.toString(gameTimeMessageObject.getTimeLeft()) + " s");
-                            if (gameTimeMessageObject.getTimeLeft() == 1) {
-                                btn_answer1.setEnabled(false);
-                                btn_answer2.setEnabled(false);
-                                btn_answer3.setEnabled(false);
-                                btn_answer4.setEnabled(false);
-                                prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
-                                tv_timer.setText("Time is up!");
+                            Log.d("Quiz", "QUESTION_TIMER_MESSAGE erhalten");
+                            gameTimerMessageObject = initTimerMessageObject(message);
+                            prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - gameTimerMessageObject.getTimeLeft());
+                            tv_timer.setText("Time left: " + Integer.toString(gameTimerMessageObject.getTimeLeft()) + " s");
+                            if (gameTimerMessageObject.getTimeLeft() == 1) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        btn_answer1.setEnabled(false);
+                                        btn_answer2.setEnabled(false);
+                                        btn_answer3.setEnabled(false);
+                                        btn_answer4.setEnabled(false);
+                                        prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
+                                        tv_timer.setText("Time is up!");
+                                        layoutInGameView.setVisibility(View.INVISIBLE);
+
+                                    }
+                                }, 1000);
                                 //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
+                            }
+                            break;
+                        case "SCORE_TIMER_MESSAGE":
+                            Log.d("Quiz", messageType);
+                            scoreTimerMessageObject = initTimerMessageObject(message);
+                            tv_loScoreNextQuestionTimer.setText(Integer.toString(scoreTimerMessageObject.getTimeLeft()));
+                            if (scoreTimerMessageObject.getTimeLeft() == 1) {
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        layoutScoreView.setVisibility(View.INVISIBLE);
+                                        layoutInGameView.setVisibility(View.VISIBLE);
+                                    }
+                                }, 1000);
                             }
                             break;
                         case "GAME_MESSAGE":
                             Log.d("Quiz", "MESSAGE: GAMEMESSAGE ERHALTEN.");
                             // creates GameMessageObject from STOMP message respond
-                            createGameMessageObject(message);
+                            initGameMessageObject(message);
                             // load GameMessageObject into UI
                             loadQuestion(gameMessageObject);
+                            break;
+                        case "SCORE_MESSAGE":
+                            layoutScoreView.setVisibility(View.VISIBLE);
+                            tv_waiting.setVisibility(View.INVISIBLE);
+                            Log.d("Quiz", messageType);
+                            //"user":{"userName":"alf","profileImage":"default2.png"},
+                            // "opponent":{"userName":"feli","profileImage":"default2.png"},
+                            // "userScore":945,
+                            // "opponentScore":0,
+                            // "type":"SCORE_MESSAGE"}
+                            ScoreMessageObject scoreMessageObject = initScoreMessageObject(message);
+                            tv_loScoreUserName.setText(scoreMessageObject.getUser().getUsername() + ":");
+                            tv_loScoreOpponentName.setText(scoreMessageObject.getOpponent().getUsername() + ":");
+                            tv_loScoreOpponentPoints.setText("+" + Integer.toString(scoreMessageObject.getOpponentPoints()) + "pts");
+                            tv_loScoreUserPoints.setText("+" + Integer.toString(scoreMessageObject.getUserPoints()) + "pts");
 
-                            /*if(questionCounter == 3) {
-                                // wenn drei Fragen gesendet wurden, dann zeige Gewinner
-                                Toast.makeText(
-                                        getApplicationContext(),
-                                        "Es wurden drei Fragen ausgespielt. Es wird die Endresultat angezeigt. Dann zurueck zum Startmenue",
-                                        Toast.LENGTH_LONG).show();
+                            break;
+                        case "RESULT_MESSAGE":
+                            layoutInGameView.setVisibility(View.INVISIBLE);
+                            layoutResultView.setVisibility(View.VISIBLE);
+                            tv_waiting.setVisibility(View.INVISIBLE);
+                            Log.d("Quiz", messageType);
+                            //{"isHighScore":false,
+                            // "user":{"userName":"alf","profileImage":"default2.png"},
+                            // "opponent":{"userName":"feli","profileImage":"default2.png"},
+                            // "userScore":0,
+                            // "opponentScore":0,
+                            // "type":"RESULT_MESSAGE"}
+                            ResultMessageObject resultMessageObject = initResultMessageObject(message);
+                            tv_loResult.setText(resultMessageObject.toString());
 
-                                Log.d("Quiz:", "Es wurden drei Fragen ausgespielt. Es wird die " +
-                                        "Endresultat angezeigt. Dann zurueck zum Startmenue");
-                            }
-                            questionCounter++;*/
                             break;
                     }
-                    Log.d("Quiz", "HEADERS: " + stompFrame.getHeaders().toString());
                     Log.d("Quiz", "BODY: " + message);
+
                 }
             });
         });
         Log.d("Quiz", "Websocket channel subscribed.");
     }
+
+    //TODO: refacoring
+/*    protected void resetViews(String messageType) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(messageType.equals(StompMessageType.START_TIMER_MESSAGE.toString())) {
+                    break;
+                }
+            }
+        })
+
+    }*/
 
     /**
      * Set onClickListener to Buttons
@@ -232,9 +304,16 @@ public class InGameActivity extends AppCompatActivity {
         View.OnClickListener answerButtonClickListener = view -> {
             Button answerButton = (Button) view;
             // calculate time the user needed to answer
-            int timeNeeded = SECONDS_TO_SOLVE_QUESTION - gameTimeMessageObject.getTimeLeft();
+            int timeNeeded = SECONDS_TO_SOLVE_QUESTION - gameTimerMessageObject.getTimeLeft();
             // send selected answer and time to pick the answer to server
             sendAnswer(answerButton, timeNeeded);
+            //checkAnswer(gameMessageObject.getCorrectAnswer(), answerButton.getText().toString());
+            layoutInGameView.setVisibility(View.INVISIBLE);
+            layoutLobbyView.setVisibility(View.VISIBLE);
+            tv_gameStartIn.setVisibility(View.INVISIBLE);
+            tv_startCounter.setVisibility(View.INVISIBLE);
+            tv_waiting.setVisibility(View.VISIBLE);
+            tv_waiting.setText("Wainting for Player 2 to answer.");
         };
 
         btn_answer1.setOnClickListener(answerButtonClickListener);
@@ -266,7 +345,7 @@ public class InGameActivity extends AppCompatActivity {
      *
      * @param message GameMessageObject from Server
      */
-    protected void createGameMessageObject(String message) {
+    protected void initGameMessageObject(String message) {
         // Converts JSONObject String into GameMessageObject
         gameMessageObject = gson.fromJson(message, GameMessageObject.class);
         gameMessageObject.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), restServiceSingleton.getUser().getToken()));
@@ -274,6 +353,19 @@ public class InGameActivity extends AppCompatActivity {
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         restServiceSingleton.setUser(gameMessageObject.getUser());
     }
+
+    protected ScoreMessageObject initScoreMessageObject(String message) {
+        return gson.fromJson(message, ScoreMessageObject.class);
+    }
+
+    protected ResultMessageObject initResultMessageObject(String message) {
+        return gson.fromJson(message, ResultMessageObject.class);
+    }
+
+    protected TimerMessageObject initTimerMessageObject(String message) {
+        return gson.fromJson(message, TimerMessageObject.class);
+    }
+
 
     /**
      * Assign GameMessageObject to LayoutViews
@@ -322,8 +414,19 @@ public class InGameActivity extends AppCompatActivity {
         String message = jsonObject.toString();
         stompSocket.send("/app/game", message);
         Log.d("Quiz", "Sent answer: " + jsonObject.toString());
-
     }
+
+/*    public void checkAnswer(int correctAnswer, String choosenAnswer) {
+        int value = gameMessageObject.getAnswers().get(choosenAnswer);
+        if (correctAnswer == value) {
+            Log.d("Quiz", "Richtige anwort.");
+            //TODO: Set Buttonfarbe to lightgreen
+        }
+        else {
+            Log.d("Quiz", "Falsche Antwort.");
+            //TODO: Set Buttoncolor from correctAnswer to green and buttoncolor from choosenAnswer to red
+        }
+    }*/
 
     /**
      * Request question from server
@@ -331,7 +434,6 @@ public class InGameActivity extends AppCompatActivity {
     public void requestQuestion() {
         stompSocket.send("/app/game", null, null);
     }
-
 
     //TODO: funktionen noch entfernen, nur zum Testen drin
 
