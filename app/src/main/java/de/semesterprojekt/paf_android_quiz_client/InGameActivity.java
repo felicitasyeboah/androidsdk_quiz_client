@@ -231,8 +231,6 @@ public class InGameActivity extends AppCompatActivity {
         // Answer Button Listener
         View.OnClickListener answerButtonClickListener = view -> {
             Button answerButton = (Button) view;
-            // if a timer is already running, cancel it
-            solveQuestionTimer.cancel();
             // calculate time the user needed to answer
             int timeNeeded = SECONDS_TO_SOLVE_QUESTION - gameTimeMessageObject.getTimeLeft();
             // send selected answer and time to pick the answer to server
