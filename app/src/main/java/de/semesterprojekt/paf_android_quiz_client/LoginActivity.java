@@ -17,6 +17,9 @@ import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceL
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.User;
 
+/**
+ * This class controlls the LoginView
+ */
 public class LoginActivity extends AppCompatActivity {
     Button btn_login;
     TextView lnk_register;
@@ -28,11 +31,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initViews();
         setOnClickListeners();
-
     }
 
     /**
-     * assigning values to button, textView and editText on layout
+     * assigning values from buttons, textView and editText on layout
      */
     protected void initViews() {
         btn_login = findViewById(R.id.btn_login);
@@ -98,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
                 super.onLogin(user);
                 if (user != null) {
                     storeUserDataToSharedPref(user);
-                    restServiceSingleton.setUser(user); //redundant
                     goToStartmenu(user);
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid login", Toast.LENGTH_LONG).show();
