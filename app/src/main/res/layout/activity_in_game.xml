@@ -111,90 +111,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_opponentScore" />
 
-        <Button
-            android:id="@+id/btn_getQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/btn_rounded_corner_default"
-            android:text="Next Question"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answerButtons" />
-
-        <Button
-            android:id="@+id/btn_quitSession"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/btn_rounded_corner_default"
-            android:text="Quit Session"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answerButtons" />
-
-        <LinearLayout
-            android:id="@+id/answerButtons"
-            android:layout_width="363dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_timer">
-
-            <Button
-                android:id="@+id/btn_answer1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/btn_rounded__corner_ingame"
-                android:minHeight="70dp"
-                android:text=" "
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/btn_answer2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/btn_rounded__corner_ingame"
-                android:minHeight="70dp"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/btn_answer3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/btn_rounded__corner_ingame"
-                android:minHeight="70dp"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/btn_answer4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/btn_rounded__corner_ingame"
-                android:minHeight="70dp"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textSize="16sp" />
-        </LinearLayout>
-
         <ProgressBar
             android:id="@+id/prog_timer"
             style="?android:attr/progressBarStyleHorizontal"
@@ -220,6 +136,83 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
+
+        <LinearLayout
+            android:id="@+id/answerButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            android:weightSum="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_timer">
+
+            <Button
+                android:id="@+id/btn_answer1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0.25"
+                android:background="@drawable/btn_rounded__corner_ingame"
+                android:minHeight="70dp"
+                android:text=" "
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_answer2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0.25"
+                android:background="@drawable/btn_rounded__corner_ingame"
+                android:minHeight="70dp"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_answer3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0.25"
+                android:background="@drawable/btn_rounded__corner_ingame"
+                android:minHeight="70dp"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_answer4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0.25"
+                android:background="@drawable/btn_rounded__corner_ingame"
+                android:minHeight="70dp"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_quitSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/btn_rounded_corner_default"
+            android:text="Quit Session"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/answerButtons" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TableLayout

@@ -1,8 +1,10 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.game.dto;
 
 import androidx.annotation.NonNull;
 
-public class ResultMessageObject {
+import de.semesterprojekt.paf_android_quiz_client.model.User;
+
+public class ResultMessage {
 
     boolean isHighScore;
     User user;
@@ -10,7 +12,7 @@ public class ResultMessageObject {
     int userScore;
     int opponentScore;
 
-    public ResultMessageObject(boolean isHighScore, User user, User opponent, int userScore, int opponentScore) {
+    public ResultMessage(boolean isHighScore, User user, User opponent, int userScore, int opponentScore) {
         this.isHighScore = isHighScore;
         this.user = user;
         this.opponent = opponent;

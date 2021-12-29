@@ -1,12 +1,11 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.game;
 
 /**
  * defines the types of the messages a game sends
  */
-public enum StompMessageType {
+public enum MessageType {
 
     //Message types
-    GENERIC_MESSAGE("GENERIC_MESSAGE"),
     GAME_MESSAGE("GAME_MESSAGE"),
     SCORE_MESSAGE("SCORE_MESSAGE"),
     RESULT_MESSAGE("RESULT_MESSAGE"),
@@ -18,7 +17,7 @@ public enum StompMessageType {
 
     private final String value;
 
-    private StompMessageType(String value) {
+    private MessageType(String value) {
 
         this.value = value;
     }

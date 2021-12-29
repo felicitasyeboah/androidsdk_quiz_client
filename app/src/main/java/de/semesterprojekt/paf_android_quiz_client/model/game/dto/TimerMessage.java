@@ -1,9 +1,9 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.game.dto;
 
-public class TimerMessageObject {
+public class TimerMessage {
     private int timeLeft;
 
-    public TimerMessageObject(int timeLeft) {
+    public TimerMessage(int timeLeft) {
         this.timeLeft = timeLeft;
     }
 

@@ -1,17 +1,18 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.game.dto;
 
-public class ScoreMessageObject {
+import de.semesterprojekt.paf_android_quiz_client.model.User;
+
+public class ScoreMessage {
     private User user;
     private User opponent;
     private int userPoints;
     private int opponentPoints;
 
-    public ScoreMessageObject(int userPoints, int opponentPoints, User user, User opponent) {
+    public ScoreMessage(int userPoints, int opponentPoints, User user, User opponent) {
         this.userPoints = userPoints;
         this.opponentPoints = opponentPoints;
         this.user = user;
         this.opponent = opponent;
-        ;
     }
 
     public int getUserPoints() {

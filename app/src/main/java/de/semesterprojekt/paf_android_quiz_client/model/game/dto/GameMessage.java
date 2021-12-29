@@ -1,15 +1,16 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client.model.game.dto;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 /**
  * Creates an GameMessageobject from JSONString-Data received from the server via Websocket
  */
-public class GameMessageObject {
+public class GameMessage {
 
     private String category;
     private String question;
@@ -25,7 +26,7 @@ public class GameMessageObject {
     private final Map<String, Integer> answers = new HashMap<>();
 
 
-    public GameMessageObject(String category, String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer, User user, User opponent, int userScore, int opponentScore) {
+    public GameMessage(String category, String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer, User user, User opponent, int userScore, int opponentScore) {
         this.userScore = userScore;
         this.opponentScore = opponentScore;
         this.category = category;
