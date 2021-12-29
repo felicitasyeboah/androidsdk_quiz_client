@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.RenderNode;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -30,7 +29,6 @@ import java.util.Objects;
 import de.semesterprojekt.paf_android_quiz_client.model.GameMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.ResultMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.ScoreMessageObject;
-import de.semesterprojekt.paf_android_quiz_client.model.StompMessageType;
 import de.semesterprojekt.paf_android_quiz_client.model.TimerMessageObject;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
@@ -40,36 +38,38 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient
 public class InGameActivity extends AppCompatActivity {
 
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_getQuestion, btn_quitSession;
-    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_waiting,
-            tv_gameStartIn, tv_startCounter, tv_loScoreUserName, tv_loScoreOpponentName,
+    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_loLobbyWaiting,
+            tv_loLobbyGameStartIn, tv_loLobbyStartCounter, tv_loScoreUserName, tv_loScoreOpponentName,
             tv_loScoreUserPoints, tv_loScoreOpponentPoints, tv_loScoreNextQuestionTimer,
             tv_loResult;
     ProgressBar prog_timer;
+
     LinearLayout layoutLobbyView;
     ConstraintLayout layoutInGameView;
     TableLayout layoutScoreView;
     LinearLayout layoutResultView;
+
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + "/websocket"));
 
+    RestServiceSingleton restServiceSingleton;
+    SharedPreferences sharedPreferences;
+
     String userToken;
     Gson gson = new Gson();
-    RestServiceSingleton restServiceSingleton;
+
     GameMessageObject gameMessageObject;
     TimerMessageObject gameTimerMessageObject;
     TimerMessageObject startTimerMessageObject;
     TimerMessageObject scoreTimerMessageObject;
-    SharedPreferences sharedPreferences;
 
     final static public int SECONDS_TO_SOLVE_QUESTION = 10;
-
     int questionCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
-
         initClassVars();
         initViews();
         addJwtToStompSocketHeader(userToken);
@@ -79,7 +79,7 @@ public class InGameActivity extends AppCompatActivity {
     }
 
     /**
-     * Get views from layout
+     * Get views from layouts
      */
     protected void initViews() {
         // Buttons
@@ -97,9 +97,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_opponentScore = findViewById(R.id.tv_opponentScore);
         tv_top_message_box = findViewById(R.id.tv_top_message_box);
         // at LobbyView
-        tv_waiting = findViewById(R.id.tv_waiting);
-        tv_gameStartIn = findViewById(R.id.tv_gameStartIn);
-        tv_startCounter = findViewById(R.id.tv_startCounter);
+        tv_loLobbyWaiting = findViewById(R.id.tv_lo_lobby_waiting);
+        tv_loLobbyGameStartIn = findViewById(R.id.tv_lo_lobby_gameStartIn);
+        tv_loLobbyStartCounter = findViewById(R.id.tv_lo_lobby_startCounter);
         // at ScoreView
         tv_loScoreOpponentName = findViewById(R.id.tv_lo_score_opponentName);
         tv_loScoreUserName = findViewById(R.id.tv_lo_score_userName);
@@ -111,6 +111,7 @@ public class InGameActivity extends AppCompatActivity {
         // Progressbar
         prog_timer = findViewById(R.id.prog_timer);
 
+        // Layouts
         layoutLobbyView = findViewById(R.id.lo_lobby);
         layoutInGameView = findViewById(R.id.lo_inGame);
         layoutScoreView = findViewById(R.id.lo_score);
@@ -180,11 +181,11 @@ public class InGameActivity extends AppCompatActivity {
                     switch (Objects.requireNonNull(messageType)) {
                         case "START_TIMER_MESSAGE":
                             Log.d("Quiz", "START_TIMER_MESAGE erhalten.");
-                            tv_gameStartIn.setVisibility(View.VISIBLE);
-                            tv_startCounter.setVisibility(View.VISIBLE);
-                            startTimerMessageObject = initTimerMessageObject(message);
-                            tv_startCounter.setText(Integer.toString(startTimerMessageObject.getTimeLeft()));
-                            tv_waiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessageObject.getOpponent().getUsername());
+                            tv_loLobbyGameStartIn.setVisibility(View.VISIBLE);
+                            tv_loLobbyStartCounter.setVisibility(View.VISIBLE);
+                            startTimerMessageObject = getTimerMessageObject(message);
+                            tv_loLobbyStartCounter.setText(Integer.toString(startTimerMessageObject.getTimeLeft()));
+                            tv_loLobbyWaiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessageObject.getOpponent().getUsername());
                             if (startTimerMessageObject.getTimeLeft() == 1) {
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
@@ -192,14 +193,13 @@ public class InGameActivity extends AppCompatActivity {
                                     public void run() {
                                         layoutLobbyView.setVisibility(View.INVISIBLE);
                                         layoutInGameView.setVisibility(View.VISIBLE);
-
                                     }
                                 }, 1000);
                             }
                             break;
                         case "QUESTION_TIMER_MESSAGE":
                             Log.d("Quiz", "QUESTION_TIMER_MESSAGE erhalten");
-                            gameTimerMessageObject = initTimerMessageObject(message);
+                            gameTimerMessageObject = getTimerMessageObject(message);
                             prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - gameTimerMessageObject.getTimeLeft());
                             tv_timer.setText("Time left: " + Integer.toString(gameTimerMessageObject.getTimeLeft()) + " s");
                             if (gameTimerMessageObject.getTimeLeft() == 1) {
@@ -214,7 +214,6 @@ public class InGameActivity extends AppCompatActivity {
                                         prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
                                         tv_timer.setText("Time is up!");
                                         layoutInGameView.setVisibility(View.INVISIBLE);
-
                                     }
                                 }, 1000);
                                 //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
@@ -222,7 +221,7 @@ public class InGameActivity extends AppCompatActivity {
                             break;
                         case "SCORE_TIMER_MESSAGE":
                             Log.d("Quiz", messageType);
-                            scoreTimerMessageObject = initTimerMessageObject(message);
+                            scoreTimerMessageObject = getTimerMessageObject(message);
                             tv_loScoreNextQuestionTimer.setText(Integer.toString(scoreTimerMessageObject.getTimeLeft()));
                             if (scoreTimerMessageObject.getTimeLeft() == 1) {
                                 Handler handler = new Handler();
@@ -238,20 +237,20 @@ public class InGameActivity extends AppCompatActivity {
                         case "GAME_MESSAGE":
                             Log.d("Quiz", "MESSAGE: GAMEMESSAGE ERHALTEN.");
                             // creates GameMessageObject from STOMP message respond
-                            initGameMessageObject(message);
+                            getGameMessageObject(message);
                             // load GameMessageObject into UI
                             loadQuestion(gameMessageObject);
                             break;
                         case "SCORE_MESSAGE":
                             layoutScoreView.setVisibility(View.VISIBLE);
-                            tv_waiting.setVisibility(View.INVISIBLE);
+                            tv_loLobbyWaiting.setVisibility(View.INVISIBLE);
                             Log.d("Quiz", messageType);
                             //"user":{"userName":"alf","profileImage":"default2.png"},
                             // "opponent":{"userName":"feli","profileImage":"default2.png"},
                             // "userScore":945,
                             // "opponentScore":0,
                             // "type":"SCORE_MESSAGE"}
-                            ScoreMessageObject scoreMessageObject = initScoreMessageObject(message);
+                            ScoreMessageObject scoreMessageObject = getScoreMessageObject(message);
                             tv_loScoreUserName.setText(scoreMessageObject.getUser().getUsername() + ":");
                             tv_loScoreOpponentName.setText(scoreMessageObject.getOpponent().getUsername() + ":");
                             tv_loScoreOpponentPoints.setText("+" + Integer.toString(scoreMessageObject.getOpponentPoints()) + "pts");
@@ -261,7 +260,7 @@ public class InGameActivity extends AppCompatActivity {
                         case "RESULT_MESSAGE":
                             layoutInGameView.setVisibility(View.INVISIBLE);
                             layoutResultView.setVisibility(View.VISIBLE);
-                            tv_waiting.setVisibility(View.INVISIBLE);
+                            tv_loLobbyWaiting.setVisibility(View.INVISIBLE);
                             Log.d("Quiz", messageType);
                             //{"isHighScore":false,
                             // "user":{"userName":"alf","profileImage":"default2.png"},
@@ -269,7 +268,7 @@ public class InGameActivity extends AppCompatActivity {
                             // "userScore":0,
                             // "opponentScore":0,
                             // "type":"RESULT_MESSAGE"}
-                            ResultMessageObject resultMessageObject = initResultMessageObject(message);
+                            ResultMessageObject resultMessageObject = getResultMessageObject(message);
                             tv_loResult.setText(resultMessageObject.toString());
 
                             break;
@@ -310,10 +309,10 @@ public class InGameActivity extends AppCompatActivity {
             //checkAnswer(gameMessageObject.getCorrectAnswer(), answerButton.getText().toString());
             layoutInGameView.setVisibility(View.INVISIBLE);
             layoutLobbyView.setVisibility(View.VISIBLE);
-            tv_gameStartIn.setVisibility(View.INVISIBLE);
-            tv_startCounter.setVisibility(View.INVISIBLE);
-            tv_waiting.setVisibility(View.VISIBLE);
-            tv_waiting.setText("Wainting for Player 2 to answer.");
+            tv_loLobbyGameStartIn.setVisibility(View.INVISIBLE);
+            tv_loLobbyStartCounter.setVisibility(View.INVISIBLE);
+            tv_loLobbyWaiting.setVisibility(View.VISIBLE);
+            tv_loLobbyWaiting.setText("Wainting for Player 2 to answer.");
         };
 
         btn_answer1.setOnClickListener(answerButtonClickListener);
@@ -340,29 +339,41 @@ public class InGameActivity extends AppCompatActivity {
         });
     }
 
+    protected void initInGameLayout() {
+        layoutInGameView.setVisibility(View.VISIBLE);
+    }
+
+    protected void initScoreLayout() {
+        layoutInGameView.setVisibility(View.VISIBLE);
+    }
+
+    protected void initResultLayout() {
+        layoutInGameView.setVisibility(View.VISIBLE);
+    }
+
     /**
      * Create new GameMesssageObject from STOMP message response
      *
      * @param message GameMessageObject from Server
      */
-    protected void initGameMessageObject(String message) {
+    protected void getGameMessageObject(String message) {
         // Converts JSONObject String into GameMessageObject
         gameMessageObject = gson.fromJson(message, GameMessageObject.class);
-        gameMessageObject.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), restServiceSingleton.getUser().getToken()));
+        gameMessageObject.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), ""));
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessageObject.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
-        restServiceSingleton.setUser(gameMessageObject.getUser());
+        //restServiceSingleton.setUser(gameMessageObject.getUser());
     }
 
-    protected ScoreMessageObject initScoreMessageObject(String message) {
+    protected ScoreMessageObject getScoreMessageObject(String message) {
         return gson.fromJson(message, ScoreMessageObject.class);
     }
 
-    protected ResultMessageObject initResultMessageObject(String message) {
+    protected ResultMessageObject getResultMessageObject(String message) {
         return gson.fromJson(message, ResultMessageObject.class);
     }
 
-    protected TimerMessageObject initTimerMessageObject(String message) {
+    protected TimerMessageObject getTimerMessageObject(String message) {
         return gson.fromJson(message, TimerMessageObject.class);
     }
 
@@ -374,8 +385,8 @@ public class InGameActivity extends AppCompatActivity {
      */
     public void loadQuestion(GameMessageObject gameMessageObject) {
         questionCounter++;
-        Log.d("Quiz", restServiceSingleton.getUser().getToken());
-        Log.d("Quiz", restServiceSingleton.getUser().toString());
+        Log.d("Quiz", sharedPreferences.getString(getString(R.string.user_token), ""));
+        Log.d("Quiz", gameMessageObject.getUser().toString());
 
         // Set Button and TextView values from gameMessageObject
         btn_answer1.setText(gameMessageObject.getAnswer1());

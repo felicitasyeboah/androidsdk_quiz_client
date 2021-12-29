@@ -17,7 +17,7 @@
 
 
         <TextView
-            android:id="@+id/tv_waiting"
+            android:id="@+id/tv_lo_lobby_waiting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dip"
@@ -29,20 +29,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_gameStartIn"
+            android:id="@+id/tv_lo_lobby_gameStartIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dip"
             android:text="Game will start in"
             android:textSize="34sp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/tv_startCounter"
+            app:layout_constraintBottom_toTopOf="@+id/tv_lo_lobby_startCounter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_waiting" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_lo_lobby_waiting" />
 
         <TextView
-            android:id="@+id/tv_startCounter"
+            android:id="@+id/tv_lo_lobby_startCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dip"
