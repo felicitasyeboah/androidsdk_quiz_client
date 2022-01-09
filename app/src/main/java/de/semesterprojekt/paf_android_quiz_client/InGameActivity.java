@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.GameMessage;
@@ -44,7 +46,6 @@ public class InGameActivity extends AppCompatActivity {
             tv_loScoreUserPoints, tv_loScoreOpponentPoints, tv_loScoreNextQuestionTimer,
             tv_loResult;
     ProgressBar prog_timer;
-
     LinearLayout layoutLobbyView;
     ConstraintLayout layoutInGameView;
     TableLayout layoutScoreView;
@@ -74,7 +75,7 @@ public class InGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_in_game);
         initClassVars();
         initViews();
-        addJwtToStompSocketHeader(userToken);
+        //addJwtToStompSocketHeader(userToken);
         connectToStompSocket();
         subscribeToStompTopic(ServerData.STOMP_TOPIC);
         setOnClickListeners();
@@ -186,10 +187,10 @@ public class InGameActivity extends AppCompatActivity {
                             startTimer = getTimerMessageObject(message);
 
                             // Load StartTimerMessage into UI
-                            initStartGameLayout();
+                            initStartGameScreen();
 
                             // Handle StartGame UI
-                            handleStartGameLayout();
+                            updateStartGameScreen();
 
                             break;
 
@@ -200,7 +201,7 @@ public class InGameActivity extends AppCompatActivity {
                             getGameMessageObject(message);
 
                             // load GameMessage into UI
-                            initInGameLayout(gameMessage);
+                            initInGameScreen(gameMessage);
 
                             break;
 
@@ -211,7 +212,7 @@ public class InGameActivity extends AppCompatActivity {
                             questionTimer = getTimerMessageObject(message);
 
                             // handle InGame UI
-                            handleInGameLayout();
+                            updateInGameLayout();
 
                             break;
 
@@ -222,7 +223,7 @@ public class InGameActivity extends AppCompatActivity {
                             scoreTimer = getTimerMessageObject(message);
 
                             // handle Score UI
-                            handleScoreLayout();
+                            updateScoreScreen();
                             break;
 
                         case SCORE_MESSAGE:
@@ -232,7 +233,7 @@ public class InGameActivity extends AppCompatActivity {
                             scoreMessage = getScoreMessageObject(message);
 
                             // load ScoreMessage into UI
-                            initScoreLayout();
+                            initScoreScreen();
 
                             break;
 
@@ -249,7 +250,7 @@ public class InGameActivity extends AppCompatActivity {
                             resultMessage = getResultMessageObject(message);
 
                             // load ResultMessage into UI
-                            initResultLayout();
+                            initResultScreen();
 
                             break;
                     }
@@ -259,6 +260,8 @@ public class InGameActivity extends AppCompatActivity {
             });
         });
         Log.d("Quiz", "Websocket channel subscribed.");
+        sendInitAuthMessage();
+
     }
 
     /**
@@ -270,21 +273,22 @@ public class InGameActivity extends AppCompatActivity {
             Button answerButton = (Button) view;
             // calculate time the user needed to answer
             int timeNeeded = SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft();
+            // check if answer was correct and highlight correct/wrong answer
+            checkAnswer(view, answerButton, answerButton.getText().toString());
+
             // send selected answer and time to pick the answer to server
             sendAnswer(answerButton, timeNeeded);
-            //checkAnswer(gameMessage.getCorrectAnswer(), answerButton.getText().toString());
-            layoutInGameView.setVisibility(View.INVISIBLE);
-            layoutLobbyView.setVisibility(View.VISIBLE);
-            tv_loLobbyGameStartIn.setVisibility(View.INVISIBLE);
-            tv_loLobbyStartCounter.setVisibility(View.INVISIBLE);
-            tv_loLobbyWaiting.setVisibility(View.VISIBLE);
-            tv_loLobbyWaiting.setText("Wainting for Player 2 to answer.");
-        };
 
+            // show waiting screen, when waiting for opponent to answer
+            // initWaitingForOpponentAnswerScreen();
+
+        };
         btn_answer1.setOnClickListener(answerButtonClickListener);
         btn_answer2.setOnClickListener(answerButtonClickListener);
         btn_answer3.setOnClickListener(answerButtonClickListener);
         btn_answer4.setOnClickListener(answerButtonClickListener);
+
+        // change your button background
 
         //TODO: Buttons entfernen
         //Button erstmal noch zum Testen drin, kommen später weg
@@ -297,14 +301,13 @@ public class InGameActivity extends AppCompatActivity {
         });
     }
 
-    protected void initStartGameLayout() {
+    protected void initStartGameScreen() {
         tv_loLobbyGameStartIn.setVisibility(View.VISIBLE);
         tv_loLobbyStartCounter.setVisibility(View.VISIBLE);
         tv_loLobbyWaiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessage.getOpponent().getUsername());
-
     }
 
-    protected void handleStartGameLayout() {
+    protected void updateStartGameScreen() {
         tv_loLobbyStartCounter.setText(Integer.toString(startTimer.getTimeLeft()));
         if (startTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
@@ -312,7 +315,6 @@ public class InGameActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     layoutLobbyView.setVisibility(View.INVISIBLE);
-                    //layoutInGameView.setVisibility(View.VISIBLE);
                 }
             }, 1000);
         }
@@ -323,10 +325,16 @@ public class InGameActivity extends AppCompatActivity {
      *
      * @param gameMessage GameMessage from Server
      */
-    public void initInGameLayout(GameMessage gameMessage) {
+    public void initInGameScreen(GameMessage gameMessage) {
         layoutInGameView.setVisibility(View.VISIBLE);
         Log.d("Quiz", sharedPreferences.getString(getString(R.string.user_token), ""));
         Log.d("Quiz", gameMessage.getUser().toString());
+
+        // reset Button colors to default
+        btn_answer1.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
+        btn_answer2.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_correct_answer));
+        btn_answer3.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
+        btn_answer4.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
 
         // Set Button and TextView values from gameMessage
         btn_answer1.setText(gameMessage.getAnswer1());
@@ -347,7 +355,7 @@ public class InGameActivity extends AppCompatActivity {
         tv_opponentScore.setText(txtFieldOpponentScore);
     }
 
-    protected void handleInGameLayout() {
+    protected void updateInGameLayout() {
         prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
         tv_timer.setText("Time left: " + Integer.toString(questionTimer.getTimeLeft()) + " s");
         if (questionTimer.getTimeLeft() == 1) {
@@ -368,7 +376,17 @@ public class InGameActivity extends AppCompatActivity {
         }
     }
 
-    protected void initScoreLayout() {
+    protected void initWaitingForOpponentAnswerScreen() {
+
+/*        layoutLobbyView.setVisibility(View.VISIBLE);
+        layoutInGameView.setVisibility(View.INVISIBLE);
+        tv_loLobbyGameStartIn.setVisibility(View.INVISIBLE);
+        tv_loLobbyStartCounter.setVisibility(View.INVISIBLE);
+        tv_loLobbyWaiting.setVisibility(View.VISIBLE);
+        tv_loLobbyWaiting.setText("Wainting for Player 2 to answer.");*/
+    }
+
+    protected void initScoreScreen() {
         layoutScoreView.setVisibility(View.VISIBLE);
         tv_loLobbyWaiting.setVisibility(View.INVISIBLE);
 
@@ -378,7 +396,7 @@ public class InGameActivity extends AppCompatActivity {
         tv_loScoreUserPoints.setText("+" + Integer.toString(scoreMessage.getUserPoints()) + "pts");
     }
 
-    protected void handleScoreLayout() {
+    protected void updateScoreScreen() {
         tv_loScoreNextQuestionTimer.setText(Integer.toString(scoreTimer.getTimeLeft()));
         if (scoreTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
@@ -391,7 +409,7 @@ public class InGameActivity extends AppCompatActivity {
         }
     }
 
-    protected void initResultLayout() {
+    protected void initResultScreen() {
         layoutResultView.setVisibility(View.VISIBLE);
         tv_loResult.setText(resultMessage.toString());
     }
@@ -404,6 +422,15 @@ public class InGameActivity extends AppCompatActivity {
     protected void getGameMessageObject(String message) {
         // Converts JSONObject String into GameMessage
         gameMessage = gson.fromJson(message, GameMessage.class);
+
+        // Generates a Hashmap with the 4 answers
+        Map<Integer, String> answers = new HashMap<>();
+        answers.put(1, gameMessage.getAnswer1());
+        answers.put(2, gameMessage.getAnswer2());
+        answers.put(3, gameMessage.getAnswer3());
+        answers.put(4, gameMessage.getAnswer4());
+        gameMessage.setAnswers(answers);
+
         gameMessage.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), ""));
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessage.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
@@ -422,6 +449,22 @@ public class InGameActivity extends AppCompatActivity {
         return gson.fromJson(message, TimerMessage.class);
     }
 
+
+    /**
+     * sends an initial message after subscribe with the usertoken to the server for authorization
+     */
+    public void sendInitAuthMessage() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            // puts usertoken into JsonObject
+            jsonObject.put(StompHeader.TOKEN.toString(), userToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String message = jsonObject.toString();
+        stompSocket.send("/app/game", message);
+        Log.d("Quiz", "Send usertoken: " + jsonObject.toString());
+    }
 
     /**
      * Send selected answer and time needed to server
@@ -443,17 +486,47 @@ public class InGameActivity extends AppCompatActivity {
         Log.d("Quiz", "Sent answer: " + jsonObject.toString());
     }
 
-/*    public void checkAnswer(int correctAnswer, String choosenAnswer) {
-        int value = gameMessage.getAnswers().get(choosenAnswer);
-        if (correctAnswer == value) {
+    public void checkAnswer(View view, Button answerButton, String choosenAnswer) {
+        String buttonName = getResources().getResourceEntryName(view.getId());
+        String buttonLastChar = buttonName.substring((buttonName).length() - 1);
+        int answerNumber = Integer.parseInt(buttonLastChar);
+        if (answerNumber == gameMessage.getCorrectAnswer()) {
+            // if(gameMessage.getAnswers().get(gameMessage.getCorrectAnswer()).equals(choosenAnswer)) {
             Log.d("Quiz", "Richtige anwort.");
             //TODO: Set Buttonfarbe to lightgreen
-        }
-        else {
+            // change your button background
+
+            view.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+            //answerButton.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_correct_answer));
+            //answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+
+        } else if (answerNumber != gameMessage.getCorrectAnswer()) {
             Log.d("Quiz", "Falsche Antwort.");
+            //answerButton.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_wrong_answer));
+            view.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
+
+            //answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
+            for (int key : gameMessage.getAnswers().keySet()) {
+                if (key == gameMessage.getCorrectAnswer()) {
+                    switch (key) {
+                        case 1:
+                            btn_answer1.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            break;
+                        case 2:
+                            btn_answer2.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            break;
+                        case 3:
+                            btn_answer3.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            break;
+                        case 4:
+                            btn_answer4.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            break;
+                    }
+                }
+            }
             //TODO: Set Buttoncolor from correctAnswer to green and buttoncolor from choosenAnswer to red
         }
-    }*/
+    }
 
     //TODO: funktion nur zum testen drin, später entfernen
     public void quitSession() {

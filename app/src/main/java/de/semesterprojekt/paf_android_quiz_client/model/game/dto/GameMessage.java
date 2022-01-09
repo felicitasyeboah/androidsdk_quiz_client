@@ -23,7 +23,7 @@ public class GameMessage {
     User opponent;
     private int userScore;
     private int opponentScore;
-    private final Map<String, Integer> answers = new HashMap<>();
+    private Map<Integer, String> answers = new HashMap<>();
 
 
     public GameMessage(String category, String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer, User user, User opponent, int userScore, int opponentScore) {
@@ -31,10 +31,6 @@ public class GameMessage {
         this.opponentScore = opponentScore;
         this.category = category;
         this.question = question;
-        answers.put(answer1, 1);
-        answers.put(answer2, 2);
-        answers.put(answer3, 3);
-        answers.put(answer4, 4);
         this.answer1 = answer1;
         this.answer2 = answer2;
         this.answer3 = answer3;
@@ -60,8 +56,12 @@ public class GameMessage {
 
     // Getter & Setter
 
-    public Map<String, Integer> getAnswers() {
+    public Map<Integer, String> getAnswers() {
         return answers;
+    }
+
+    public void setAnswers(Map<Integer, String> answers) {
+        this.answers = answers;
     }
 
     public String getCategory() {
