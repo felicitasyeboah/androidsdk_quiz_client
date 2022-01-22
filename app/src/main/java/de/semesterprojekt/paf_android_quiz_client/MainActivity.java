@@ -17,8 +17,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    /** Called when the user taps the Login button */
-    public void gotToLogin(View view) {
+    /**
+     * Called when the user taps the Login button
+     */
+    public void goToLogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Called when the user taps the Register button
      */
-    public void gotToRegister(View view) {
+    public void goToRegister(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
