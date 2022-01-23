@@ -5,54 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="gravity"
+    android:visibility="visible"
     tools:context=".InGameActivity">
 
-    <LinearLayout
-        android:id="@+id/lo_lobby"
+    <ImageView
+        android:id="@+id/iv_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-
-        <TextView
-            android:id="@+id/tv_lo_lobby_waiting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dip"
-            android:text="Waiting for second player..."
-            android:textAlignment="gravity"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_lo_lobby_gameStartIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dip"
-            android:text="Game will start in"
-            android:textSize="34sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/tv_lo_lobby_startCounter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_lo_lobby_waiting" />
-
-        <TextView
-            android:id="@+id/tv_lo_lobby_startCounter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dip"
-            android:textSize="54sp"
-            android:tooltipText="5 s"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </LinearLayout>
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_logo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lo_inGame"
@@ -214,102 +175,4 @@
             app:layout_constraintTop_toBottomOf="@+id/answerButtons" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TableLayout
-        android:id="@+id/lo_score"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:visibility="invisible">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:paddingVertical="8dp">
-
-            <TextView
-                android:id="@+id/tv_lo_score_userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="48dp"
-                android:text="player1:"
-                android:textAlignment="textStart"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/tv_lo_score_opponentName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="48dp"
-                android:text="player2:"
-                android:textAlignment="textStart"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingVertical="8dp">
-
-            <TextView
-                android:id="@+id/tv_lo_score_userPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="48dp"
-                android:text="+1000"
-                android:textAlignment="textStart"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/tv_lo_score_opponentPoints"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="48dp"
-                android:text="+1000"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal|center_vertical">
-
-            <TextView
-                android:id="@+id/tv_lo_score_nextQuestionCounter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="2 s"
-                android:textSize="54sp" />
-
-        </TableRow>
-
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/lo_result"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/tv_lo_result"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="TextView"
-            android:textSize="24sp" />
-    </LinearLayout>
-
 </RelativeLayout>

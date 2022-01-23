@@ -4,17 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,15 +44,20 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient
 public class InGameActivity extends AppCompatActivity {
 
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_quitSession;
-    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_loLobbyWaiting,
-            tv_loLobbyGameStartIn, tv_loLobbyStartCounter, tv_loScoreUserName, tv_loScoreOpponentName,
-            tv_loScoreUserPoints, tv_loScoreOpponentPoints, tv_loScoreNextQuestionTimer,
-            tv_loResult;
+    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_awaitingStart,
+            tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
+            tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
+            tv_drResult;
+    ImageView iv_dsUser, iv_dsOpponent;
     ProgressBar prog_timer;
-    LinearLayout layoutLobbyView;
+
     ConstraintLayout layoutInGameView;
-    TableLayout layoutScoreView;
     LinearLayout layoutResultView;
+
+    StartDialogFragment startDialogFragment;
+    //ScoreDialogFragment scoreDialogFragment;
+    Dialog scoreDialog;
+    Dialog resultDialog;
 
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + ServerData.STOMP_ENDPOINT));
@@ -74,13 +82,45 @@ public class InGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
         initClassVars();
+        initDialogs();
         initViews();
-        //addJwtToStompSocketHeader(userToken);
         connectToStompSocket();
         subscribeToStompTopic(ServerData.STOMP_TOPIC);
+        showStartDialog();
         setOnClickListeners();
+
     }
 
+    protected Dialog getScoreDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_score, null));
+        builder.setCancelable(false);
+        return builder.create();
+    }
+    protected Dialog getResultDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_result, null));
+        builder.setCancelable(false);
+        return builder.create();
+    }
+
+    /**
+     * Init Dialogs from Layouts
+     */
+    protected void initDialogs() {
+        //Dialogs
+        startDialogFragment = new StartDialogFragment();
+        scoreDialog = getScoreDialog();
+        resultDialog = getResultDialog();
+    }
     /**
      * Get views from layouts
      */
@@ -91,6 +131,7 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer3 = findViewById(R.id.btn_answer3);
         btn_answer4 = findViewById(R.id.btn_answer4);
         btn_quitSession = findViewById(R.id.btn_quitSession);
+
         // TextViews
         // at InGameView
         tv_question = findViewById(R.id.tv_question);
@@ -98,26 +139,13 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore = findViewById(R.id.tv_userScore);
         tv_opponentScore = findViewById(R.id.tv_opponentScore);
         tv_top_message_box = findViewById(R.id.tv_top_message_box);
-        // at LobbyView
-        tv_loLobbyWaiting = findViewById(R.id.tv_lo_lobby_waiting);
-        tv_loLobbyGameStartIn = findViewById(R.id.tv_lo_lobby_gameStartIn);
-        tv_loLobbyStartCounter = findViewById(R.id.tv_lo_lobby_startCounter);
-        // at ScoreView
-        tv_loScoreOpponentName = findViewById(R.id.tv_lo_score_opponentName);
-        tv_loScoreUserName = findViewById(R.id.tv_lo_score_userName);
-        tv_loScoreOpponentPoints = findViewById(R.id.tv_lo_score_opponentPoints);
-        tv_loScoreUserPoints = findViewById(R.id.tv_lo_score_userPoints);
-        tv_loScoreNextQuestionTimer = findViewById(R.id.tv_lo_score_nextQuestionCounter);
-        // at ResultView
-        tv_loResult = findViewById(R.id.tv_lo_result);
+
         // Progressbar
         prog_timer = findViewById(R.id.prog_timer);
 
-        // Layouts
-        layoutLobbyView = findViewById(R.id.lo_lobby);
+        // Layout
         layoutInGameView = findViewById(R.id.lo_inGame);
-        layoutScoreView = findViewById(R.id.lo_score);
-        layoutResultView = findViewById(R.id.lo_result);
+
     }
 
     /**
@@ -185,12 +213,11 @@ public class InGameActivity extends AppCompatActivity {
 
                             // creates TimerMessage from STOMP message respond
                             startTimer = getTimerMessageObject(message);
-
                             // Load StartTimerMessage into UI
-                            initStartGameScreen();
+                            setStartDialog();
 
-                            // Handle StartGame UI
-                            updateStartGameScreen();
+                            // Handle StartDialog UI
+                            updateStartDialog();
 
                             break;
 
@@ -222,8 +249,8 @@ public class InGameActivity extends AppCompatActivity {
                             // creates TimeMessage from STOMP message respond
                             scoreTimer = getTimerMessageObject(message);
 
-                            // handle Score UI
-                            updateScoreScreen();
+                            // handle Score Dialog UI
+                            updateScoreDialog();
                             break;
 
                         case SCORE_MESSAGE:
@@ -232,8 +259,11 @@ public class InGameActivity extends AppCompatActivity {
                             // creates GameMessage from STOMP message respond
                             scoreMessage = getScoreMessageObject(message);
 
-                            // load ScoreMessage into UI
-                            initScoreScreen();
+                            // init Score Dialog
+                            showScoreDialog();
+
+                            // load ScoreMessage into Score Dialog
+                            setScoreDialog();
 
                             break;
 
@@ -248,9 +278,9 @@ public class InGameActivity extends AppCompatActivity {
 
                             // creates ResultMessage from STOMP message respond
                             resultMessage = getResultMessageObject(message);
-
+                            showResultDialog();
                             // load ResultMessage into UI
-                            initResultScreen();
+                            setResultDialog();
 
                             break;
                     }
@@ -301,20 +331,27 @@ public class InGameActivity extends AppCompatActivity {
         });
     }
 
-    protected void initStartGameScreen() {
-        tv_loLobbyGameStartIn.setVisibility(View.VISIBLE);
-        tv_loLobbyStartCounter.setVisibility(View.VISIBLE);
-        tv_loLobbyWaiting.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessage.getOpponent().getUsername());
-    }
 
-    protected void updateStartGameScreen() {
-        tv_loLobbyStartCounter.setText(Integer.toString(startTimer.getTimeLeft()));
+    protected void showStartDialog() {
+        startDialogFragment.show(getSupportFragmentManager(), "awaitingStart");
+
+    }
+    protected void setStartDialog() {
+        tv_awaitingStart = startDialogFragment.getDialog().findViewById(R.id.tv_awaiting_start);
+        tv_gameStartIn = startDialogFragment.getDialog().findViewById(R.id.tv_game_start_in);
+        tv_startCounter = startDialogFragment.getDialog().findViewById(R.id.tv_start_counter);
+        tv_gameStartIn.setVisibility(View.VISIBLE);
+        tv_startCounter.setVisibility(View.VISIBLE);
+        tv_awaitingStart.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessage.getOpponent().getUsername());
+    }
+    protected void updateStartDialog() {
+        tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
         if (startTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    layoutLobbyView.setVisibility(View.INVISIBLE);
+                    startDialogFragment.dismiss();
                 }
             }, 1000);
         }
@@ -354,7 +391,6 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore.setText(txtFieldUserScore);
         tv_opponentScore.setText(txtFieldOpponentScore);
     }
-
     protected void updateInGameLayout() {
         prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
         tv_timer.setText("Time left: " + Integer.toString(questionTimer.getTimeLeft()) + " s");
@@ -381,37 +417,45 @@ public class InGameActivity extends AppCompatActivity {
 /*        layoutLobbyView.setVisibility(View.VISIBLE);
         layoutInGameView.setVisibility(View.INVISIBLE);
         tv_loLobbyGameStartIn.setVisibility(View.INVISIBLE);
-        tv_loLobbyStartCounter.setVisibility(View.INVISIBLE);
-        tv_loLobbyWaiting.setVisibility(View.VISIBLE);
-        tv_loLobbyWaiting.setText("Wainting for Player 2 to answer.");*/
+        tv_startCounter.setVisibility(View.INVISIBLE);
+        tv_awaitingStart.setVisibility(View.VISIBLE);
+        tv_awaitingStart.setText("Wainting for Player 2 to answer.");*/
     }
 
-    protected void initScoreScreen() {
-        layoutScoreView.setVisibility(View.VISIBLE);
-        tv_loLobbyWaiting.setVisibility(View.INVISIBLE);
-
-        tv_loScoreUserName.setText(scoreMessage.getUser().getUsername() + ":");
-        tv_loScoreOpponentName.setText(scoreMessage.getOpponent().getUsername() + ":");
-        tv_loScoreOpponentPoints.setText("+" + Integer.toString(scoreMessage.getOpponentPoints()) + "pts");
-        tv_loScoreUserPoints.setText("+" + Integer.toString(scoreMessage.getUserPoints()) + "pts");
+    protected void showScoreDialog() {
+        scoreDialog.show();
     }
-
-    protected void updateScoreScreen() {
-        tv_loScoreNextQuestionTimer.setText(Integer.toString(scoreTimer.getTimeLeft()));
+    protected void setScoreDialog() {
+        tv_dsUserName = scoreDialog.findViewById(R.id.tv_ds_user_name);
+        tv_dsOpponentName = scoreDialog.findViewById(R.id.tv_ds_opponent_name);
+        tv_dsUserScore = scoreDialog.findViewById(R.id.tv_ds_user_score);
+        tv_dsOpponentScore = scoreDialog.findViewById(R.id.tv_ds_opponent_score);
+        tv_dsNextQuestionTimer = scoreDialog.findViewById(R.id.tv_ds_next_timer);
+        tv_dsUserName.setText(scoreMessage.getUser().getUsername() + ":");
+        tv_dsOpponentName.setText(scoreMessage.getOpponent().getUsername() + ":");
+        tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentPoints()) + "pts");
+        tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserPoints()) + "pts");
+        //TODO: set user and oppenent images
+    }
+    protected void updateScoreDialog() {
+        tv_dsNextQuestionTimer.setText(Integer.toString(scoreTimer.getTimeLeft()));
         if (scoreTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    layoutScoreView.setVisibility(View.INVISIBLE);
+                    scoreDialog.dismiss();
                 }
             }, 1000);
         }
     }
 
-    protected void initResultScreen() {
-        layoutResultView.setVisibility(View.VISIBLE);
-        tv_loResult.setText(resultMessage.toString());
+    protected void showResultDialog() {
+        resultDialog.show();
+    }
+    protected void setResultDialog() {
+        tv_drResult = resultDialog.findViewById(R.id.tv_dr_result);
+        tv_drResult.setText(resultMessage.toString());
     }
 
     /**
