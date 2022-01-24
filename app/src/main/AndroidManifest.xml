@@ -17,14 +17,13 @@
         <activity
             android:name=".HighscoreActivity"
             android:exported="false"
-            android:parentActivityName=".StartmenueActivity" />
+            android:parentActivityName=".LobbyActivity" />
         <activity
             android:name=".InGameActivity"
             android:exported="false" />
         <activity
-            android:name=".StartmenueActivity"
-            android:exported="false"
-            android:parentActivityName=".LoginActivity" />
+            android:name=".LobbyActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false"

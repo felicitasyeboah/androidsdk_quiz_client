@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.User;
@@ -24,11 +25,18 @@ public class LoginActivity extends AppCompatActivity {
     Button btn_login;
     TextView lnk_register;
     EditText et_username, et_password;
-
+    SessionManager sessionManager;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager.checkLogin();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sessionManager = new SessionManager(getApplicationContext());
         initViews();
         setOnClickListeners();
     }
@@ -99,8 +107,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onLogin(User user) {
                 super.onLogin(user);
                 if (user != null) {
-                    storeUserDataToSharedPref(user);
-                    goToStartmenu(user);
+                    sessionManager.createLoginSession(user.getUsername(), user.getToken());
+                    goToLobby();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid login", Toast.LENGTH_LONG).show();
                 }
@@ -109,37 +117,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Switch to the startmenu activity
+     * Switch to the Lobby activity
      *
-     * @param user
      */
-    protected void goToStartmenu(User user) {
-        Intent intent = new Intent(getApplicationContext(), StartmenueActivity.class);
+    protected void goToLobby() {
+        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
         startActivity(intent);
-        Toast.makeText(LoginActivity.this, "User " + user.getUsername() + " logged in", Toast.LENGTH_SHORT).show();
-        Log.d("Quiz", user.toString());
+        Toast.makeText(LoginActivity.this, "User " + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " logged in", Toast.LENGTH_SHORT).show();
+        Log.d("Quiz", sessionManager.getUserDatafromSession().toString());
     }
 
-    /**
-     * Stores an username and usertoken in SharedPreferences
-     *
-     * @param user the logged in user
-     */
-    public void storeUserDataToSharedPref(User user) {
-        // Open SharedPref file
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(getString(R.string.pref_file_key), Context.MODE_PRIVATE);
-        // Write to SharedPref file
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString(getString(R.string.user_token), user.getToken());
-        editor.putString(getString(R.string.username), user.getUsername());
-        Log.d("Quiz", user.getToken() + " " + user.getUsername());
-
-        // apply for async
-        editor.apply(); // or ed.commit(); for sync
-    }
-
-
-    //TODO: Absicherung, dass man sich nciht doppelt einloggen kann. Was ist mit if (user!= null);
+    //TODO: Userobject erst in shared pref instanzieren?? Was ist mit if (user!= null);
 }
 
 
