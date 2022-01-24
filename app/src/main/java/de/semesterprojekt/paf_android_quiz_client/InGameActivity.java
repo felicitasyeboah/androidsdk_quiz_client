@@ -38,10 +38,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
+import de.semesterprojekt.paf_android_quiz_client.model.User;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.GameMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.MessageType;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ResultMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ScoreMessage;
+import de.semesterprojekt.paf_android_quiz_client.model.game.dto.StartMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.TimerMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
@@ -73,6 +75,7 @@ public class InGameActivity extends AppCompatActivity {
     String userToken;
     Gson gson = new Gson();
 
+    StartMessage startMessage;
     GameMessage gameMessage;
     ScoreMessage scoreMessage;
     ResultMessage resultMessage;
@@ -187,6 +190,11 @@ public class InGameActivity extends AppCompatActivity {
                     //Client gamelogic
                     switch (Objects.requireNonNull(messageType)) {
 
+                        case START_MESSAGE:
+                            startMessage = getStartMessageObject(message);
+                            Log.d("Quiz", startMessage.toString());
+                            break;
+
                         case START_TIMER_MESSAGE:
                             Log.d("Quiz", "START_TIMER_MESSAGE erhalten.");
 
@@ -262,6 +270,11 @@ public class InGameActivity extends AppCompatActivity {
                             setResultDialog();
 
                             break;
+                        case DISCONNECT_MESSAGE:
+                            Log.d("Quiz", message.toString());
+                            //TODO: Show DIsconnect Dialog with back to Lobby button for opponent who didnt disconected
+                             break;
+
                     }
                     Log.d("Quiz", "BODY: " + message);
 
@@ -336,7 +349,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_startCounter = startDialog.findViewById(R.id.tv_start_counter);
         tv_gameStartIn.setVisibility(View.VISIBLE);
         tv_startCounter.setVisibility(View.VISIBLE);
-        tv_awaitingStart.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessage.getOpponent().getUsername());
+        tv_awaitingStart.setText("Player found.\n" +
+                sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
+                startMessage.getOpponent().getUsername());
     }
     protected void updateStartDialog() {
         tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
@@ -499,6 +514,10 @@ public class InGameActivity extends AppCompatActivity {
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessage.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         //restServiceSingleton.setUser(gameMessage.getUser());
+    }
+
+    protected StartMessage getStartMessageObject(String message) {
+        return gson.fromJson(message, StartMessage.class);
     }
 
     protected ScoreMessage getScoreMessageObject(String message) {

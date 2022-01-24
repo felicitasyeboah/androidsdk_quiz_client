@@ -9,8 +9,8 @@ public class ScoreMessage {
     private int opponentScore;
 
     public ScoreMessage(User user, User opponent, int userScore, int opponentScore) {
-        this.userScore = this.userScore;
-        this.opponentScore = this.opponentScore;
+        this.userScore = userScore;
+        this.opponentScore = opponentScore;
         this.user = user;
         this.opponent = opponent;
     }

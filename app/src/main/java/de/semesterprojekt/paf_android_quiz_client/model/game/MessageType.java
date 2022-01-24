@@ -6,9 +6,11 @@ package de.semesterprojekt.paf_android_quiz_client.model.game;
 public enum MessageType {
 
     //Message types
+    START_MESSAGE("START_MESSAGE"),
     GAME_MESSAGE("GAME_MESSAGE"),
     SCORE_MESSAGE("SCORE_MESSAGE"),
     RESULT_MESSAGE("RESULT_MESSAGE"),
+    DISCONNECT_MESSAGE("DISCONNECT_MESSAGE"),
 
     //Timer Types
     START_TIMER_MESSAGE("START_TIMER_MESSAGE"),
