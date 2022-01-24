@@ -5,22 +5,26 @@ import de.semesterprojekt.paf_android_quiz_client.model.User;
 public class ScoreMessage {
     private User user;
     private User opponent;
-    private int userPoints;
-    private int opponentPoints;
+    private int userScore;
+    private int opponentScore;
 
-    public ScoreMessage(int userPoints, int opponentPoints, User user, User opponent) {
-        this.userPoints = userPoints;
-        this.opponentPoints = opponentPoints;
+    public ScoreMessage(User user, User opponent, int userScore, int opponentScore) {
+        this.userScore = this.userScore;
+        this.opponentScore = this.opponentScore;
         this.user = user;
         this.opponent = opponent;
     }
+// {"user":{"userName":"ali","profileImage":"default7.png"},
+// "opponent":{"userName":"feli",
+// "profileImage":"default2.png"},"userScore":0,"opponentScore":985,"type":"SCORE_MESSAGE"}
 
-    public int getUserPoints() {
-        return userPoints;
+
+    public int getUserScore() {
+        return userScore;
     }
 
-    public int getOpponentPoints() {
-        return opponentPoints;
+    public int getOpponentScore() {
+        return opponentScore;
     }
 
     public User getUser() {
