@@ -1,5 +1,6 @@
 package de.semesterprojekt.paf_android_quiz_client;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -7,12 +8,17 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.GameMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.MessageType;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ResultMessage;
@@ -42,7 +49,7 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
 
 public class InGameActivity extends AppCompatActivity {
-
+    SessionManager sessionManager;
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_quitSession;
     TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_awaitingStart,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
@@ -52,10 +59,8 @@ public class InGameActivity extends AppCompatActivity {
     ProgressBar prog_timer;
 
     ConstraintLayout layoutInGameView;
-    LinearLayout layoutResultView;
 
-    StartDialogFragment startDialogFragment;
-    //ScoreDialogFragment scoreDialogFragment;
+    Dialog startDialog;
     Dialog scoreDialog;
     Dialog resultDialog;
 
@@ -78,6 +83,13 @@ public class InGameActivity extends AppCompatActivity {
     final static public int SECONDS_TO_SOLVE_QUESTION = 10;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager.checkLogin();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
@@ -86,30 +98,7 @@ public class InGameActivity extends AppCompatActivity {
         initViews();
         connectToStompSocket();
         subscribeToStompTopic(ServerData.STOMP_TOPIC);
-        showStartDialog();
         setOnClickListeners();
-
-    }
-
-    protected Dialog getScoreDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_score, null));
-        builder.setCancelable(false);
-        return builder.create();
-    }
-    protected Dialog getResultDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_result, null));
-        builder.setCancelable(false);
-        return builder.create();
     }
 
     /**
@@ -117,7 +106,7 @@ public class InGameActivity extends AppCompatActivity {
      */
     protected void initDialogs() {
         //Dialogs
-        startDialogFragment = new StartDialogFragment();
+        startDialog = getStartDialog();
         scoreDialog = getScoreDialog();
         resultDialog = getResultDialog();
     }
@@ -178,16 +167,6 @@ public class InGameActivity extends AppCompatActivity {
             System.out.println("Failed to connect to the socket");
             return;
         }
-    }
-
-    /**
-     * Add JWT Token to STOMP Header
-     *
-     * @param userToken JWT usertoken
-     */
-    protected void addJwtToStompSocketHeader(String userToken) {
-        // add JWToken to websocket STOMP Header
-        stompSocket.addHeader(StompHeader.TOKEN.toString(), userToken);
     }
 
     /**
@@ -291,6 +270,8 @@ public class InGameActivity extends AppCompatActivity {
         });
         Log.d("Quiz", "Websocket channel subscribed.");
         sendInitAuthMessage();
+        showStartDialog();
+
 
     }
 
@@ -320,7 +301,7 @@ public class InGameActivity extends AppCompatActivity {
 
         // change your button background
 
-        //TODO: Buttons entfernen
+        //TODO: Button entfernen, nur zum testen drin
         //Button erstmal noch zum Testen drin, kommen später weg
         btn_quitSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,15 +312,28 @@ public class InGameActivity extends AppCompatActivity {
         });
     }
 
-
+    protected Dialog getStartDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_awaiting_start, null));
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Button ->  Cancel -> Back to Lobby
+                quitSession();
+            }});
+        builder.setCancelable(false);
+        return builder.create();
+    }
     protected void showStartDialog() {
-        startDialogFragment.show(getSupportFragmentManager(), "awaitingStart");
-
+        startDialog.show();
     }
     protected void setStartDialog() {
-        tv_awaitingStart = startDialogFragment.getDialog().findViewById(R.id.tv_awaiting_start);
-        tv_gameStartIn = startDialogFragment.getDialog().findViewById(R.id.tv_game_start_in);
-        tv_startCounter = startDialogFragment.getDialog().findViewById(R.id.tv_start_counter);
+        tv_awaitingStart = startDialog.findViewById(R.id.tv_awaiting_start);
+        tv_gameStartIn = startDialog.findViewById(R.id.tv_game_start_in);
+        tv_startCounter = startDialog.findViewById(R.id.tv_start_counter);
         tv_gameStartIn.setVisibility(View.VISIBLE);
         tv_startCounter.setVisibility(View.VISIBLE);
         tv_awaitingStart.setText("Player found.\nPlaying vs. ");//TODO OPPONENT MITSENDEN + gameMessage.getOpponent().getUsername());
@@ -351,7 +345,7 @@ public class InGameActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startDialogFragment.dismiss();
+                    startDialog.dismiss();
                 }
             }, 1000);
         }
@@ -422,6 +416,16 @@ public class InGameActivity extends AppCompatActivity {
         tv_awaitingStart.setText("Wainting for Player 2 to answer.");*/
     }
 
+    protected Dialog getScoreDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_score, null));
+        builder.setCancelable(false);
+        return builder.create();
+    }
     protected void showScoreDialog() {
         scoreDialog.show();
     }
@@ -433,8 +437,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsNextQuestionTimer = scoreDialog.findViewById(R.id.tv_ds_next_timer);
         tv_dsUserName.setText(scoreMessage.getUser().getUsername() + ":");
         tv_dsOpponentName.setText(scoreMessage.getOpponent().getUsername() + ":");
-        tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentPoints()) + "pts");
-        tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserPoints()) + "pts");
+        tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()) + "p");
+        tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()) + "p");
         //TODO: set user and oppenent images
     }
     protected void updateScoreDialog() {
@@ -450,6 +454,22 @@ public class InGameActivity extends AppCompatActivity {
         }
     }
 
+    protected Dialog getResultDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_result, null));
+        builder.setPositiveButton("Back to Lobby", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Button -> Back to Lobby -> Disconnects from websocket and brings user back to lobby
+                quitSession();
+
+            }});
+        builder.setCancelable(false);
+        return builder.create();
+    }
     protected void showResultDialog() {
         resultDialog.show();
     }
@@ -572,13 +592,72 @@ public class InGameActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: funktion nur zum testen drin, später entfernen
+    /**
+     * quits stompseocket/websocket session and brings user back to Lobby
+     */
     public void quitSession() {
         //Disconnect
         stompSocket.close();
+        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+    /**
+     * Clears SessionData in Sessionmanager
+     */
+    public void logout() {
+        sessionManager.logout();
+        Toast.makeText(InGameActivity.this, "Successfully logged out.", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displays Menu in the upper right corner in App-/Toolbar
+     * @param menu main menu
+     * @return boolean
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.game_menu, menu);
+        return true;
+    }
+
+    /**
+     *
+     * @param item menu item
+     * @return boolean
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == R.id.quit_session) {
+            quitSession();
+        }
+        else if (itemId == R.id.logout) {
+            quitSession();
+            logout();
+        }
+        //TODO: APP muss sich komplett schließen, wenn nicht zu loesen, dann aus dem menu nehmen!
+        else if (itemId == R.id.quit) {
+            finish();
+            System.exit(0);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //TODO: layout für kleine handys anzeigen, responsiv machen etc...
+
+    /**
+     * Add JWT Token to STOMP Header
+     *
+     * @param userToken JWT usertoken
+     */
+    protected void addJwtToStompSocketHeader(String userToken) {
+        // add JWToken to websocket STOMP Header
+        stompSocket.addHeader(StompHeader.TOKEN.toString(), userToken);
+    }
+
         /*webSocketClient.setConnectTimeout(10000);
         webSocketClient.setReadTimeout(60000);
         webSocketClient.addHeader("Connection", "Upgrade");

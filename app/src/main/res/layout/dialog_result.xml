@@ -14,11 +14,4 @@
         android:text="TextView"
         android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/btn_dr_back_to_lobby"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="Back to Lobby" />
-
 </LinearLayout>
