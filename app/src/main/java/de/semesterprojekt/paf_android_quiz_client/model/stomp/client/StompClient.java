@@ -21,7 +21,6 @@
  */
 package de.semesterprojekt.paf_android_quiz_client.model.stomp.client;
 
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompCommand;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
@@ -195,7 +194,7 @@ public class StompClient extends WebSocketClient {
         send(frame.toString());
     }
 
-    //Edited, added new method
+    //Edited by Feli, added new method
     /**
      * Send text message to the server.
      *
@@ -276,7 +275,6 @@ public class StompClient extends WebSocketClient {
     public boolean isStompConnected() {
         return stompConnected;
     }
-
     /**
      * Register STOMP conection listener.
      *
