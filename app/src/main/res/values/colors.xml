@@ -11,8 +11,13 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green_light">#275950</color>
     <color name="green_dark">#1C4039</color>
-    <color name="gray_light">#BABFBD</color>
-    <color name="yellow">#BF925A</color>
-    <color name="orange">#BF382C</color>
+    <color name="green_logo">#869c7f</color>
+    <color name="green_light_logo">#b8c2b5</color>
+    <color name="green_dark_logo">#53614f</color>
+    <color name="gray">#b1b1b1</color>
+    <color name="gray_light">#c1c1c1</color>
+    <color name="yellow">#eea422</color>
+    <color name="orange">#fd6a00</color>
+    <color name="red">#BF382C</color>
     <color name="green_correctAnswer">#03A65A</color>
 </resources>

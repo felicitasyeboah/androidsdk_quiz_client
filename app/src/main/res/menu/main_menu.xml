@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item app:showAsAction="always"
         android:icon="@drawable/ic_menu_hamburger"
         android:title="">
@@ -10,6 +9,11 @@
                 android:title="Profile"
                 app:showAsAction="never"
                 android:icon="@drawable/ic_profile"
+                />
+            <item android:id="@+id/highscore"
+                android:title="Highscore"
+                android:icon="@drawable/ic_highscore"
+                app:showAsAction="never"
                 />
             <item
                 android:id="@+id/logout"

@@ -2,9 +2,7 @@ package de.semesterprojekt.paf_android_quiz_client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,12 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView lnk_register;
     EditText et_username, et_password;
     SessionManager sessionManager;
-    @Override
-    protected void onStart() {
-        super.onStart();
-        sessionManager = new SessionManager(getApplicationContext());
-        sessionManager.checkLogin();
-    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

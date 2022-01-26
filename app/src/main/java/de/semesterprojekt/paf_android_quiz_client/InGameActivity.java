@@ -7,10 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -22,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.User;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.GameMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.MessageType;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ResultMessage;
@@ -52,12 +48,14 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient
 
 public class InGameActivity extends AppCompatActivity {
     SessionManager sessionManager;
-    Button btn_answer1, btn_answer2, btn_answer3, btn_answer4, btn_quitSession;
-    TextView tv_question, tv_timer, tv_userScore, tv_opponentScore, tv_top_message_box, tv_awaitingStart,
+    Button btn_answer1, btn_answer2, btn_answer3, btn_answer4;
+    TextView tv_userName, tv_opponentName,tv_userScore, tv_opponentScore,
+            tv_timer, tv_category, tv_question,
+            tv_awaitingStart,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
             tv_drResult;
-    ImageView iv_dsUser, iv_dsOpponent;
+    ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent;
     ProgressBar prog_timer;
 
     ConstraintLayout layoutInGameView;
@@ -70,7 +68,6 @@ public class InGameActivity extends AppCompatActivity {
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + ServerData.STOMP_ENDPOINT));
 
     RestServiceSingleton restServiceSingleton;
-    SharedPreferences sharedPreferences;
 
     String userToken;
     Gson gson = new Gson();
@@ -88,7 +85,6 @@ public class InGameActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        sessionManager = new SessionManager(getApplicationContext());
         sessionManager.checkLogin();
     }
 
@@ -122,21 +118,29 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer2 = findViewById(R.id.btn_answer2);
         btn_answer3 = findViewById(R.id.btn_answer3);
         btn_answer4 = findViewById(R.id.btn_answer4);
-        btn_quitSession = findViewById(R.id.btn_quitSession);
+        btn_answer1.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
+        btn_answer2.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
+        btn_answer3.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
+        btn_answer4.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
 
         // TextViews
         // at InGameView
-        tv_question = findViewById(R.id.tv_question);
+        tv_userName = findViewById(R.id.tv_user_name);
+        tv_opponentName = findViewById(R.id.tv_opponent_name);
+        tv_userScore = findViewById(R.id.tv_user_score);
+        tv_opponentScore = findViewById(R.id.tv_opponent_score);
+        tv_category = findViewById(R.id.tv_category);
         tv_timer = findViewById(R.id.tv_timer);
-        tv_userScore = findViewById(R.id.tv_userScore);
-        tv_opponentScore = findViewById(R.id.tv_opponentScore);
-        tv_top_message_box = findViewById(R.id.tv_top_message_box);
+        tv_question = findViewById(R.id.tv_question);
 
         // Progressbar
         prog_timer = findViewById(R.id.prog_timer);
 
+        // ImageViews
+
         // Layout
         layoutInGameView = findViewById(R.id.lo_inGame);
+
 
     }
 
@@ -144,13 +148,8 @@ public class InGameActivity extends AppCompatActivity {
      * Init ClassVars
      */
     protected void initClassVars() {
-        // Open SharedPref file
-        sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.pref_file_key), Context.MODE_PRIVATE);
-        // Get JWT userToken from storage
-        userToken = sharedPreferences.getString("token", "");
-
-        // Get RestServerSingleton-Instance
-        restServiceSingleton = RestServiceSingleton.getInstance(getApplicationContext());
+        sessionManager = new SessionManager(getApplicationContext());
+        userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }
 
     /**
@@ -313,16 +312,6 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer4.setOnClickListener(answerButtonClickListener);
 
         // change your button background
-
-        //TODO: Button entfernen, nur zum testen drin
-        //Button erstmal noch zum Testen drin, kommen später weg
-        btn_quitSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(InGameActivity.this, "Session closed: ", Toast.LENGTH_LONG).show();
-                quitSession();
-            }
-        });
     }
 
     protected Dialog getStartDialog() {
@@ -373,7 +362,6 @@ public class InGameActivity extends AppCompatActivity {
      */
     public void initInGameScreen(GameMessage gameMessage) {
         layoutInGameView.setVisibility(View.VISIBLE);
-        Log.d("Quiz", sharedPreferences.getString(getString(R.string.user_token), ""));
         Log.d("Quiz", gameMessage.getUser().toString());
 
         // reset Button colors to default
@@ -388,21 +376,21 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer3.setText(gameMessage.getAnswer3());
         btn_answer4.setText(gameMessage.getAnswer4());
         tv_question.setText(gameMessage.getQuestion());
+        tv_category.setText(gameMessage.getCategory());
 
         btn_answer1.setEnabled(true);
         btn_answer2.setEnabled(true);
         btn_answer3.setEnabled(true);
         btn_answer4.setEnabled(true);
 
-        String txtFieldUserScore = sharedPreferences.getString("username", "") + " " + gameMessage.getUserScore() + "pts";
-        String txtFieldOpponentScore = gameMessage.getOpponent().getUsername() + " " + gameMessage.getOpponentScore() + "pts";
-
-        tv_userScore.setText(txtFieldUserScore);
-        tv_opponentScore.setText(txtFieldOpponentScore);
+        tv_userName.setText(gameMessage.getUser().getUsername());
+        tv_opponentName.setText(gameMessage.getOpponent().getUsername());
+        tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
+        tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
     }
     protected void updateInGameLayout() {
         prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
-        tv_timer.setText("Time left: " + Integer.toString(questionTimer.getTimeLeft()) + " s");
+        tv_timer.setText(Integer.toString(questionTimer.getTimeLeft()) + "s");
         if (questionTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -414,7 +402,6 @@ public class InGameActivity extends AppCompatActivity {
                     btn_answer4.setEnabled(false);
                     prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
                     tv_timer.setText("Time is up!");
-                    layoutInGameView.setVisibility(View.INVISIBLE);
                 }
             }, 1000);
             //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
@@ -510,7 +497,7 @@ public class InGameActivity extends AppCompatActivity {
         answers.put(4, gameMessage.getAnswer4());
         gameMessage.setAnswers(answers);
 
-        gameMessage.getUser().setToken(sharedPreferences.getString(getString(R.string.user_token), ""));
+        gameMessage.getUser().setToken(sessionManager.getUserDatafromSession().get(getString(R.string.user_token)));
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessage.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         //restServiceSingleton.setUser(gameMessage.getUser());

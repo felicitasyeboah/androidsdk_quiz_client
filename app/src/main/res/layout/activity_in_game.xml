@@ -5,113 +5,186 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="gravity"
-    android:visibility="visible"
     tools:context=".InGameActivity">
-
-    <ImageView
-        android:id="@+id/iv_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/ic_logo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lo_inGame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_userScore"
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:text="Player1: 25pts"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/tv_top_message_box"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_top_message_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Question x/y"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/tv_opponentScore"
-            app:layout_constraintStart_toEndOf="@+id/tv_userScore"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_opponentScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:text="Player2: 15pts"
-            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_rounded_corner_default"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_top_message_box"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="User"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iv_user_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_profile_w" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Question"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/iv_opponent_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_profile_w" />
+
+                <TextView
+                    android:id="@+id/tv_opponent_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Opponent"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tv_user_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:layout_weight="1"
+                    android:text="2300"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_question_counter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:layout_weight="1"
+                    android:text="1/3"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_opponent_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:layout_weight="1"
+                    android:text="2000"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:weightSum="7">
+
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Catgory"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <ProgressBar
+                    android:id="@+id/prog_timer"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:max="10"
+                    android:progress="10"
+                    android:progressTint="@color/orange" />
+
+                <TextView
+                    android:id="@+id/tv_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10s"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </TableRow>
+
+        </TableLayout>
 
         <TextView
             android:id="@+id/tv_question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:height="85dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:autoSizeMaxTextSize="26sp"
+            android:autoSizeMinTextSize="16sp"
+            android:autoSizeTextType="uniform"
             android:gravity="center_horizontal|center_vertical"
+            android:minHeight="85dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_rounded_corner_default"
             android:text="Einen Feinschmecker nennt man auch?"
-            android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_opponentScore" />
-
-        <ProgressBar
-            android:id="@+id/prog_timer"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:max="10"
-            android:progress="10"
-            android:progressTint="@color/orange"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question" />
-
-        <TextView
-            android:id="@+id/tv_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Time left: 10 s"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/prog_timer" />
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
         <LinearLayout
             android:id="@+id/answerButtons"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:orientation="vertical"
             android:weightSum="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_timer">
+            app:layout_constraintTop_toBottomOf="@+id/tv_question">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,12 +192,12 @@
                 android:layout_weight="0.25"
                 android:background="@drawable/btn_rounded_corner_ingame"
                 android:minHeight="70dp"
-                android:text=" "
+                android:text=" Answer 1"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="16sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,7 +209,7 @@
                 android:textAllCaps="false"
                 android:textSize="16sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,7 +221,7 @@
                 android:textAllCaps="false"
                 android:textSize="16sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,19 +233,6 @@
                 android:textAllCaps="false"
                 android:textSize="16sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_quitSession"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/btn_rounded_corner_default"
-            android:text="Quit Session"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answerButtons" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
