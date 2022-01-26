@@ -13,6 +13,7 @@
         android:id="@+id/tv_awaiting_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="32dip"
         android:text="Waiting for second player..."
         android:textAlignment="gravity"
@@ -20,6 +21,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_pvp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player1 vs. Player2"
+        android:textAlignment="gravity"
+        android:textSize="24sp"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/tv_game_start_in"
@@ -38,7 +48,8 @@
         android:id="@+id/tv_start_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dip"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
         android:textSize="54sp"
         android:tooltipText="5 s"
         android:visibility="invisible"

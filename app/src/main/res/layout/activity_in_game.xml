@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textAlignment="gravity"
+    android:background="@color/cardview_dark_background"
     tools:context=".InGameActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,17 +158,18 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:autoSizeMaxTextSize="26sp"
+            android:autoSizeMaxTextSize="22sp"
             android:autoSizeMinTextSize="16sp"
             android:autoSizeTextType="uniform"
-            android:gravity="center_horizontal|center_vertical"
-            android:minHeight="85dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:textColor="@color/white"
             android:background="@drawable/btn_rounded_corner_default"
+            android:gravity="center_horizontal|center_vertical"
+            android:minHeight="100dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:text="Einen Feinschmecker nennt man auch?"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 

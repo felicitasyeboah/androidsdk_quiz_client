@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_logo"
+    android:background="@color/cardview_dark_background"
     tools:context=".LobbyActivity">
 
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/green_logo"
+        android:background="@color/cardview_dark_background"
         android:paddingVertical="32dp"
         android:src="@drawable/ic_logo"
         android:visibility="visible"
@@ -58,6 +58,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
             android:text="@string/et_username"
+            android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="normal" />

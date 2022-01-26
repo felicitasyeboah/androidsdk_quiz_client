@@ -9,15 +9,19 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -41,7 +45,6 @@ import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ResultMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ScoreMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.StartMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.game.dto.TimerMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
 import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
@@ -49,13 +52,15 @@ import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient
 public class InGameActivity extends AppCompatActivity {
     SessionManager sessionManager;
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4;
+    Button btn_clicked;
     TextView tv_userName, tv_opponentName,tv_userScore, tv_opponentScore,
             tv_timer, tv_category, tv_question,
-            tv_awaitingStart,
+            tv_awaitingStart, tv_pvp,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
-            tv_drResult;
-    ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent;
+            tv_drWinner, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
+            tv_drHighscore;
+    ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent, iv_drUser, iv_drOpponent;
     ProgressBar prog_timer;
 
     ConstraintLayout layoutInGameView;
@@ -63,11 +68,11 @@ public class InGameActivity extends AppCompatActivity {
     Dialog startDialog;
     Dialog scoreDialog;
     Dialog resultDialog;
+    Dialog quitSessionDialog;
+    Dialog answerDialog;
 
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + ServerData.STOMP_ENDPOINT));
-
-    RestServiceSingleton restServiceSingleton;
 
     String userToken;
     Gson gson = new Gson();
@@ -108,6 +113,8 @@ public class InGameActivity extends AppCompatActivity {
         startDialog = getStartDialog();
         scoreDialog = getScoreDialog();
         resultDialog = getResultDialog();
+        quitSessionDialog = getQuitSessionDialog();
+        answerDialog = getAnswerDialog();
     }
     /**
      * Get views from layouts
@@ -237,43 +244,43 @@ public class InGameActivity extends AppCompatActivity {
 
                             // handle Score Dialog UI
                             updateScoreDialog();
+                            if (scoreTimer.getTimeLeft() == 1) {
+                                answerDialog.dismiss();
+                            }
                             break;
 
                         case SCORE_MESSAGE:
                             Log.d("Quiz", messageType.toString());
+                            // check if answer was correct and highlight correct/wrong answer
+                            checkAnswer(btn_clicked);
 
                             // creates GameMessage from STOMP message respond
                             scoreMessage = getScoreMessageObject(message);
 
                             // init Score Dialog
-                            showScoreDialog();
+                            showDialog(scoreDialog);
 
                             // load ScoreMessage into Score Dialog
                             setScoreDialog();
-
                             break;
 
                         case RESULT_MESSAGE:
                             Log.d("Quiz", messageType.toString());
-                            //{"isHighScore":false,
-                            // "user":{"userName":"alf","profileImage":"default2.png"},
-                            // "opponent":{"userName":"feli","profileImage":"default2.png"},
-                            // "userScore":0,
-                            // "opponentScore":0,
-                            // "type":"RESULT_MESSAGE"}
 
                             // creates ResultMessage from STOMP message respond
                             resultMessage = getResultMessageObject(message);
-                            showResultDialog();
+
+                            // init Result Dialog
+                            showDialog(resultDialog);
+
                             // load ResultMessage into UI
                             setResultDialog();
-
                             break;
                         case DISCONNECT_MESSAGE:
-                            Log.d("Quiz", message.toString());
-                            //TODO: Show DIsconnect Dialog with back to Lobby button for opponent who didnt disconected
-                             break;
 
+                            // init QuitSession Dialog
+                            showDialog(quitSessionDialog);
+                            break;
                     }
                     Log.d("Quiz", "BODY: " + message);
 
@@ -281,10 +288,12 @@ public class InGameActivity extends AppCompatActivity {
             });
         });
         Log.d("Quiz", "Websocket channel subscribed.");
+
+        // send authorization message with usertoken (jwt)
         sendInitAuthMessage();
-        showStartDialog();
 
-
+        // init StartDialog
+        showDialog(startDialog);
     }
 
     /**
@@ -296,24 +305,25 @@ public class InGameActivity extends AppCompatActivity {
             Button answerButton = (Button) view;
             // calculate time the user needed to answer
             int timeNeeded = SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft();
-            // check if answer was correct and highlight correct/wrong answer
-            checkAnswer(view, answerButton, answerButton.getText().toString());
-
+            btn_clicked = answerButton; // to check answer outside of clicklistener
+            // highlight selected button
+            answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_yellow);
             // send selected answer and time to pick the answer to server
             sendAnswer(answerButton, timeNeeded);
 
             // show waiting screen, when waiting for opponent to answer
-            // initWaitingForOpponentAnswerScreen();
-
+            showDialog(answerDialog);
         };
         btn_answer1.setOnClickListener(answerButtonClickListener);
         btn_answer2.setOnClickListener(answerButtonClickListener);
         btn_answer3.setOnClickListener(answerButtonClickListener);
         btn_answer4.setOnClickListener(answerButtonClickListener);
-
-        // change your button background
     }
 
+    /**
+     * Init Start Dialog
+     * @return Dialog startDialog
+     */
     protected Dialog getStartDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
@@ -329,17 +339,20 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
-    protected void showStartDialog() {
-        startDialog.show();
-    }
+
+    /**
+     * Assign views to startDialog
+     */
     protected void setStartDialog() {
         tv_awaitingStart = startDialog.findViewById(R.id.tv_awaiting_start);
         tv_gameStartIn = startDialog.findViewById(R.id.tv_game_start_in);
         tv_startCounter = startDialog.findViewById(R.id.tv_start_counter);
+        tv_pvp = startDialog.findViewById(R.id.tv_pvp);
         tv_gameStartIn.setVisibility(View.VISIBLE);
         tv_startCounter.setVisibility(View.VISIBLE);
-        tv_awaitingStart.setText("Player found.\n" +
-                sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
+        tv_pvp.setVisibility(View.VISIBLE);
+        tv_awaitingStart.setText("Player found.");
+        tv_pvp.setText(sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
                 startMessage.getOpponent().getUsername());
     }
     protected void updateStartDialog() {
@@ -361,12 +374,11 @@ public class InGameActivity extends AppCompatActivity {
      * @param gameMessage GameMessage from Server
      */
     public void initInGameScreen(GameMessage gameMessage) {
-        layoutInGameView.setVisibility(View.VISIBLE);
         Log.d("Quiz", gameMessage.getUser().toString());
 
         // reset Button colors to default
         btn_answer1.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
-        btn_answer2.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_correct_answer));
+        btn_answer2.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
         btn_answer3.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
         btn_answer4.setBackgroundResource(R.drawable.btn_rounded_corner_ingame);
 
@@ -388,6 +400,10 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
     }
+
+    /**
+     * Updates InGameLayout
+     */
     protected void updateInGameLayout() {
         prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
         tv_timer.setText(Integer.toString(questionTimer.getTimeLeft()) + "s");
@@ -404,20 +420,13 @@ public class InGameActivity extends AppCompatActivity {
                     tv_timer.setText("Time is up!");
                 }
             }, 1000);
-            //tv_top_message_box.setText("Question x/y - Time is up!"); //TODO: make Resource String for timeup message
         }
     }
 
-    protected void initWaitingForOpponentAnswerScreen() {
-
-/*        layoutLobbyView.setVisibility(View.VISIBLE);
-        layoutInGameView.setVisibility(View.INVISIBLE);
-        tv_loLobbyGameStartIn.setVisibility(View.INVISIBLE);
-        tv_startCounter.setVisibility(View.INVISIBLE);
-        tv_awaitingStart.setVisibility(View.VISIBLE);
-        tv_awaitingStart.setText("Wainting for Player 2 to answer.");*/
-    }
-
+    /**
+     * init Score Dialog
+     * @return Dialog scoreDialog
+     */
     protected Dialog getScoreDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
@@ -428,21 +437,26 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
-    protected void showScoreDialog() {
-        scoreDialog.show();
-    }
+
+    /**
+     * Assigning views to scoreDialog
+     */
     protected void setScoreDialog() {
         tv_dsUserName = scoreDialog.findViewById(R.id.tv_ds_user_name);
         tv_dsOpponentName = scoreDialog.findViewById(R.id.tv_ds_opponent_name);
         tv_dsUserScore = scoreDialog.findViewById(R.id.tv_ds_user_score);
         tv_dsOpponentScore = scoreDialog.findViewById(R.id.tv_ds_opponent_score);
         tv_dsNextQuestionTimer = scoreDialog.findViewById(R.id.tv_ds_next_timer);
-        tv_dsUserName.setText(scoreMessage.getUser().getUsername() + ":");
-        tv_dsOpponentName.setText(scoreMessage.getOpponent().getUsername() + ":");
-        tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()) + "p");
-        tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()) + "p");
+        tv_dsUserName.setText(scoreMessage.getUser().getUsername());
+        tv_dsOpponentName.setText(scoreMessage.getOpponent().getUsername());
+        tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
+        tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
         //TODO: set user and oppenent images
     }
+
+    /**
+     * updates score Dialog
+     */
     protected void updateScoreDialog() {
         tv_dsNextQuestionTimer.setText(Integer.toString(scoreTimer.getTimeLeft()));
         if (scoreTimer.getTimeLeft() == 1) {
@@ -456,6 +470,10 @@ public class InGameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * init Result Dialog
+     * @return Dialog resultDialog
+     */
     protected Dialog getResultDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
@@ -472,12 +490,73 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
-    protected void showResultDialog() {
-        resultDialog.show();
-    }
+
+    /**
+     * Assigning views to resultDialog
+     */
     protected void setResultDialog() {
-        tv_drResult = resultDialog.findViewById(R.id.tv_dr_result);
-        tv_drResult.setText(resultMessage.toString());
+        tv_drWinner = resultDialog.findViewById(R.id.tv_dr_winner);
+        tv_drUserName = resultDialog.findViewById(R.id.tv_dr_user_name);
+        tv_drOpponentName = resultDialog.findViewById(R.id.tv_dr_opponent_name);
+        tv_drUserScore = resultDialog.findViewById(R.id.tv_dr_user_score);
+        tv_drOpponentScore = resultDialog.findViewById(R.id.tv_dr_opponent_score);
+        tv_drWinner.setText(resultMessage.getWinner().getUsername());
+        tv_drUserName.setText(resultMessage.getUserName());
+        tv_drOpponentName.setText(resultMessage.getOpponentName());
+        tv_drUserScore.setText(Integer.toString(resultMessage.getUserScore()));
+        tv_drOpponentScore.setText(Integer.toString(resultMessage.getOpponentScore()));
+        tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
+        if(resultMessage.isHighScore()) {
+            tv_drHighscore.setText(resultMessage.getWinner().getUsername() +" "+ tv_drHighscore.getText());
+        } else {
+            tv_drHighscore.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * init opponent left the game dialog
+     * @return Dialog quitSessionDialog
+     */
+    protected Dialog getQuitSessionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_quit_session, null));
+        builder.setPositiveButton("Back to Lobby", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Button -> Back to Lobby -> Disconnects from websocket and brings user back to lobby
+                quitSession();
+            }
+        });
+        builder.setCancelable(false);
+        return builder.create();
+    }
+
+    /**
+     * Init Start Dialog
+     * @return Dialog startDialog
+     */
+    protected Dialog getAnswerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(inflater.inflate(R.layout.dialog_awaiting_answer, null));
+        builder.setCancelable(false);
+        return builder.create();
+    }
+
+    /**
+     * show Dialogs
+     */
+    protected void showDialog(Dialog dialog) {
+        WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
+        dialog.getWindow().setGravity(Gravity.TOP);
+        wmlp.y = 300;
+        dialog.getWindow().setAttributes(wmlp);
+        dialog.show();
     }
 
     /**
@@ -556,45 +635,37 @@ public class InGameActivity extends AppCompatActivity {
         Log.d("Quiz", "Sent answer: " + jsonObject.toString());
     }
 
-    public void checkAnswer(View view, Button answerButton, String choosenAnswer) {
-        String buttonName = getResources().getResourceEntryName(view.getId());
-        String buttonLastChar = buttonName.substring((buttonName).length() - 1);
-        int answerNumber = Integer.parseInt(buttonLastChar);
-        if (answerNumber == gameMessage.getCorrectAnswer()) {
-            // if(gameMessage.getAnswers().get(gameMessage.getCorrectAnswer()).equals(choosenAnswer)) {
+    public void checkAnswer(Button btn_clicked) {
+            String chosenAnswer = btn_clicked.getText().toString();
+            // if answer is correct, change buttoncolor to green
+            if(gameMessage.getAnswers().get(gameMessage.getCorrectAnswer()).equals(chosenAnswer)) {
             Log.d("Quiz", "Richtige anwort.");
-            //TODO: Set Buttonfarbe to lightgreen
-            // change your button background
 
-            view.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
-            //answerButton.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_correct_answer));
-            //answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
-
-        } else if (answerNumber != gameMessage.getCorrectAnswer()) {
+            btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+        }
+            // if answer was incorrect, change buttoncolor to red and highlight button with correct answer green
+            else {
             Log.d("Quiz", "Falsche Antwort.");
-            //answerButton.setBackground(getResources().getDrawable(R.drawable.btn_rounded_corner_ingame_wrong_answer));
-            view.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
+            btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
 
-            //answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
             for (int key : gameMessage.getAnswers().keySet()) {
                 if (key == gameMessage.getCorrectAnswer()) {
                     switch (key) {
                         case 1:
-                            btn_answer1.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            btn_answer1.setBackgroundResource(R.drawable.border);
                             break;
                         case 2:
-                            btn_answer2.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            btn_answer2.setBackgroundResource(R.drawable.border);
                             break;
                         case 3:
-                            btn_answer3.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            btn_answer3.setBackgroundResource(R.drawable.border);
                             break;
                         case 4:
-                            btn_answer4.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+                            btn_answer4.setBackgroundResource(R.drawable.border);
                             break;
                     }
                 }
             }
-            //TODO: Set Buttoncolor from correctAnswer to green and buttoncolor from choosenAnswer to red
         }
     }
 

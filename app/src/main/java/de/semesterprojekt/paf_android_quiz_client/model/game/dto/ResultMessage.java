@@ -7,13 +7,20 @@ import de.semesterprojekt.paf_android_quiz_client.model.User;
 public class ResultMessage {
 
     boolean isHighScore;
+    User winner;
     User user;
     User opponent;
     int userScore;
     int opponentScore;
+/*{"isHighScore":false,
+"winner":{"userName":"ali","profileImage":"default7.png"},
+"user":{"userName":"ali","profileImage":"default7.png"},
+"opponent":{"userName":"feli","profileImage":"default2.png"},
+"userScore":1546,"opponentScore":0,"type":"RESULT_MESSAGE"} */
 
-    public ResultMessage(boolean isHighScore, User user, User opponent, int userScore, int opponentScore) {
+    public ResultMessage(boolean isHighScore, User winner, User user, User opponent, int userScore, int opponentScore) {
         this.isHighScore = isHighScore;
+        this.winner = winner;
         this.user = user;
         this.opponent = opponent;
         this.userScore = userScore;
@@ -34,10 +41,19 @@ public class ResultMessage {
         return isHighScore;
     }
 
+    public User getWinner() {
+        return winner;
+    }
+
     public User getUser() {
         return user;
     }
-
+    public String getUserName() {
+        return user.getUsername();
+    }
+    public String getOpponentName() {
+        return opponent.getUsername();
+    }
     public User getOpponent() {
         return opponent;
     }
