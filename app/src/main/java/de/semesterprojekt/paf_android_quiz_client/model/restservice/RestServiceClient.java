@@ -124,11 +124,12 @@ public class RestServiceClient {
     }
 
     public void getHighscore(String userToken, RestServiceListener listener) {
-        String url = BASE_URL + "/highscoreGlobal";
+        String url = BASE_URL + "/highscore";
 
         Response.Listener<JSONArray> successListener = response -> {
 
             listener.onGetHighscore(response);
+            Log.d("Quiz", "Higshcore: " + response.toString());
 
         };
 
