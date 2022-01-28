@@ -57,7 +57,7 @@ public class InGameActivity extends AppCompatActivity {
             tv_awaitingStart, tv_pvp,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
-            tv_drWinner, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
+            tv_dr_textBox, tv_drWinner, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
             tv_drHighscore;
     ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent, iv_drUser, iv_drOpponent;
     ProgressBar prog_timer;
@@ -511,10 +511,15 @@ public class InGameActivity extends AppCompatActivity {
         tv_drOpponentName = resultDialog.findViewById(R.id.tv_dr_opponent_name);
         tv_drUserScore = resultDialog.findViewById(R.id.tv_dr_user_score);
         tv_drOpponentScore = resultDialog.findViewById(R.id.tv_dr_opponent_score);
+        tv_dr_textBox = resultDialog.findViewById(R.id.tv_dr_text_box);
         iv_drUser = resultDialog.findViewById(R.id.iv_dr_user);
         iv_drOpponent = resultDialog.findViewById(R.id.iv_dr_opponent);
-
-        tv_drWinner.setText(resultMessage.getWinner().getUserName());
+        if(resultMessage.getWinner() != null) {
+            tv_drWinner.setText(resultMessage.getWinner().getUserName());
+        } else {
+            tv_drWinner.setVisibility(View.INVISIBLE);
+            tv_dr_textBox.setText("There is a draw!");
+        }
         tv_drUserName.setText(resultMessage.getUserName());
         tv_drOpponentName.setText(resultMessage.getOpponentName());
         tv_drUserScore.setText(Integer.toString(resultMessage.getUserScore()));
