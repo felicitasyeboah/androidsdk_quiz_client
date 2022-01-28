@@ -33,5 +33,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
-//TODO: jwtoken in SharedPreferences stays as long as user clicks on logout or terminates the Session/closes the Application
 //TODO: thinking about implementing ViewModels

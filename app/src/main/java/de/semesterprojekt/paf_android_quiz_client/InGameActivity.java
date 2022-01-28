@@ -340,6 +340,7 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
+    //TODO: Wenn Zeit ist, userbilder auch in startdialog einbauen
 
     /**
      * Assign views to startDialog
@@ -745,8 +746,6 @@ public class InGameActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //TODO: layout für kleine handys anzeigen, responsiv machen etc...
 
     /**
      * Add JWT Token to STOMP Header

@@ -12,15 +12,18 @@
         android:id="@+id/lo_inGame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!-- oder android:layout_height="wrap_content"0dp"
+                 und contraint bottom to parent-->
 
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/btn_rounded_corner_default"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -154,22 +157,21 @@
         <TextView
             android:id="@+id/tv_question"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:autoSizeMaxTextSize="22sp"
-            android:autoSizeMinTextSize="16sp"
+            android:autoSizeMinTextSize="14sp"
             android:autoSizeTextType="uniform"
             android:background="@drawable/btn_rounded_corner_default"
             android:gravity="center_horizontal|center_vertical"
             android:minHeight="100dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:text="Einen Feinschmecker nennt man auch?"
+            android:paddingHorizontal="8dp"
             android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/answerButtons"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
@@ -178,62 +180,66 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
             android:orientation="vertical"
             android:weightSum="1"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question">
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/btn_rounded_corner_ingame"
-                android:minHeight="70dp"
-                android:text=" Answer 1"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/btn_rounded_corner_ingame"
-                android:minHeight="70dp"
+                android:minHeight="@dimen/image50dp"
+                android:maxHeight="@dimen/image70dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/btn_rounded_corner_ingame"
-                android:minHeight="70dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer4"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="0.25"
                 android:background="@drawable/btn_rounded_corner_ingame"
-                android:minHeight="70dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
