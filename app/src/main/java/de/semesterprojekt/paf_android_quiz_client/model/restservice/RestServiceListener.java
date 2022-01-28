@@ -2,12 +2,10 @@ package de.semesterprojekt.paf_android_quiz_client.model.restservice;
 
 import org.json.JSONArray;
 
-import de.semesterprojekt.paf_android_quiz_client.model.User;
-
 public abstract class RestServiceListener {
 
 
-    public void onLogin(User user) {
+    public void onLogin(String userToken) {
 
     }
 
@@ -15,8 +13,9 @@ public abstract class RestServiceListener {
 
     }
 
-    public void onGetHighscore(JSONArray getHighscore) {
-
+    public void onGetHighScores(JSONArray highScores) {
     }
+
+    public void onGetImageFiles(JSONArray getImageFiles) {}
 
 }

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 
 /**
@@ -58,9 +57,9 @@ public class RestServiceClient {
             jsonObject.put("password", password);
             Response.Listener<JSONObject> successListener = response -> {
                 try {
-                    response.put("userName", username);
-                    User user = User.getUser(response);
-                    listener.onLogin(user);
+                    /*response.put("userName", username);
+                    User user = User.getUser(response);*/
+                    listener.onLogin(response.getString("token"));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -123,14 +122,16 @@ public class RestServiceClient {
 
     }
 
-    public void getHighscore(String userToken, RestServiceListener listener) {
+    /**
+     * Gets Highscores from RestAPI
+     * @param userToken userToken, user receivev when he logs in
+     * @param listener reacts on the gethighscore-response from the restAPI
+     */
+    public void getHighScores(String userToken, RestServiceListener listener) {
         String url = BASE_URL + "/highscore";
 
         Response.Listener<JSONArray> successListener = response -> {
-
-            listener.onGetHighscore(response);
-            Log.d("Quiz", "Higshcore: " + response.toString());
-
+            listener.onGetHighScores(response);
         };
 
         Response.ErrorListener errorListener = error -> Log.d("GetRequest", error.toString());

@@ -14,7 +14,6 @@ import android.widget.Toast;
 import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
-import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 /**
  * This class controlls the LoginView
@@ -97,10 +96,10 @@ public class LoginActivity extends AppCompatActivity {
         RestServiceSingleton restServiceSingleton = RestServiceSingleton.getInstance(LoginActivity.this.getApplication());
         restServiceSingleton.login(username, password, new RestServiceListener() {
             @Override
-            public void onLogin(User user) {
-                super.onLogin(user);
-                if (user != null) {
-                    sessionManager.createLoginSession(user.getUsername(), user.getToken());
+            public void onLogin(String userToken) {
+                super.onLogin(userToken);
+                if (userToken != null) {
+                    sessionManager.createLoginSession(username, userToken);
                     goToLobby();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid login", Toast.LENGTH_LONG).show();

@@ -1,45 +1,32 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * represents the logged in User and his token and his opponent
  */
 public class User {
 
     private String userName = "test";
-    private String profileImage; //TODO: bild auslesen
-    private String token;
+    private String profileImage;
 
 
     //Contructors
-/*   public User(String userName, String profileImage) {
+
+    public User(String userName, String profileImage) {
         this.userName = userName;
         this.profileImage = profileImage;
-    }*/
-
-    public User(String userName, String token) {
-        this.userName = userName;
-        //TODO: Wenn bilddatei uebertragen wird, wieder wegenehmen.
-        if (token.endsWith(".png")) {
-            this.profileImage = token;
-        } else {
-            this.token = token;
-        }
     }
 
     /**
      * Takes an JSONObject and returns an User Object
      *
      */
-    public static User getUser(JSONObject jsonObject) throws JSONException {
-        String userName = jsonObject.getString("userName");
-        String token = jsonObject.getString("token");
-
-        return new User(userName, token);
-
-    }
+//    public static User getUser(JSONObject jsonObject) throws JSONException {
+//        String userName = jsonObject.getString("userName");
+//        String token = jsonObject.getString("token");
+//
+//        return new User(userName, token);
+//
+//    }
 
     //TODO: prüfen, warum habe ich das nochmal drin?
     @Override
@@ -57,24 +44,23 @@ public class User {
     @Override
     public String toString() {
         return "userName: " + this.userName + "\n" +
-                "token: " + this.token + "\n" +
                 "profileImage: " + this.profileImage + "\n";
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUsername(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    public String getToken() {
-        return token;
+
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setProfileImageName(String profileImage) {
+        this.profileImage = profileImage;
     }
-
 }

@@ -2,8 +2,6 @@ package de.semesterprojekt.paf_android_quiz_client.model.restservice;
 
 import android.content.Context;
 
-import de.semesterprojekt.paf_android_quiz_client.R;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
 import de.semesterprojekt.paf_android_quiz_client.model.User;
 
 
@@ -75,10 +73,8 @@ public class RestServiceSingleton {
         restServiceClient.register(username, password, listener);
     }
 
-    public void getHighscore(RestServiceListener listener) {
-        SessionManager sessionManager = new SessionManager(ctx);
-        String userToken = sessionManager.getUserDatafromSession().get(ctx.getString(R.string.user_token));
-        restServiceClient.getHighscore(userToken, listener);
+    public void getHighScores(String userToken, RestServiceListener listener) {
+        restServiceClient.getHighScores(userToken, listener);
 
     }
 

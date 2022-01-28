@@ -43,8 +43,6 @@ public class SessionManager {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }
-        //TODO: anfangen, dass wenn man eingeloggt ist und per pfeiltaste auf dem handy zurueckgeht
-        // zu login, man direkt wiede rin der lobby landet
     }
 
     public void logout() {

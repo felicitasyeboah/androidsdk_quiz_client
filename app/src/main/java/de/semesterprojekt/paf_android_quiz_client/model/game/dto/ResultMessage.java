@@ -49,10 +49,10 @@ public class ResultMessage {
         return user;
     }
     public String getUserName() {
-        return user.getUsername();
+        return user.getUserName();
     }
     public String getOpponentName() {
-        return opponent.getUsername();
+        return opponent.getUserName();
     }
     public User getOpponent() {
         return opponent;

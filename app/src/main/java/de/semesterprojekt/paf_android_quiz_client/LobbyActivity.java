@@ -46,7 +46,7 @@ public class LobbyActivity extends AppCompatActivity {
         // Get JWT userToken and Username from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
         userName = sessionManager.getUserDatafromSession().get(getString(R.string.username));
-        Log.d("Quiz", "Username: "+ userName +  " Usertoken: " + userToken);
+        Log.d("Quiz", "Username: " + userName + " Usertoken: " + userToken);
         setContentView(R.layout.activity_lobby);
         initViews();
         setViews();
@@ -91,7 +91,7 @@ public class LobbyActivity extends AppCompatActivity {
         if (itemId == R.id.profile) {
             getProfile();
         } else if (itemId == R.id.highscore) {
-            getHighscore();
+            goToHighScores();
         } else if (itemId == R.id.logout) {
             logout();
         } else if (itemId == R.id.quit) {
@@ -122,15 +122,18 @@ public class LobbyActivity extends AppCompatActivity {
         iv_user_icon.setImageResource(R.drawable.ic_profile_w);
     }
 
+
     /**
      * Called when the user taps the Highscore button
      */
-    public void getHighscore() {
+    private void goToHighScores() {
+        // move to highscoreview
         Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
         startActivity(intent);
+
     }
 
-    public void getProfile() {
+    private void getProfile() {
         Toast.makeText(LobbyActivity.this, "Clicked on Profile", Toast.LENGTH_LONG).show();
         //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
@@ -138,7 +141,7 @@ public class LobbyActivity extends AppCompatActivity {
     /**
      * Called when the user taps the Start Game button
      */
-    public void startGame(View view) {
+    private void startGame(View view) {
         Intent intent = new Intent(getApplicationContext(), InGameActivity.class);
         startActivity(intent);
     }
@@ -146,7 +149,7 @@ public class LobbyActivity extends AppCompatActivity {
     /**
      * deletes jwt and user from storage, so tha the user has to log in again to play
      */
-    public void logout() {
+    private void logout() {
         sessionManager.logout();
         Toast.makeText(LobbyActivity.this, "Successfully logged out.", Toast.LENGTH_SHORT).show();
     }

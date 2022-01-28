@@ -10,11 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import de.semesterprojekt.paf_android_quiz_client.model.Highscore;
+import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 
+/**
+ * Adapter class for the recyclerview in the Highscore Activity Layout
+ */
 public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.HighscoreViewHolder> {
 
     Context context;
@@ -36,11 +41,18 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
 
     @Override
     public void onBindViewHolder(@NonNull HighscoreAdapter.HighscoreViewHolder holder, int position) {
+        Highscore currentHighscore = highscoreArrayList.get(position);
 
-        Highscore highscore = highscoreArrayList.get(position);
-        holder.tv_hs_date.setText(highscore.date);
-        holder.iv_hs_userImage.setImageResource(highscore.userImage);
-
+        String date = Helper.formatDate(currentHighscore.getTimeStamp()) + " Uhr";
+        String username = "User: " + currentHighscore.getUser().getUserName();
+        String score = "Score: " + currentHighscore.getUserScore();
+        String url = "http://" + ServerData.SERVER_ADDRESS + "/files/" + currentHighscore.getUser().getProfileImage();
+        String pos = Integer.toString(position + 1);
+        holder.tv_hsPos.setText(pos);
+        holder.tv_hsDate.setText(date);
+        holder.tv_hsUserName.setText(username);
+        holder.tv_hsUserScore.setText(score);
+        Picasso.get().load(url).fit().centerInside().into(holder.iv_hsUserImage);
     }
 
     @Override
@@ -48,15 +60,22 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         return highscoreArrayList.size();
     }
 
+    /**
+     * Holds the views from the Highscore List Layout
+     */
     public static class HighscoreViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_hs_date;
-        ShapeableImageView iv_hs_userImage;
+        TextView tv_hsDate, tv_hsUserName, tv_hsUserScore, tv_hsPos;
+        ShapeableImageView iv_hsUserImage;
+
 
         public HighscoreViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_hs_date = itemView.findViewById(R.id.tv_hs_date);
-            iv_hs_userImage = itemView.findViewById(R.id.iv_hs_user_image);
+            tv_hsPos = itemView.findViewById(R.id.tv_hs_pos);
+            tv_hsDate = itemView.findViewById(R.id.tv_hs_date);
+            tv_hsUserName = itemView.findViewById(R.id.tv_hs_user_name);
+            tv_hsUserScore = itemView.findViewById(R.id.tv_hs_user_score);
+            iv_hsUserImage = itemView.findViewById(R.id.iv_hs_user_image);
         }
     }
 }

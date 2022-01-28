@@ -9,8 +9,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -353,7 +351,7 @@ public class InGameActivity extends AppCompatActivity {
         tv_pvp.setVisibility(View.VISIBLE);
         tv_awaitingStart.setText("Player found.");
         tv_pvp.setText(sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
-                startMessage.getOpponent().getUsername());
+                startMessage.getOpponent().getUserName());
     }
     protected void updateStartDialog() {
         tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
@@ -395,8 +393,8 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer3.setEnabled(true);
         btn_answer4.setEnabled(true);
 
-        tv_userName.setText(gameMessage.getUser().getUsername());
-        tv_opponentName.setText(gameMessage.getOpponent().getUsername());
+        tv_userName.setText(gameMessage.getUser().getUserName());
+        tv_opponentName.setText(gameMessage.getOpponent().getUserName());
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
     }
@@ -447,8 +445,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsUserScore = scoreDialog.findViewById(R.id.tv_ds_user_score);
         tv_dsOpponentScore = scoreDialog.findViewById(R.id.tv_ds_opponent_score);
         tv_dsNextQuestionTimer = scoreDialog.findViewById(R.id.tv_ds_next_timer);
-        tv_dsUserName.setText(scoreMessage.getUser().getUsername());
-        tv_dsOpponentName.setText(scoreMessage.getOpponent().getUsername());
+        tv_dsUserName.setText(scoreMessage.getUser().getUserName());
+        tv_dsOpponentName.setText(scoreMessage.getOpponent().getUserName());
         tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
         tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
         //TODO: set user and oppenent images
@@ -500,14 +498,14 @@ public class InGameActivity extends AppCompatActivity {
         tv_drOpponentName = resultDialog.findViewById(R.id.tv_dr_opponent_name);
         tv_drUserScore = resultDialog.findViewById(R.id.tv_dr_user_score);
         tv_drOpponentScore = resultDialog.findViewById(R.id.tv_dr_opponent_score);
-        tv_drWinner.setText(resultMessage.getWinner().getUsername());
+        tv_drWinner.setText(resultMessage.getWinner().getUserName());
         tv_drUserName.setText(resultMessage.getUserName());
         tv_drOpponentName.setText(resultMessage.getOpponentName());
         tv_drUserScore.setText(Integer.toString(resultMessage.getUserScore()));
         tv_drOpponentScore.setText(Integer.toString(resultMessage.getOpponentScore()));
         tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
         if(resultMessage.isHighScore()) {
-            tv_drHighscore.setText(resultMessage.getWinner().getUsername() +" "+ tv_drHighscore.getText());
+            tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" "+ tv_drHighscore.getText());
         } else {
             tv_drHighscore.setVisibility(View.GONE);
         }
@@ -576,7 +574,6 @@ public class InGameActivity extends AppCompatActivity {
         answers.put(4, gameMessage.getAnswer4());
         gameMessage.setAnswers(answers);
 
-        gameMessage.getUser().setToken(sessionManager.getUserDatafromSession().get(getString(R.string.user_token)));
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessage.toString());
         // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
         //restServiceSingleton.setUser(gameMessage.getUser());
