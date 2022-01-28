@@ -213,7 +213,8 @@
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:autoSizeMaxTextSize="16sp"
-                android:autoSizeMinTextSize="12sp" />
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_answer3"

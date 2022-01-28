@@ -15,6 +15,9 @@
         android:theme="@style/Theme.QuizPatternsAndFrameworks"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".HighscoreActivity"
             android:exported="false"
             android:parentActivityName=".LobbyActivity" />
