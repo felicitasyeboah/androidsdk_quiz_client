@@ -46,7 +46,7 @@ public class HighscoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_highscore);
         getSesssionData();
 
-        recyclerView = findViewById(R.id.recyclerview);
+        recyclerView = findViewById(R.id.recyclerview_highscore);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -69,7 +69,7 @@ public class HighscoreActivity extends AppCompatActivity {
 
                 Type highScoreListType = new TypeToken<List<Highscore>>() {
                 }.getType();
-                // parse JsonArray from Restservice-Response to Highscore-Objects and add them to highscoreArrayList
+                // parse JsonArray from Restservice-Response to Highscore-Objects and add then to highscoreArrayList
                 highscoreArrayList = gson.fromJson(String.valueOf(highScores), highScoreListType);
                 // pass HighscoreArrayList to highscoreAdapter
                 highscoreAdapter = new HighscoreAdapter(HighscoreActivity.this, highscoreArrayList);

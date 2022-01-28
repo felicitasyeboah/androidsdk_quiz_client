@@ -78,6 +78,10 @@ public class RestServiceSingleton {
 
     }
 
+    public void getHistory(String userToken, RestServiceListener listener) {
+        restServiceClient.getHistory(userToken, listener);
+    }
+
 
     // Getters & Setters
     public Context getCtx() {

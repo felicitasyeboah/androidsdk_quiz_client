@@ -16,7 +16,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".LobbyActivity"/>
         <activity
             android:name=".HighscoreActivity"
             android:exported="false"

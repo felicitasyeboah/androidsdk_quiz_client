@@ -131,7 +131,12 @@ public class RestServiceClient {
         String url = BASE_URL + "/highscore";
 
         Response.Listener<JSONArray> successListener = response -> {
-            listener.onGetHighScores(response);
+
+            try {
+                listener.onGetHighScores(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         };
 
         Response.ErrorListener errorListener = error -> Log.d("GetRequest", error.toString());
@@ -149,4 +154,38 @@ public class RestServiceClient {
 
         requestQueue.add(request);
     }
+
+    /**
+     * Gets PlayedGames and statistic of played Games from RestAPI
+     * @param userToken userToken, user received when he logs in
+     * @param listener reacts on the gethistory-response from the restAPI
+     */
+    public void getHistory(String userToken, RestServiceListener listener) {
+        String url = BASE_URL + "/playedGames";
+
+        Response.Listener<JSONObject> successListener = response -> {
+            try {
+                listener.onGetHistory(response);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        Response.ErrorListener errorListener = error -> {
+            Log.d("GetRequest", error.toString());
+        };
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, successListener, errorListener) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Accept", "application/json");
+                headers.put("Authorization", "Bearer " + userToken);
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+    }
+
 }

@@ -138,7 +138,7 @@ public class LobbyActivity extends AppCompatActivity {
 
     private void getProfile() {
         Toast.makeText(LobbyActivity.this, "Clicked on Profile", Toast.LENGTH_LONG).show();
-        //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
 
     /**
