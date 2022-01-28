@@ -124,12 +124,19 @@ public class GameMessage {
         return user;
     }
 
+    public String getUserName() {
+        return user.getUserName();
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
 
     public User getOpponent() {
         return opponent;
+    }
+    public String getOpponentName() {
+        return opponent.getUserName();
     }
 
     public void setOpponent(User opponent) {

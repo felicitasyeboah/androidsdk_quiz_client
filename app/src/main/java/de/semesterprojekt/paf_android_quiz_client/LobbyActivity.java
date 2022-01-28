@@ -16,6 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
 
 
@@ -119,7 +122,7 @@ public class LobbyActivity extends AppCompatActivity {
      */
     protected void setViews() {
         tv_username.setText(userName);
-        iv_user_icon.setImageResource(R.drawable.ic_profile_w);
+        Picasso.get().load(ServerData.PROFILE_IMAGE_API + userName).fit().centerInside().into(iv_user_icon);
     }
 
 

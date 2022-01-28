@@ -60,8 +60,8 @@
             <ImageView
                 android:id="@+id/iv_dr_user"
                 app:srcCompat="@drawable/ic_user_default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/image70dp"
+                android:layout_height="@dimen/image70dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1" />
 
@@ -98,8 +98,8 @@
             <ImageView
                 android:id="@+id/iv_dr_opponent"
                 app:srcCompat="@drawable/ic_user_default"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/image70dp"
+                android:layout_height="@dimen/image70dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1" />
 

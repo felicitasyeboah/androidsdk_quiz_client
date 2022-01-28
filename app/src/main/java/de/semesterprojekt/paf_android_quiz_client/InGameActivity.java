@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,6 +143,8 @@ public class InGameActivity extends AppCompatActivity {
         prog_timer = findViewById(R.id.prog_timer);
 
         // ImageViews
+        iv_userImage = findViewById(R.id.iv_user_image);
+        iv_opponentImage = findViewById(R.id.iv_opponent_image);
 
         // Layout
         layoutInGameView = findViewById(R.id.lo_inGame);
@@ -397,6 +400,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_opponentName.setText(gameMessage.getOpponent().getUserName());
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
+
+        Picasso.get().load(ServerData.PROFILE_IMAGE_API + gameMessage.getUserName()).fit().centerInside().into(iv_userImage);
+        Picasso.get().load(ServerData.PROFILE_IMAGE_API + gameMessage.getOpponentName()).fit().centerInside().into(iv_opponentImage);
     }
 
     /**
@@ -445,11 +451,18 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsUserScore = scoreDialog.findViewById(R.id.tv_ds_user_score);
         tv_dsOpponentScore = scoreDialog.findViewById(R.id.tv_ds_opponent_score);
         tv_dsNextQuestionTimer = scoreDialog.findViewById(R.id.tv_ds_next_timer);
+
+        iv_dsUser = scoreDialog.findViewById(R.id.iv_ds_user);
+        iv_dsOpponent = scoreDialog.findViewById(R.id.iv_ds_opponent);
+
         tv_dsUserName.setText(scoreMessage.getUser().getUserName());
         tv_dsOpponentName.setText(scoreMessage.getOpponent().getUserName());
         tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
         tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
-        //TODO: set user and oppenent images
+        String imageUrlUser = ServerData.PROFILE_IMAGE_API + scoreMessage.getUser().getUserName();
+        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_dsUser);
+        String imageUrlOpponent = ServerData.PROFILE_IMAGE_API + scoreMessage.getOpponent().getUserName();
+        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_dsOpponent);
     }
 
     /**
@@ -498,12 +511,20 @@ public class InGameActivity extends AppCompatActivity {
         tv_drOpponentName = resultDialog.findViewById(R.id.tv_dr_opponent_name);
         tv_drUserScore = resultDialog.findViewById(R.id.tv_dr_user_score);
         tv_drOpponentScore = resultDialog.findViewById(R.id.tv_dr_opponent_score);
+        iv_drUser = resultDialog.findViewById(R.id.iv_dr_user);
+        iv_drOpponent = resultDialog.findViewById(R.id.iv_dr_opponent);
+
         tv_drWinner.setText(resultMessage.getWinner().getUserName());
         tv_drUserName.setText(resultMessage.getUserName());
         tv_drOpponentName.setText(resultMessage.getOpponentName());
         tv_drUserScore.setText(Integer.toString(resultMessage.getUserScore()));
         tv_drOpponentScore.setText(Integer.toString(resultMessage.getOpponentScore()));
         tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
+        String imageUrlUser = ServerData.PROFILE_IMAGE_API + resultMessage.getUserName();
+        String imageUrlOpponent = ServerData.PROFILE_IMAGE_API + resultMessage.getOpponentName();
+        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_drUser);
+        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
+
         if(resultMessage.isHighScore()) {
             tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" "+ tv_drHighscore.getText());
         } else {
@@ -575,8 +596,6 @@ public class InGameActivity extends AppCompatActivity {
         gameMessage.setAnswers(answers);
 
         Log.d("Quiz", "GAMEMESSAGEOBJECT: " + gameMessage.toString());
-        // Updates Login User Instance with userId, and readyStatus //TODO: missing userimage
-        //restServiceSingleton.setUser(gameMessage.getUser());
     }
 
     protected StartMessage getStartMessageObject(String message) {
@@ -633,33 +652,35 @@ public class InGameActivity extends AppCompatActivity {
     }
 
     public void checkAnswer(Button btn_clicked) {
+        if(btn_clicked != null) {
             String chosenAnswer = btn_clicked.getText().toString();
             // if answer is correct, change buttoncolor to green
-            if(gameMessage.getAnswers().get(gameMessage.getCorrectAnswer()).equals(chosenAnswer)) {
-            Log.d("Quiz", "Richtige anwort.");
+            if (gameMessage.getAnswers().get(gameMessage.getCorrectAnswer()).equals(chosenAnswer)) {
+                Log.d("Quiz", "Richtige anwort.");
 
-            btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
-        }
+                btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_correct_answer);
+            }
             // if answer was incorrect, change buttoncolor to red and highlight button with correct answer green
             else {
-            Log.d("Quiz", "Falsche Antwort.");
-            btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
+                Log.d("Quiz", "Falsche Antwort.");
+                btn_clicked.setBackgroundResource(R.drawable.btn_rounded_corner_ingame_wrong_answer);
 
-            for (int key : gameMessage.getAnswers().keySet()) {
-                if (key == gameMessage.getCorrectAnswer()) {
-                    switch (key) {
-                        case 1:
-                            btn_answer1.setBackgroundResource(R.drawable.border);
-                            break;
-                        case 2:
-                            btn_answer2.setBackgroundResource(R.drawable.border);
-                            break;
-                        case 3:
-                            btn_answer3.setBackgroundResource(R.drawable.border);
-                            break;
-                        case 4:
-                            btn_answer4.setBackgroundResource(R.drawable.border);
-                            break;
+                for (int key : gameMessage.getAnswers().keySet()) {
+                    if (key == gameMessage.getCorrectAnswer()) {
+                        switch (key) {
+                            case 1:
+                                btn_answer1.setBackgroundResource(R.drawable.border);
+                                break;
+                            case 2:
+                                btn_answer2.setBackgroundResource(R.drawable.border);
+                                break;
+                            case 3:
+                                btn_answer3.setBackgroundResource(R.drawable.border);
+                                break;
+                            case 4:
+                                btn_answer4.setBackgroundResource(R.drawable.border);
+                                break;
+                        }
                     }
                 }
             }

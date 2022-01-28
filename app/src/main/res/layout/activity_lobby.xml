@@ -35,10 +35,10 @@
 
         <ImageView
             android:id="@+id/iv_profil"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_width="@dimen/image50dp"
+            android:layout_height="@dimen/image50dp"
+            android:layout_marginLeft="6dp"
             android:layout_marginRight="16dp"
-            android:layout_weight="1"
             tools:srcCompat="@drawable/ic_profile_w" />
 
         <TextView

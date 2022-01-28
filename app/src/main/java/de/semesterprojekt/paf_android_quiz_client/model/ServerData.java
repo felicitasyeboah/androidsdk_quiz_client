@@ -7,6 +7,8 @@ public class ServerData {
 
     public final static String SERVER_ADDRESS = "192.168.77.106:8080";
 
+    public final static String PROFILE_IMAGE_API = "http://" + SERVER_ADDRESS + "/profileImage/";
+
     public final static String STOMP_TOPIC = "/user/topic/game";
 
     public final static String STOMP_ENDPOINT = "/websocket";

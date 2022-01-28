@@ -7,8 +7,8 @@
     android:layout_marginHorizontal="8dp">
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_hs_user_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/image80dp"
+        android:layout_height="@dimen/image80dp"
         android:adjustViewBounds="true"
         android:layout_marginTop="8dp"
         android:scaleType="fitCenter"

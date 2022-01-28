@@ -46,7 +46,7 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         String date = Helper.formatDate(currentHighscore.getTimeStamp()) + " Uhr";
         String username = "User: " + currentHighscore.getUser().getUserName();
         String score = "Score: " + currentHighscore.getUserScore();
-        String url = "http://" + ServerData.SERVER_ADDRESS + "/files/" + currentHighscore.getUser().getProfileImage();
+        String url = ServerData.PROFILE_IMAGE_API + currentHighscore.getUser().getUserName();
         String pos = Integer.toString(position + 1);
         holder.tv_hsPos.setText(pos);
         holder.tv_hsDate.setText(date);

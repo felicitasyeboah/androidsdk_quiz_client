@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="image80dp" type="dimen">80dp</item>
+    <item name="image70dp" type="dimen">70dp</item>
+    <item name="image50dp" type="dimen">50dp</item>
+    <item name="image25dp" type="dimen">20dp</item>
+</resources>
