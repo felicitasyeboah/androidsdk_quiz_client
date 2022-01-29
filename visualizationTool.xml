@@ -7,8 +7,8 @@
           <list>
             <CustomConfigurationAttribute>
               <option name="apiLevel" value="31" />
-              <option name="deviceId" value="Nexus 5X" />
-              <option name="name" value="Preview" />
+              <option name="deviceId" value="4.7in WXGA" />
+              <option name="name" value="4.7" />
               <option name="nightMode" value="NOTNIGHT" />
               <option name="orientation" value="PORTRAIT" />
               <option name="theme" value="Theme.QuizPatternsAndFrameworks" />
@@ -16,8 +16,8 @@
             </CustomConfigurationAttribute>
             <CustomConfigurationAttribute>
               <option name="apiLevel" value="31" />
-              <option name="deviceId" value="4.7in WXGA" />
-              <option name="name" value="4.7" />
+              <option name="deviceId" value="Nexus 5X" />
+              <option name="name" value="5.2" />
               <option name="nightMode" value="NOTNIGHT" />
               <option name="orientation" value="PORTRAIT" />
               <option name="theme" value="Theme.QuizPatternsAndFrameworks" />
@@ -27,6 +27,7 @@
         </option>
         <option name="firstTimeOpen" value="false" />
         <option name="showDecoration" value="true" />
+        <option name="visible" value="true" />
       </GlobalState>
     </option>
   </component>
