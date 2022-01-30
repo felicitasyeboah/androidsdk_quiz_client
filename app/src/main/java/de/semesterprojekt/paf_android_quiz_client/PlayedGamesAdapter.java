@@ -1,6 +1,7 @@
 package de.semesterprojekt.paf_android_quiz_client;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import de.semesterprojekt.paf_android_quiz_client.model.PlayedGames;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
@@ -54,10 +58,10 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
         holder.tv_historyDate.setText(date);
         holder.tv_historyUserName.setText(username);
         holder.tv_historyUserScore.setText(userscore);
-        Picasso.get().load(urlUserImage).fit().centerInside().into(holder.iv_historyUserImage);
+        Picasso.get().load(urlUserImage).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.iv_historyUserImage);
         holder.tv_historyOpponentName.setText(opponentname);
         holder.tv_historyOpponentScore.setText(opponentscore);
-        Picasso.get().load(urlOpponentImage).fit().centerInside().into(holder.iv_historyOpponentImage);
+        Picasso.get().load(urlOpponentImage).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.iv_historyOpponentImage);
 
     }
 
@@ -72,7 +76,7 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
     public static class PlayedGamesViewHolder extends RecyclerView.ViewHolder {
         TextView tv_historyDate, tv_historyUserName, tv_historyUserScore,
                 tv_historyOpponentName, tv_historyOpponentScore;
-        ShapeableImageView iv_historyUserImage, iv_historyOpponentImage;
+        CircleImageView iv_historyUserImage, iv_historyOpponentImage;
 
         public PlayedGamesViewHolder(@NonNull View itemView) {
             super(itemView);

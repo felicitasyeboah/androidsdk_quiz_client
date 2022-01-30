@@ -7,17 +7,16 @@
     android:paddingBottom="16dp"
     android:layout_marginHorizontal="8dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_history_user_image"
         android:layout_width="@dimen/image50dp"
         android:layout_height="@dimen/image50dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_logo"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/RoundCorner" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
@@ -100,17 +99,16 @@
         app:layout_constraintEnd_toStartOf="@+id/iv_history_opponent_image"
         app:layout_constraintStart_toEndOf="@+id/tv_history_user_score"
         app:layout_constraintTop_toBottomOf="@id/tv_history_opponent_name"/>
-    <com.google.android.material.imageview.ShapeableImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_history_opponent_image"
         android:layout_width="@dimen/image50dp"
         android:layout_height="@dimen/image50dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         android:src="@drawable/ic_logo"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/RoundCorner" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
     <View
