@@ -70,6 +70,8 @@ public class RestServiceClient {
             Response.ErrorListener errorListener = new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    //TODO: Time out und authentification errors dem user melden beim login
                     Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
                 }
             };
@@ -110,7 +112,7 @@ public class RestServiceClient {
                     Toast.makeText(ctx, "JSON Exception oben: " + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             };
-
+            //TODO: TimeOut error an user ausgeben
             Response.ErrorListener errorListener = error -> Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
@@ -138,6 +140,7 @@ public class RestServiceClient {
                 e.printStackTrace();
             }
         };
+        //TODO: Authentification error aus user ausgeben, zum neu einloggen
 
         Response.ErrorListener errorListener = error -> Log.d("GetRequest", error.toString());
 
@@ -160,17 +163,19 @@ public class RestServiceClient {
      * @param userToken userToken, user received when he logs in
      * @param listener reacts on the gethistory-response from the restAPI
      */
-    public void getHistory(String userToken, RestServiceListener listener) {
+    public void getPlayedGames(String userToken, RestServiceListener listener) {
         String url = BASE_URL + "/playedGames";
 
         Response.Listener<JSONObject> successListener = response -> {
             try {
-                listener.onGetHistory(response);
+                listener.onGetPlayedGames(response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         };
         Response.ErrorListener errorListener = error -> {
+            error.printStackTrace();
+            //TODO: Authentification error aus user ausgeben, zum neu einloggen
             Log.d("GetRequest", error.toString());
         };
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, successListener, errorListener) {
@@ -184,7 +189,7 @@ public class RestServiceClient {
                 return headers;
             }
         };
-
+        //TODO: Multipart request hier einfuegen fuer profilbild upload
         requestQueue.add(request);
     }
 

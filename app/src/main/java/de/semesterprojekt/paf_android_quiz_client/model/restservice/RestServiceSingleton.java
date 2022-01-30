@@ -78,8 +78,8 @@ public class RestServiceSingleton {
 
     }
 
-    public void getHistory(String userToken, RestServiceListener listener) {
-        restServiceClient.getHistory(userToken, listener);
+    public void getPlayedGames(String userToken, RestServiceListener listener) {
+        restServiceClient.getPlayedGames(userToken, listener);
     }
 
 

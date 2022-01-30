@@ -17,7 +17,7 @@ public abstract class RestServiceListener {
     public void onGetHighScores(JSONArray highScores) {
     }
 
-    public void onGetHistory(JSONObject history) {
+    public void onGetPlayedGames(JSONObject history) {
 
     }
     public void onGetImageFiles(JSONArray getImageFiles) {}
