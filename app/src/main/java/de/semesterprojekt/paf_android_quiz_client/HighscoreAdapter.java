@@ -10,10 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import de.semesterprojekt.paf_android_quiz_client.model.Highscore;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 
@@ -52,7 +55,10 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         holder.tv_hsDate.setText(date);
         holder.tv_hsUserName.setText(username);
         holder.tv_hsUserScore.setText(score);
-        Picasso.get().load(url).fit().centerInside().into(holder.iv_hsUserImage);
+        Picasso.get().load(url).fit().centerInside()
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
+                networkPolicy(NetworkPolicy.NO_CACHE).
+                into(holder.iv_hsUserImage);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
     public static class HighscoreViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_hsDate, tv_hsUserName, tv_hsUserScore, tv_hsPos;
-        ShapeableImageView iv_hsUserImage;
+        CircleImageView iv_hsUserImage;
 
 
         public HighscoreViewHolder(@NonNull View itemView) {

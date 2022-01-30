@@ -5,17 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="8dp"
     android:layout_marginHorizontal="8dp">
-    <com.google.android.material.imageview.ShapeableImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_hs_user_image"
         android:layout_width="@dimen/image80dp"
         android:layout_height="@dimen/image80dp"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="8dp"
-        android:scaleType="fitCenter"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_logo"
-        app:shapeAppearanceOverlay="@style/RoundCorner"/>
+        android:src="@drawable/ic_logo"/>
 
 
     <TextView

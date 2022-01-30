@@ -57,13 +57,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_dr_user"
-                app:srcCompat="@drawable/ic_user_default"
                 android:layout_width="@dimen/image70dp"
                 android:layout_height="@dimen/image70dp"
                 android:layout_margin="10dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="2dp"
+                android:src="@drawable/ic_user_default" />
 
             <TextView
                 android:id="@+id/tv_dr_user_name"
@@ -95,13 +97,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_dr_opponent"
-                app:srcCompat="@drawable/ic_user_default"
                 android:layout_width="@dimen/image70dp"
                 android:layout_height="@dimen/image70dp"
                 android:layout_margin="10dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="2dp"
+                android:src="@drawable/ic_user_default"  />
 
             <TextView
                 android:id="@+id/tv_dr_opponent_name"

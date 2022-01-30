@@ -15,37 +15,45 @@
         android:paddingVertical="32dp"
         android:src="@drawable/ic_logo"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/ll_profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <LinearLayout
         android:id="@+id/ll_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/green_logo"
         android:clickable="true"
-        android:gravity="right"
         android:focusable="false"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:background="@color/gray_light"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start_game"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_profil"
             android:layout_width="@dimen/image50dp"
             android:layout_height="@dimen/image50dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="16dp"
-            tools:srcCompat="@drawable/ic_profile_w" />
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="16dp"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="2dp"
+            app:civ_circle_background_color="@color/white"
+            android:background="@drawable/ic_profile_w"/>
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingRight="6dp"
+            android:layout_marginEnd="6dp"
             android:text="Hello"
             android:textColor="@color/white"
             android:textSize="22sp"
@@ -53,7 +61,7 @@
 
         <TextView
             android:id="@+id/tv_lobbyUsername"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
@@ -65,58 +73,86 @@
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_highscore"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-
-        android:background="@drawable/btn_rounded_corner_ingame"
-        android:text="Highscore"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="32sp"
-        android:textStyle="normal"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_profile" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_profile"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/btn_rounded_corner_ingame"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="16dp"
         android:text="Profile"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="32sp"
+        android:textSize="24sp"
         android:textStyle="normal"
-        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btn_history"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_profile" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start_game" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_history"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/btn_rounded_corner_ingame"
+        android:paddingVertical="16dp"
+        android:text="History"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/btn_highscore"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_profile" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_highscore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_rounded_corner_ingame"
+        android:paddingVertical="16dp"
+        android:text="Highscore"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_history" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_start_game"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/btn_rounded_corner_yellow"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingVertical="16dp"
         android:text="Start Game"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="32sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_profile" />
 

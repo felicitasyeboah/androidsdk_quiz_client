@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
@@ -30,7 +32,7 @@ public class LobbyActivity extends AppCompatActivity {
     TextView tv_username;
     LinearLayout ll_profile;
     ImageView iv_user_icon;
-    Button btn_startGame;
+    Button btn_startGame, btn_history, btn_profile, btn_highScore;
     SessionManager sessionManager;
     String userToken;
     String userName;
@@ -64,7 +66,25 @@ public class LobbyActivity extends AppCompatActivity {
         ll_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getProfile();
+                goToProfile();
+            }
+        });
+        btn_history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToHistory();
+            }
+        });
+        btn_highScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToHighScores();
+            }
+        });
+        btn_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToProfile();
             }
         });
 
@@ -92,7 +112,9 @@ public class LobbyActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.profile) {
-            getProfile();
+            goToProfile();
+        } else if (itemId == R.id.history) {
+            goToHistory();
         } else if (itemId == R.id.highscore) {
             goToHighScores();
         } else if (itemId == R.id.logout) {
@@ -114,7 +136,10 @@ public class LobbyActivity extends AppCompatActivity {
         iv_user_icon = (ImageView) findViewById(R.id.iv_profil);
 
         ll_profile = findViewById(R.id.ll_profile);
+        btn_history = findViewById(R.id.btn_history);
         btn_startGame = findViewById(R.id.btn_start_game);
+        btn_highScore = findViewById(R.id.btn_highscore);
+        btn_profile = findViewById(R.id.btn_profile);
     }
 
     /**
@@ -122,7 +147,7 @@ public class LobbyActivity extends AppCompatActivity {
      */
     protected void setViews() {
         tv_username.setText(userName);
-        Picasso.get().load(ServerData.PROFILE_IMAGE_API + userName).fit().centerInside().into(iv_user_icon);
+        Picasso.get().load(ServerData.PROFILE_IMAGE_API + userName).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_user_icon);
     }
 
 
@@ -133,14 +158,15 @@ public class LobbyActivity extends AppCompatActivity {
         // move to highscoreview
         Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
         startActivity(intent);
-
     }
 
-    private void getProfile() {
-        Toast.makeText(LobbyActivity.this, "Clicked on Profile", Toast.LENGTH_LONG).show();
+    private void goToProfile() {
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
 
+    private void goToHistory() {
+        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+    }
     /**
      * Called when the user taps the Start Game button
      */
@@ -150,7 +176,7 @@ public class LobbyActivity extends AppCompatActivity {
     }
 
     /**
-     * deletes jwt and user from storage, so tha the user has to log in again to play
+     * deletes jwt and user from storage, so that the user has to log in again to play
      */
     private void logout() {
         sessionManager.logout();
