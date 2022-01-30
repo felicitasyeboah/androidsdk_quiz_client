@@ -72,6 +72,7 @@ public class InGameActivity extends AppCompatActivity {
     Dialog resultDialog;
     Dialog quitSessionDialog;
     Dialog answerDialog;
+    Dialog sessionExpiredDialog;
 
     public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
     final StompClient stompSocket = new StompClient(URI.create(WS_URL + ServerData.STOMP_ENDPOINT));
@@ -117,6 +118,7 @@ public class InGameActivity extends AppCompatActivity {
         resultDialog = getResultDialog();
         quitSessionDialog = getQuitSessionDialog();
         answerDialog = getAnswerDialog();
+        sessionExpiredDialog = getSessionExpiredDialog();
     }
     /**
      * Get views from layouts
@@ -285,6 +287,13 @@ public class InGameActivity extends AppCompatActivity {
                             // init QuitSession Dialog
                             showDialog(quitSessionDialog);
                             break;
+
+                        case INVALID_TOKEN_MESSAGE:
+                            // show sessione xpired dialog and logs out the user
+                            showDialog(sessionExpiredDialog);
+
+                            break;
+
                     }
                     Log.d("Quiz", "BODY: " + message);
 
@@ -322,6 +331,21 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer2.setOnClickListener(answerButtonClickListener);
         btn_answer3.setOnClickListener(answerButtonClickListener);
         btn_answer4.setOnClickListener(answerButtonClickListener);
+    }
+
+    protected Dialog getSessionExpiredDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // clears session data and brings user back to the app startscreen to log in again
+                sessionManager.logout();
+            }
+        });
+        builder.setMessage("Your session has expired. Please log in again.")
+                .setTitle("Session expired");
+
+        builder.setCancelable(false);
+        return builder.create();
     }
 
     /**
