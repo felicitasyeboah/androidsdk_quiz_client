@@ -1,10 +1,16 @@
 package de.semesterprojekt.paf_android_quiz_client;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -55,6 +61,44 @@ public class HighscoreActivity extends AppCompatActivity {
 
         getHighScores();
     }
+    /**
+     * Displays Menu in the upper right corner in App-/Toolbar
+     *
+     * @param menu main menu
+     * @return boolean
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.sub_menu, menu);
+        return true;
+    }
+
+    /**
+     * @param item menu item
+     * @return boolean
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.lobby) {
+            goToLobby();
+        }
+        if (itemId == R.id.profile) {
+            goToProfile();
+        } else if (itemId == R.id.history) {
+            goToHistory();
+        } else if (itemId == R.id.highscore) {
+            goToHighScores();
+        } else if (itemId == R.id.logout) {
+            logout();
+        } else if (itemId == R.id.quit) {
+            //TODO: APP schließen!! Wenn nicht zu loesen, dann exit aus menue loeschen
+            finish();
+            System.exit(0);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /**
      * Gets Highscorelist from Rest-API and puts it into the recyclerview
@@ -85,6 +129,33 @@ public class HighscoreActivity extends AppCompatActivity {
         // Get JWT userToken from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }
+    /**
+     * Called when the user taps the Highscore button
+     */
+    private void goToHighScores() {
+        // move to highscoreview
+        Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
+        startActivity(intent);
+    }
 
+    private void goToProfile() {
+        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+    }
+
+    private void goToHistory() {
+        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+    }
+    private void goToLobby() {
+        Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * deletes jwt and user from storage, so that the user has to log in again to play
+     */
+    private void logout() {
+        sessionManager.logout();
+        Toast.makeText(getApplicationContext(), "Successfully logged out.", Toast.LENGTH_SHORT).show();
+    }
 
 }
