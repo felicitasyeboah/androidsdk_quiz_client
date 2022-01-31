@@ -309,11 +309,22 @@ public class InGameActivity extends AppCompatActivity {
         // Answer Button Listener
         View.OnClickListener answerButtonClickListener = view -> {
             Button answerButton = (Button) view;
+
             // calculate time the user needed to answer
             int timeNeeded = GameConfig.SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft();
-            btn_clicked = answerButton; // to check answer outside of clicklistener
+
+            // store answerbutton to evaluate answer outside of the clicklistener method
+            btn_clicked = answerButton;
+
             // highlight selected button
             answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_yellow);
+
+            // set Button to be not clickable, to avoid to highlight more than one button
+            btn_answer1.setClickable(false);
+            btn_answer2.setClickable(false);
+            btn_answer3.setClickable(false);
+            btn_answer4.setClickable(false);
+
             // send selected answer and time to pick the answer to server
             sendAnswer(answerButton, timeNeeded);
 
@@ -408,10 +419,11 @@ public class InGameActivity extends AppCompatActivity {
         tv_question.setText(gameMessage.getQuestion());
         tv_category.setText(gameMessage.getCategory());
 
-        btn_answer1.setEnabled(true);
-        btn_answer2.setEnabled(true);
-        btn_answer3.setEnabled(true);
-        btn_answer4.setEnabled(true);
+        // Set Buttons back to be clickable
+        btn_answer1.setClickable(true);
+        btn_answer2.setClickable(true);
+        btn_answer3.setClickable(true);
+        btn_answer4.setClickable(true);
 
         tv_userName.setText(gameMessage.getUser().getUserName());
         tv_opponentName.setText(gameMessage.getOpponent().getUserName());
