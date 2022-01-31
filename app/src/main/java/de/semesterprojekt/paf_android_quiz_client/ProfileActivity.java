@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
@@ -20,11 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.MemoryPolicy;
@@ -34,16 +30,12 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.VolleyMultipartRequest;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -57,8 +49,6 @@ public class ProfileActivity extends AppCompatActivity {
     FloatingActionButton fab_changeProfileImage;
     Button btn_history;
 
-    // ###
-    private final static String ROOT_URL = "http://192.168.77.106:8080/upload";
     Bitmap bitmap;
 
     @Override
@@ -74,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         getSesssionData();
         initViews();
-        String url = ServerData.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getString(R.string.username));
+        String url = ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getString(R.string.username));
         Picasso.get().load(url).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_profile_image);
 
         fab_changeProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -111,52 +101,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void uploadImage(Bitmap bitmap) {
 
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ROOT_URL,
-                new Response.Listener<NetworkResponse>() {
-                    @Override
-                    public void onResponse(NetworkResponse response) {
-                        try {
-                            JSONObject obj = new JSONObject(new String(response.data));
-                            Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e("GotError", "" + error.getMessage());
-                    }
-                }) {
+        final RestServiceSingleton restServiceSingleton = RestServiceSingleton.getInstance(ProfileActivity.this.getApplication());
+        // get RestService instance and request playedGames from API
+        restServiceSingleton.uploadImage(userToken, bitmap, new RestServiceListener() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Accept", "application/json");
-                headers.put("Authorization", "Bearer " + userToken);
-                return headers;
+            public void onSessionExpired() {
+                super.onSessionExpired();
+                Dialog dialog = Helper.getSessionExpiredDialog(ProfileActivity.this);
+                dialog.show();
             }
-
-            @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                long imagename = System.currentTimeMillis();
-                params.put("file", new DataPart(imagename + ".png", getFileDataFromDrawable(bitmap)));
-                return params;
-            }
-        };
-
-        //adding the request to volley
-        Volley.newRequestQueue(this).add(volleyMultipartRequest);
+        });
 
     }
 
-    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
     /**
      * Displays Menu in the upper right corner in App-/Toolbar
      *
@@ -179,8 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         if (itemId == R.id.lobby) {
             goToLobby();
-        }
-        if (itemId == R.id.profile) {
+        } else if (itemId == R.id.profile) {
             goToProfile();
         } else if (itemId == R.id.history) {
             goToHistory();

@@ -1,6 +1,7 @@
-package de.semesterprojekt.paf_android_quiz_client.model.restservice;
+package de.semesterprojekt.paf_android_quiz_client.restservice;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import de.semesterprojekt.paf_android_quiz_client.model.User;
 
@@ -32,10 +33,6 @@ public class RestServiceSingleton {
     Activity context. This ensures that the RequestQueue will last for the lifetime of your app,
     instead of being recreated every time the activity is recreated (for example, when the user
     rotates the device). */
-
-    // DataServiceSingleton or RequestSingleton
-
-    // Singleton
 
     /**
      * Returns the the RestServiceSingleton instance, if one already exists.
@@ -75,11 +72,14 @@ public class RestServiceSingleton {
 
     public void getHighScores(String userToken, RestServiceListener listener) {
         restServiceClient.getHighScores(userToken, listener);
-
     }
 
     public void getPlayedGames(String userToken, RestServiceListener listener) {
         restServiceClient.getPlayedGames(userToken, listener);
+    }
+
+    public void uploadImage(String userToken, Bitmap bitmap, RestServiceListener listener) {
+        restServiceClient.uploadImage(userToken, bitmap, listener);
     }
 
 

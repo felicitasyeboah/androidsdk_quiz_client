@@ -1,11 +1,12 @@
-package de.semesterprojekt.paf_android_quiz_client.model.restservice;
+package de.semesterprojekt.paf_android_quiz_client.restservice;
 
-import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,8 +23,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.semesterprojekt.paf_android_quiz_client.Helper;
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
 
 
 /**
@@ -30,10 +32,9 @@ import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
  */
 public class RestServiceClient {
 
-    // Base URL to Rest API Server
-    public static final String BASE_URL = "http://" + ServerData.SERVER_ADDRESS;
     private final Context ctx;
     private final RequestQueue requestQueue;
+    Gson gson = new Gson();
 
     //Constructor
     public RestServiceClient(Context context) {
@@ -49,7 +50,6 @@ public class RestServiceClient {
      * @param listener reacts on loginresponse from the restAPI
      */
     public void login(String username, String password, RestServiceListener listener) {
-        String url = BASE_URL + "/auth/login";
 
         JSONObject jsonObject = new JSONObject();
 
@@ -59,8 +59,6 @@ public class RestServiceClient {
             jsonObject.put("password", password);
             Response.Listener<JSONObject> successListener = response -> {
                 try {
-                    /*response.put("userName", username);
-                    User user = User.getUser(response);*/
                     listener.onLogin(response.getString("token"));
 
                 } catch (JSONException e) {
@@ -78,7 +76,7 @@ public class RestServiceClient {
                 }
             };
 
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ServerConfig.LOGIN_API, jsonObject, successListener, errorListener);
             requestQueue.add(request);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -95,7 +93,6 @@ public class RestServiceClient {
      */
     public void register(String username, String password, RestServiceListener listener) {
 
-        String url = BASE_URL + "/auth/register";
         JSONObject jsonObject = new JSONObject();
 
         // JSON Request
@@ -117,7 +114,7 @@ public class RestServiceClient {
             //TODO: TimeOut error an user ausgeben
             Response.ErrorListener errorListener = error -> Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
 
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonObject, successListener, errorListener);
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ServerConfig.REGISTER_API, jsonObject, successListener, errorListener);
             requestQueue.add(request);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -132,7 +129,6 @@ public class RestServiceClient {
      * @param listener reacts on the gethighscore-response from the restAPI
      */
     public void getHighScores(String userToken, RestServiceListener listener) {
-        String url = BASE_URL + "/highscore";
 
         Response.Listener<JSONArray> successListener = response -> {
 
@@ -149,7 +145,7 @@ public class RestServiceClient {
             Log.d("GetRequest", error.toString());
         };
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, successListener, errorListener) {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, ServerConfig.HIGHSCORE_API, null, successListener, errorListener) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -169,7 +165,6 @@ public class RestServiceClient {
      * @param listener reacts on the gethistory-response from the restAPI
      */
     public void getPlayedGames(String userToken, RestServiceListener listener) {
-        String url = BASE_URL + "/playedGames";
 
         Response.Listener<JSONObject> successListener = response -> {
             try {
@@ -185,7 +180,7 @@ public class RestServiceClient {
             Log.d("GetRequest", error.toString());
             error.printStackTrace();
         };
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, successListener, errorListener) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ServerConfig.PLAYED_GAMES_API,null, successListener, errorListener) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -196,8 +191,50 @@ public class RestServiceClient {
                 return headers;
             }
         };
-        //TODO: Multipart request hier einfuegen fuer profilbild upload
         requestQueue.add(request);
+    }
+
+    public void uploadImage(String userToken, Bitmap bitmap, RestServiceListener listener) {
+        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ServerConfig.UPLOAD_FILE_API,
+                new Response.Listener<NetworkResponse>() {
+                    @Override
+                    public void onResponse(NetworkResponse response) {
+                        try {
+                            JSONObject obj = new JSONObject(new String(response.data));
+                            Toast.makeText(ctx, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(error instanceof AuthFailureError) {
+                            listener.onSessionExpired();
+                        }
+                        Log.e("GotError", "" + error.getMessage());
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+                headers.put("Authorization", "Bearer " + userToken);
+                return headers;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                long imagename = System.currentTimeMillis();
+                params.put("file", new DataPart(imagename + ".png", Helper.getFileDataFromDrawable(bitmap)));
+                return params;
+            }
+        };
+
+        //adding the request to volley
+        requestQueue.add(volleyMultipartRequest);
     }
 
 }
