@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client;
+package de.semesterprojekt.paf_android_quiz_client.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -17,8 +16,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
+import de.semesterprojekt.paf_android_quiz_client.R;
 import de.semesterprojekt.paf_android_quiz_client.model.Highscore;
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
 
 /**
  * Adapter class for the recyclerview in the Highscore Activity Layout
@@ -49,7 +50,7 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         String date = Helper.formatDate(currentHighscore.getTimeStamp()) + " Uhr";
         String username = "User: " + currentHighscore.getUser().getUserName();
         String score = "Score: " + currentHighscore.getUserScore();
-        String url = ServerData.PROFILE_IMAGE_API + currentHighscore.getUser().getUserName();
+        String url = ServerConfig.PROFILE_IMAGE_API + currentHighscore.getUser().getUserName();
         String pos = Integer.toString(position + 1);
         holder.tv_hsPos.setText(pos);
         holder.tv_hsDate.setText(date);

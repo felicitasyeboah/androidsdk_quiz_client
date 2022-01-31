@@ -1,32 +1,19 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
 /**
- * represents the logged in User and his token and his opponent
+ * represents a simple user with name and profileimage-name
  */
 public class User {
 
-    private String userName = "test";
+    private String userName;
     private String profileImage;
 
 
-    //Contructors
-
+    //Contructor
     public User(String userName, String profileImage) {
         this.userName = userName;
         this.profileImage = profileImage;
     }
-
-    /**
-     * Takes an JSONObject and returns an User Object
-     *
-     */
-//    public static User getUser(JSONObject jsonObject) throws JSONException {
-//        String userName = jsonObject.getString("userName");
-//        String token = jsonObject.getString("token");
-//
-//        return new User(userName, token);
-//
-//    }
 
     //TODO: prüfen, warum habe ich das nochmal drin?
     @Override
@@ -55,12 +42,4 @@ public class User {
         this.userName = userName;
     }
 
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImageName(String profileImage) {
-        this.profileImage = profileImage;
-    }
 }

@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.semesterprojekt.paf_android_quiz_client.model.PlayedGames;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.adapter.PlayedGamesAdapter;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 public class HistoryActivity extends AppCompatActivity {
     SessionManager sessionManager;

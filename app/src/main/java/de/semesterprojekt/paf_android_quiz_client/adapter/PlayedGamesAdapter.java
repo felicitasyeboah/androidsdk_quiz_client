@@ -1,7 +1,6 @@
-package de.semesterprojekt.paf_android_quiz_client;
+package de.semesterprojekt.paf_android_quiz_client.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -18,9 +16,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
+import de.semesterprojekt.paf_android_quiz_client.R;
 import de.semesterprojekt.paf_android_quiz_client.model.PlayedGames;
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
+import de.semesterprojekt.paf_android_quiz_client.SessionManager;
 
 /**
  * Adapter class for recyclerview in the Profile Activity Layout
@@ -50,10 +50,10 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
         String date = Helper.formatDate(current.getTimeStamp()) + " Uhr";
         String username = sessionManager.getUserDatafromSession().get(context.getString(R.string.username));
         String userscore = Integer.toString(current.getUserScore());
-        String urlUserImage = ServerData.PROFILE_IMAGE_API + username;
+        String urlUserImage = ServerConfig.PROFILE_IMAGE_API + username;
         String opponentname = current.getOpponent().getUserName();
         String opponentscore = Integer.toString(current.getOpponentScore());
-        String urlOpponentImage = ServerData.PROFILE_IMAGE_API + opponentname;
+        String urlOpponentImage = ServerConfig.PROFILE_IMAGE_API + opponentname;
 
         holder.tv_historyDate.setText(date);
         holder.tv_historyUserName.setText(username);

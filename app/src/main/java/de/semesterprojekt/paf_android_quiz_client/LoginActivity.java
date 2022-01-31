@@ -11,9 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
 
 /**
  * This class controlls the LoginView
@@ -118,8 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(LoginActivity.this, "User " + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " logged in", Toast.LENGTH_SHORT).show();
         Log.d("Quiz", sessionManager.getUserDatafromSession().toString());
     }
-
-    //TODO: Userobject erst in shared pref instanzieren?? Was ist mit if (user!= null);
 }
 
 

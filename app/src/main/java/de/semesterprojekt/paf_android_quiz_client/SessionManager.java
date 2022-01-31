@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.model;
+package de.semesterprojekt.paf_android_quiz_client;
 
 import android.content.Context;
 import android.content.Intent;

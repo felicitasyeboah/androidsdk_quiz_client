@@ -19,13 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.semesterprojekt.paf_android_quiz_client.model.stomp.client;
+package de.semesterprojekt.paf_android_quiz_client.stomp.client;
 
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompCommand;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompFrame;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompConnectionListener;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.listener.StompMessageListener;
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompCommand;
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompFrame;
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompHeader;
+import de.semesterprojekt.paf_android_quiz_client.stomp.client.listener.StompConnectionListener;
+import de.semesterprojekt.paf_android_quiz_client.stomp.client.listener.StompMessageListener;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;

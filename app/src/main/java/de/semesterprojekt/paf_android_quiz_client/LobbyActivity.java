@@ -19,8 +19,7 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
 
 
 /**
@@ -144,7 +143,7 @@ public class LobbyActivity extends AppCompatActivity {
      */
     protected void setViews() {
         tv_username.setText(userName);
-        Picasso.get().load(ServerData.PROFILE_IMAGE_API + userName).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_user_icon);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + userName).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_user_icon);
     }
 
 

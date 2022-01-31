@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.model.restservice;
+package de.semesterprojekt.paf_android_quiz_client.restservice;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -57,7 +57,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
                 dataParse(dos, data);
             }
 
-            // close multipart form data after text and file data
+            // close multipart form data after file data
             dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
             return bos.toByteArray();
@@ -157,7 +157,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         public DataPart(byte[] data) {
             content = data;
         }
-
         public DataPart(String name, byte[] data) {
             fileName = name;
             content = data;

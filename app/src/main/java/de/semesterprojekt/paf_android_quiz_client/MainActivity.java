@@ -33,4 +33,3 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 }
-//TODO: thinking about implementing ViewModels

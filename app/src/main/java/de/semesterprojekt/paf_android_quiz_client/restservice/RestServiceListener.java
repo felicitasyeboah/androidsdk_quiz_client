@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.model.restservice;
+package de.semesterprojekt.paf_android_quiz_client.restservice;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

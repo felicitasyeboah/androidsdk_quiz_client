@@ -19,39 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package de.semesterprojekt.paf_android_quiz_client.model.stomp;
+package de.semesterprojekt.paf_android_quiz_client.stomp.client.listener;
+
+
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompFrame;
 
 /**
- * STOMP commands.
+ * STOMP message subscription listener interface.
  */
-public enum StompCommand {
-    CONNECT("CONNECT"),
-    CONNECTED("CONNECTED"),
-    DISCONNECT("DISCONNECT"),
-    ERROR("ERROR"),
-    MESSAGE("MESSAGE"),
-    RECEIPT("RECEIPT"),
-    SEND("SEND"),
-    SUBSCRIBE("SUBSCRIBE"),
-    UNSUBSCRIBE("UNSUBSCRIBE");
+public interface StompMessageListener {
 
-    private final String value;
-
-    public static StompCommand fromValue(String value) {
-        for (StompCommand c : StompCommand.values()) {
-            if (c.value.equals(value)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException("Unknown STOMP command: " + value);
-    }
-
-    private StompCommand(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
+    /**
+     * Subscription message received callback.
+     *
+     * @param stompFrame STOMP message frame
+     */
+    void onMessage(StompFrame stompFrame);
 }

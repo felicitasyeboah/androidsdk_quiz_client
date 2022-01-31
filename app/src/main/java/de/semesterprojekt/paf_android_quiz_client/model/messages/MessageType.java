@@ -1,4 +1,4 @@
-package de.semesterprojekt.paf_android_quiz_client.model.game;
+package de.semesterprojekt.paf_android_quiz_client.model.messages;
 
 /**
  * defines the types of the messages a game sends

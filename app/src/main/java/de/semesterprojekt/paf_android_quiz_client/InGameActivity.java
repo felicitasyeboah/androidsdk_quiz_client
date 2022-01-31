@@ -39,17 +39,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.game.dto.GameMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.game.MessageType;
-import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ResultMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.game.dto.ScoreMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.game.dto.StartMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.game.dto.TimerMessage;
-import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.StompHeader;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompClient;
-import de.semesterprojekt.paf_android_quiz_client.model.stomp.client.StompSubscription;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.GameMessage;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.MessageType;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.ResultMessage;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.ScoreMessage;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.StartMessage;
+import de.semesterprojekt.paf_android_quiz_client.model.messages.TimerMessage;
+import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
+import de.semesterprojekt.paf_android_quiz_client.stomp.StompHeader;
+import de.semesterprojekt.paf_android_quiz_client.stomp.client.StompClient;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 public class InGameActivity extends AppCompatActivity {
     SessionManager sessionManager;
@@ -72,10 +71,8 @@ public class InGameActivity extends AppCompatActivity {
     Dialog resultDialog;
     Dialog quitSessionDialog;
     Dialog answerDialog;
-    Dialog sessionExpiredDialog;
 
-    public final static String WS_URL = "ws://" + ServerData.SERVER_ADDRESS;
-    final StompClient stompSocket = new StompClient(URI.create(WS_URL + ServerData.STOMP_ENDPOINT));
+    final StompClient stompSocket = new StompClient(URI.create(ServerConfig.WEBSOCKET_URL + ServerConfig.STOMP_ENDPOINT));
 
     String userToken;
     Gson gson = new Gson();
@@ -104,7 +101,7 @@ public class InGameActivity extends AppCompatActivity {
         initDialogs();
         initViews();
         connectToStompSocket();
-        subscribeToStompTopic(ServerData.STOMP_TOPIC);
+        subscribeToStompTopic(ServerConfig.STOMP_TOPIC);
         setOnClickListeners();
     }
 
@@ -118,7 +115,6 @@ public class InGameActivity extends AppCompatActivity {
         resultDialog = getResultDialog();
         quitSessionDialog = getQuitSessionDialog();
         answerDialog = getAnswerDialog();
-        sessionExpiredDialog = getSessionExpiredDialog();
     }
     /**
      * Get views from layouts
@@ -153,8 +149,6 @@ public class InGameActivity extends AppCompatActivity {
 
         // Layout
         layoutInGameView = findViewById(R.id.lo_inGame);
-
-
     }
 
     /**
@@ -283,17 +277,15 @@ public class InGameActivity extends AppCompatActivity {
                             setResultDialog();
                             break;
                         case DISCONNECT_MESSAGE:
-
                             // init QuitSession Dialog
                             showDialog(quitSessionDialog);
                             break;
 
                         case INVALID_TOKEN_MESSAGE:
-                            // show sessione xpired dialog and logs out the user
-                            showDialog(sessionExpiredDialog);
-
+                            // show sessione expired dialog and logs out the user on submit
+                            Dialog dialog = Helper.getSessionExpiredDialog(InGameActivity.this);
+                            dialog.show();
                             break;
-
                     }
                     Log.d("Quiz", "BODY: " + message);
 
@@ -333,20 +325,6 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer4.setOnClickListener(answerButtonClickListener);
     }
 
-    protected Dialog getSessionExpiredDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // clears session data and brings user back to the app startscreen to log in again
-                sessionManager.logout();
-            }
-        });
-        builder.setMessage("Your session has expired. Please log in again.")
-                .setTitle("Session expired");
-
-        builder.setCancelable(false);
-        return builder.create();
-    }
 
     /**
      * Init Start Dialog
@@ -429,8 +407,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
 
-        Picasso.get().load(ServerData.PROFILE_IMAGE_API + gameMessage.getUserName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_userImage);
-        Picasso.get().load(ServerData.PROFILE_IMAGE_API + gameMessage.getOpponentName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_opponentImage);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getUserName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_userImage);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getOpponentName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_opponentImage);
     }
 
     /**
@@ -487,9 +465,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsOpponentName.setText(scoreMessage.getOpponent().getUserName());
         tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
         tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
-        String imageUrlUser = ServerData.PROFILE_IMAGE_API + scoreMessage.getUser().getUserName();
+        String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getUser().getUserName();
         Picasso.get().load(imageUrlUser).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_dsUser);
-        String imageUrlOpponent = ServerData.PROFILE_IMAGE_API + scoreMessage.getOpponent().getUserName();
+        String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getOpponent().getUserName();
         Picasso.get().load(imageUrlOpponent).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_dsOpponent);
     }
 
@@ -553,8 +531,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_drUserScore.setText(Integer.toString(resultMessage.getUserScore()));
         tv_drOpponentScore.setText(Integer.toString(resultMessage.getOpponentScore()));
         tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
-        String imageUrlUser = ServerData.PROFILE_IMAGE_API + resultMessage.getUserName();
-        String imageUrlOpponent = ServerData.PROFILE_IMAGE_API + resultMessage.getOpponentName();
+        String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + resultMessage.getUserName();
+        String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + resultMessage.getOpponentName();
         Picasso.get().load(imageUrlUser).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_drUser);
         Picasso.get().load(imageUrlOpponent).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_drOpponent);
 
@@ -774,27 +752,4 @@ public class InGameActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Add JWT Token to STOMP Header
-     *
-     * @param userToken JWT usertoken
-     */
-    protected void addJwtToStompSocketHeader(String userToken) {
-        // add JWToken to websocket STOMP Header
-        stompSocket.addHeader(StompHeader.TOKEN.toString(), userToken);
-    }
-
-        /*webSocketClient.setConnectTimeout(10000);
-        webSocketClient.setReadTimeout(60000);
-        webSocketClient.addHeader("Connection", "Upgrade");
-        webSocketClient.addHeader("Host", "http://192.168.77.106:8080");
-        webSocketClient.addHeader("Origin", "http://192.168.77.106:8080");
-        webSocketClient.addHeader("Sec-WebSocket-Version", "13");
-        //webSocketClient.addHeader("Content-Type", "application/json");
-        //webSocketClient.addHeader("Accept", "application/json");
-        webSocketClient.addHeader("Upgrade", "websocket");
-        webSocketClient.addHeader("Authorization", "Bearer " + RestServiceSingleton.getInstance(getApplicationContext()).getUser().getToken());
-        webSocketClient.enableAutomaticReconnection(5000);
-        webSocketClient.connect();
-    }*/
 }

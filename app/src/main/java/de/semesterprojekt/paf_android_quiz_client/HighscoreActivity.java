@@ -5,12 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,9 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.semesterprojekt.paf_android_quiz_client.model.Highscore;
-import de.semesterprojekt.paf_android_quiz_client.model.SessionManager;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceListener;
-import de.semesterprojekt.paf_android_quiz_client.model.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
+import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
+import de.semesterprojekt.paf_android_quiz_client.adapter.HighscoreAdapter;
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 /**
  * Controlls Highscore View / Layout
