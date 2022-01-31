@@ -1,18 +1,16 @@
 package de.semesterprojekt.paf_android_quiz_client.model;
 
 /**
- * represents a simple user with name and profileimage-name
+ * represents a simple user with name
  */
 public class User {
 
     private String userName;
-    private String profileImage;
 
 
     //Contructor
-    public User(String userName, String profileImage) {
+    public User(String userName) {
         this.userName = userName;
-        this.profileImage = profileImage;
     }
 
     //TODO: prüfen, warum habe ich das nochmal drin?
@@ -30,8 +28,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "userName: " + this.userName + "\n" +
-                "profileImage: " + this.profileImage + "\n";
+        return "userName: " + this.userName + "\n";
     }
 
     public String getUserName() {
