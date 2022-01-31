@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_awaiting_start"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:visibility="visible">
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp">
 
 
     <TextView
         android:id="@+id/tv_awaiting_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dip"
+        android:layout_marginVertical="8dp"
+        android:paddingVertical="16dp"
         android:text="Waiting for second player..."
         android:textAlignment="gravity"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_pvp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,34 +29,76 @@
         android:id="@+id/tv_pvp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:paddingVertical="16dp"
         android:text="Player1 vs. Player2"
         android:textAlignment="gravity"
         android:textSize="24sp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/iv_sd_opponent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_awaiting_start" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_sd_user"
+        android:layout_width="@dimen/image80dp"
+        android:layout_height="@dimen/image80dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/ic_logo"
+        android:visibility="invisible"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_game_start_in"
+        app:layout_constraintEnd_toStartOf="@+id/iv_sd_opponent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pvp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_sd_opponent"
+        android:layout_width="@dimen/image80dp"
+        android:layout_height="@dimen/image80dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/ic_logo"
+        android:visibility="invisible"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_game_start_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/iv_sd_user"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pvp" />
 
     <TextView
         android:id="@+id/tv_game_start_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dip"
         android:text="Game will start in"
         android:textSize="34sp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/tv_lo_lobby_startCounter"
+        app:layout_constraintBottom_toTopOf="@+id/tv_start_counter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lo_lobby_waiting" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_sd_opponent" />
 
     <TextView
         android:id="@+id/tv_start_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"
+        android:text="5 s"
         android:textSize="54sp"
-        android:tooltipText="5 s"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</LinearLayout>
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_game_start_in" />
+</androidx.constraintlayout.widget.ConstraintLayout>

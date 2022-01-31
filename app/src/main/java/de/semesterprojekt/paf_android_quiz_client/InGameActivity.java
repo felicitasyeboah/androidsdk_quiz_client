@@ -61,7 +61,7 @@ public class InGameActivity extends AppCompatActivity {
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
             tv_dr_textBox, tv_drWinner, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
             tv_drHighscore;
-    ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent, iv_drUser, iv_drOpponent;
+    ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent, iv_drUser, iv_drOpponent, iv_sdUser, iv_sdOpponent;
     ProgressBar prog_timer;
 
     ConstraintLayout layoutInGameView;
@@ -345,7 +345,7 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
-    //TODO: Wenn Zeit ist, userbilder auch in startdialog einbauen
+    //TODO: Entweeder bilder wieder ausnehmen im startdialog oder flackern beheben!!
 
     /**
      * Assign views to startDialog
@@ -355,12 +355,22 @@ public class InGameActivity extends AppCompatActivity {
         tv_gameStartIn = startDialog.findViewById(R.id.tv_game_start_in);
         tv_startCounter = startDialog.findViewById(R.id.tv_start_counter);
         tv_pvp = startDialog.findViewById(R.id.tv_pvp);
+        iv_sdUser = startDialog.findViewById(R.id.iv_sd_user);
+        iv_sdOpponent = startDialog.findViewById(R.id.iv_sd_opponent);
         tv_gameStartIn.setVisibility(View.VISIBLE);
         tv_startCounter.setVisibility(View.VISIBLE);
         tv_pvp.setVisibility(View.VISIBLE);
+        iv_sdUser.setVisibility(View.VISIBLE);
+        iv_sdOpponent.setVisibility(View.VISIBLE);
         tv_awaitingStart.setText("Player found.");
         tv_pvp.setText(sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
                 startMessage.getOpponent().getUserName());
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)))
+                .fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.NO_CACHE).into(iv_sdUser);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + startMessage.getOpponent().getUserName())
+                .fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                .networkPolicy(NetworkPolicy.NO_CACHE).into(iv_sdOpponent);
     }
     protected void updateStartDialog() {
         tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
