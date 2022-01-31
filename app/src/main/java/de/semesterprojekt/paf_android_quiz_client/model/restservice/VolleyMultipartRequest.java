@@ -12,7 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public class VolleyMultipartRequest extends Request<NetworkResponse> {
@@ -51,11 +50,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         DataOutputStream dos = new DataOutputStream(bos);
 
         try {
-            // populate text payload
-            Map<String, String> params = getParams();
-            if (params != null && params.size() > 0) {
-                textParse(dos, params, getParamsEncoding());
-            }
 
             // populate data byte payload
             Map<String, DataPart> data = getByteData();
@@ -105,24 +99,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     }
 
     /**
-     * Parse string map into data output stream by key and value.
-     *
-     * @param dataOutputStream data output stream handle string parsing
-     * @param params           string inputs collection
-     * @param encoding         encode the inputs, default UTF-8
-     * @throws IOException
-     */
-    private void textParse(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {
-        try {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                buildTextPart(dataOutputStream, entry.getKey(), entry.getValue());
-            }
-        } catch (UnsupportedEncodingException uee) {
-            throw new RuntimeException("Encoding not supported: " + encoding, uee);
-        }
-    }
-
-    /**
      * Parse data into data output stream.
      *
      * @param dataOutputStream data output stream handle file attachment
@@ -133,21 +109,6 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         for (Map.Entry<String, DataPart> entry : data.entrySet()) {
             buildDataPart(dataOutputStream, entry.getValue(), entry.getKey());
         }
-    }
-
-    /**
-     * Write string data into header and data output stream.
-     *
-     * @param dataOutputStream data output stream handle string parsing
-     * @param parameterName    name of input
-     * @param parameterValue   value of input
-     * @throws IOException
-     */
-    private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {
-        dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
-        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterName + "\"" + lineEnd);
-        dataOutputStream.writeBytes(lineEnd);
-        dataOutputStream.writeBytes(parameterValue + lineEnd);
     }
 
     /**
