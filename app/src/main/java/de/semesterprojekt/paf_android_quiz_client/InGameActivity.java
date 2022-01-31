@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import de.semesterprojekt.paf_android_quiz_client.config.GameConfig;
 import de.semesterprojekt.paf_android_quiz_client.model.messages.GameMessage;
 import de.semesterprojekt.paf_android_quiz_client.model.messages.MessageType;
 import de.semesterprojekt.paf_android_quiz_client.model.messages.ResultMessage;
@@ -71,6 +72,7 @@ public class InGameActivity extends AppCompatActivity {
     Dialog resultDialog;
     Dialog quitSessionDialog;
     Dialog answerDialog;
+    Dialog sessionExpiredDialog;
 
     final StompClient stompSocket = new StompClient(URI.create(ServerConfig.WEBSOCKET_URL + ServerConfig.STOMP_ENDPOINT));
 
@@ -84,8 +86,6 @@ public class InGameActivity extends AppCompatActivity {
     TimerMessage questionTimer;
     TimerMessage startTimer;
     TimerMessage scoreTimer;
-
-    final static public int SECONDS_TO_SOLVE_QUESTION = 10;
 
     @Override
     protected void onStart() {
@@ -115,6 +115,7 @@ public class InGameActivity extends AppCompatActivity {
         resultDialog = getResultDialog();
         quitSessionDialog = getQuitSessionDialog();
         answerDialog = getAnswerDialog();
+        sessionExpiredDialog = Helper.getSessionExpiredDialog(InGameActivity.this);
     }
     /**
      * Get views from layouts
@@ -282,9 +283,9 @@ public class InGameActivity extends AppCompatActivity {
                             break;
 
                         case INVALID_TOKEN_MESSAGE:
-                            // show sessione expired dialog and logs out the user on submit
-                            Dialog dialog = Helper.getSessionExpiredDialog(InGameActivity.this);
-                            dialog.show();
+                        case SESSION_EXPIRED_MESSAGE:
+                            // show session expired dialog and logs out the user on submit
+                            showDialog(sessionExpiredDialog);
                             break;
                     }
                     Log.d("Quiz", "BODY: " + message);
@@ -309,7 +310,7 @@ public class InGameActivity extends AppCompatActivity {
         View.OnClickListener answerButtonClickListener = view -> {
             Button answerButton = (Button) view;
             // calculate time the user needed to answer
-            int timeNeeded = SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft();
+            int timeNeeded = GameConfig.SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft();
             btn_clicked = answerButton; // to check answer outside of clicklistener
             // highlight selected button
             answerButton.setBackgroundResource(R.drawable.btn_rounded_corner_yellow);
@@ -425,7 +426,7 @@ public class InGameActivity extends AppCompatActivity {
      * Updates InGameLayout
      */
     protected void updateInGameLayout() {
-        prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
+        prog_timer.setProgress(GameConfig.SECONDS_TO_SOLVE_QUESTION - questionTimer.getTimeLeft());
         tv_timer.setText(Integer.toString(questionTimer.getTimeLeft()) + "s");
         if (questionTimer.getTimeLeft() == 1) {
             Handler handler = new Handler();
@@ -436,7 +437,7 @@ public class InGameActivity extends AppCompatActivity {
                     btn_answer2.setEnabled(false);
                     btn_answer3.setEnabled(false);
                     btn_answer4.setEnabled(false);
-                    prog_timer.setProgress(SECONDS_TO_SOLVE_QUESTION);
+                    prog_timer.setProgress(GameConfig.SECONDS_TO_SOLVE_QUESTION);
                     tv_timer.setText("Time is up!");
                 }
             }, 1000);
