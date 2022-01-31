@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,8 +22,7 @@ import android.widget.Toast;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
+
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -65,13 +63,13 @@ public class ProfileActivity extends AppCompatActivity {
         getSesssionData();
         initViews();
         String url = ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getString(R.string.username));
-        Picasso.get().load(url).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_profile_image);
+        Picasso.get().load(url).fit().centerInside().into(iv_profile_image);
 
         fab_changeProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImagePicker.with(ProfileActivity.this)
-                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .maxResultSize(512, 512)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start(10);
             }
         });
@@ -88,10 +86,13 @@ public class ProfileActivity extends AppCompatActivity {
         Uri picUri = data.getData();
         if (requestCode == 10 && resultCode == RESULT_OK) {
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);//(Bitmap) data.getExtras().get("data");
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), picUri);
 
                 iv_profile_image.setImageBitmap(bitmap);
+
                 uploadImage(bitmap);
+                // Clear Picasso Image Cache after uploading a new ProfileImage
+                Helper.clearPicassoCache();
             } catch (IOException e) {
                 e.printStackTrace();
             }

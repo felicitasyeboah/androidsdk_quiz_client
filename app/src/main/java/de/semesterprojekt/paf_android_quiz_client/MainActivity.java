@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
+
 /**
  * Controlls the main View
  */
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Helper.setPicassoCache(getApplicationContext());
     }
 
     /**

@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -58,10 +56,10 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
         holder.tv_historyDate.setText(date);
         holder.tv_historyUserName.setText(username);
         holder.tv_historyUserScore.setText(userscore);
-        Picasso.get().load(urlUserImage).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.iv_historyUserImage);
+        Picasso.get().load(urlUserImage).fit().centerInside().into(holder.iv_historyUserImage);
         holder.tv_historyOpponentName.setText(opponentname);
         holder.tv_historyOpponentScore.setText(opponentscore);
-        Picasso.get().load(urlOpponentImage).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.iv_historyOpponentImage);
+        Picasso.get().load(urlOpponentImage).fit().centerInside().into(holder.iv_historyOpponentImage);
 
     }
 

@@ -56,6 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         getSesssionData();
+        Helper.clearPicassoCache();
         initViews();
 
         recyclerView.setHasFixedSize(true);

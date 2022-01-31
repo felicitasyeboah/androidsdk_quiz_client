@@ -54,6 +54,7 @@ public class HighscoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_highscore);
         getSesssionData();
 
+        Helper.clearPicassoCache();
         recyclerView = findViewById(R.id.recyclerview_highscore);
         recyclerView.setHasFixedSize(true);
 

@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -56,10 +54,7 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         holder.tv_hsDate.setText(date);
         holder.tv_hsUserName.setText(username);
         holder.tv_hsUserScore.setText(score);
-        Picasso.get().load(url).fit().centerInside()
-                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).
-                networkPolicy(NetworkPolicy.NO_CACHE).
-                into(holder.iv_hsUserImage);
+        Picasso.get().load(url).fit().centerInside().into(holder.iv_hsUserImage);
     }
 
     @Override

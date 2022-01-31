@@ -27,8 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
+
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -97,6 +96,7 @@ public class InGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
+        Helper.clearPicassoCache();
         initClassVars();
         initDialogs();
         initViews();
@@ -378,11 +378,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_pvp.setText(sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
                 startMessage.getOpponent().getUserName());
         Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)))
-                .fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                .networkPolicy(NetworkPolicy.NO_CACHE).into(iv_sdUser);
+                .fit().centerInside().into(iv_sdUser);
         Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + startMessage.getOpponent().getUserName())
-                .fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                .networkPolicy(NetworkPolicy.NO_CACHE).into(iv_sdOpponent);
+                .fit().centerInside().into(iv_sdOpponent);
     }
     protected void updateStartDialog() {
         tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
@@ -430,8 +428,10 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
 
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getUserName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_userImage);
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getOpponentName()).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_opponentImage);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getUserName())
+                .fit().centerInside().into(iv_userImage);
+        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getOpponentName())
+                .fit().centerInside().into(iv_opponentImage);
     }
 
     /**
@@ -489,9 +489,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
         tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
         String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getUser().getUserName();
-        Picasso.get().load(imageUrlUser).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_dsUser);
+        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_dsUser);
         String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getOpponent().getUserName();
-        Picasso.get().load(imageUrlOpponent).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_dsOpponent);
+        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_dsOpponent);
     }
 
     /**
@@ -556,8 +556,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
         String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + resultMessage.getUserName();
         String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + resultMessage.getOpponentName();
-        Picasso.get().load(imageUrlUser).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_drUser);
-        Picasso.get().load(imageUrlOpponent).fit().centerInside().memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).networkPolicy(NetworkPolicy.NO_CACHE).into(iv_drOpponent);
+        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_drUser);
+        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
 
         if(resultMessage.isHighScore()) {
             tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" "+ tv_drHighscore.getText());

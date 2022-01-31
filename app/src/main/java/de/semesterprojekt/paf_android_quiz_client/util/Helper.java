@@ -6,15 +6,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.Picasso;
+
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
+import de.semesterprojekt.paf_android_quiz_client.MainActivity;
 import de.semesterprojekt.paf_android_quiz_client.SessionManager;
 
 public final class Helper {
+    private static LruCache picassoCache;
         private Helper() {
         }
 
@@ -64,5 +69,17 @@ public final class Helper {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static void setPicassoCache(Context context) {
+        Picasso.Builder builder = new Picasso.Builder(context);
+        picassoCache = new LruCache(context);
+        builder.memoryCache(picassoCache);
+        Picasso.setSingletonInstance(builder.build());
+    }
+
+    public static void clearPicassoCache() {
+        // Clear cache
+        picassoCache.clear();
     }
 }
