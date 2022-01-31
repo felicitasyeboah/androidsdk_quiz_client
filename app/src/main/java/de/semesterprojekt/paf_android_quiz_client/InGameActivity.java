@@ -55,7 +55,7 @@ public class InGameActivity extends AppCompatActivity {
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4;
     Button btn_clicked;
     TextView tv_userName, tv_opponentName,tv_userScore, tv_opponentScore,
-            tv_timer, tv_category, tv_question,
+            tv_timer, tv_category, tv_question, tv_questionCounter,
             tv_awaitingStart, tv_pvp,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
@@ -140,6 +140,7 @@ public class InGameActivity extends AppCompatActivity {
         tv_category = findViewById(R.id.tv_category);
         tv_timer = findViewById(R.id.tv_timer);
         tv_question = findViewById(R.id.tv_question);
+        tv_questionCounter = findViewById(R.id.tv_question_counter);
 
         // Progressbar
         prog_timer = findViewById(R.id.prog_timer);
@@ -416,6 +417,8 @@ public class InGameActivity extends AppCompatActivity {
         btn_answer4.setText(gameMessage.getAnswer4());
         tv_question.setText(gameMessage.getQuestion());
         tv_category.setText(gameMessage.getCategory());
+        String questionCounter = gameMessage.getCurrentRound() + "/" + gameMessage.getTotalRounds();
+        tv_questionCounter.setText(questionCounter);
 
         // Set Buttons back to be clickable
         btn_answer1.setClickable(true);

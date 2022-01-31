@@ -19,6 +19,8 @@ public class GameMessage {
     private String answer3;
     private String answer4;
     private int correctAnswer;
+    private String totalRounds;
+    private String currentRound;
     User user;
     User opponent;
     private int userScore;
@@ -26,7 +28,7 @@ public class GameMessage {
     private Map<Integer, String> answers = new HashMap<>();
 
 
-    public GameMessage(String category, String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer, User user, User opponent, int userScore, int opponentScore) {
+    public GameMessage(String category, String question, String answer1, String answer2, String answer3, String answer4, int correctAnswer, String totalRounds, String currentRound, User user, User opponent, int userScore, int opponentScore) {
         this.userScore = userScore;
         this.opponentScore = opponentScore;
         this.category = category;
@@ -36,6 +38,8 @@ public class GameMessage {
         this.answer3 = answer3;
         this.answer4 = answer4;
         this.correctAnswer = correctAnswer;
+        this.totalRounds = totalRounds;
+        this.currentRound = currentRound;
         this.user = user;
         this.opponent = opponent;
     }
@@ -47,6 +51,8 @@ public class GameMessage {
 // "answer2":"ein Notenschlüssel aus Asien","answer3":"eine Gitarre aus Kolumbien",
 // "answer4":"ein französischer Komponist des Impressionismus",
 // "correctAnswer":4,
+// "totalRounds":3,
+// "currentRound":3
 // "user":{"userName":"alf","profileImage":"default10.png"},
 // "opponent":{"userName":"feli","profileImage":"default9.png"},
 // "userScore":0,
@@ -120,6 +126,13 @@ public class GameMessage {
         this.correctAnswer = correctAnswer;
     }
 
+    public String getTotalRounds() {
+        return totalRounds;
+    }
+
+    public String getCurrentRound() {
+        return currentRound;
+    }
     public User getUser() {
         return user;
     }
@@ -158,6 +171,8 @@ public class GameMessage {
     public void setOpponentScore(int opponentScore) {
         this.opponentScore = opponentScore;
     }
+
+
 
     @NonNull
     @Override

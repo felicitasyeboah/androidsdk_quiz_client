@@ -34,10 +34,10 @@
 
                 <TextView
                     android:id="@+id/tv_user_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="User"
+                    android:text=""
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
@@ -72,10 +72,10 @@
 
                 <TextView
                     android:id="@+id/tv_opponent_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Opponent"
+                    android:text=""
                     android:textAlignment="viewEnd"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
@@ -84,15 +84,15 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:weightSum="3">
 
                 <TextView
                     android:id="@+id/tv_user_score"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_span="1"
                     android:layout_weight="1"
-                    android:text="2300"
+                    android:text=""
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -100,22 +100,20 @@
 
                 <TextView
                     android:id="@+id/tv_question_counter"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_span="1"
                     android:layout_weight="1"
-                    android:text="1/3"
+                    android:text=""
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_opponent_score"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_span="1"
                     android:layout_weight="1"
-                    android:text="2000"
+                    android:text=""
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -126,21 +124,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="4dp"
-                android:weightSum="7">
+                android:weightSum="8">
 
                 <TextView
                     android:id="@+id/tv_category"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Catgory"
+                    android:text=""
+                    android:textAlignment="viewStart"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
                 <ProgressBar
                     android:id="@+id/prog_timer"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:max="10"
@@ -149,10 +148,11 @@
 
                 <TextView
                     android:id="@+id/tv_timer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="10s"
+                    android:text=""
                     android:textAlignment="viewEnd"
+                    android:layout_weight="1"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
