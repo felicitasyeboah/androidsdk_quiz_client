@@ -1,9 +1,11 @@
 package de.semesterprojekt.paf_android_quiz_client.model.restservice;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.semesterprojekt.paf_android_quiz_client.Helper;
 import de.semesterprojekt.paf_android_quiz_client.model.ServerData;
 
 
@@ -29,7 +32,6 @@ public class RestServiceClient {
 
     // Base URL to Rest API Server
     public static final String BASE_URL = "http://" + ServerData.SERVER_ADDRESS;
-
     private final Context ctx;
     private final RequestQueue requestQueue;
 
@@ -140,9 +142,12 @@ public class RestServiceClient {
                 e.printStackTrace();
             }
         };
-        //TODO: Authentification error aus user ausgeben, zum neu einloggen
-
-        Response.ErrorListener errorListener = error -> Log.d("GetRequest", error.toString());
+        Response.ErrorListener errorListener = error -> {
+            if(error instanceof AuthFailureError) {
+                listener.onSessionExpired();
+            }
+            Log.d("GetRequest", error.toString());
+        };
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, successListener, errorListener) {
             @Override
@@ -174,9 +179,11 @@ public class RestServiceClient {
             }
         };
         Response.ErrorListener errorListener = error -> {
-            error.printStackTrace();
-            //TODO: Authentification error aus user ausgeben, zum neu einloggen
+            if(error instanceof AuthFailureError) {
+                listener.onSessionExpired();
+            }
             Log.d("GetRequest", error.toString());
+            error.printStackTrace();
         };
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url,null, successListener, errorListener) {
 

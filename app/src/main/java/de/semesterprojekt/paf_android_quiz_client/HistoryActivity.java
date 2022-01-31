@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -137,6 +138,13 @@ public class HistoryActivity extends AppCompatActivity {
                 playedGamesAdapter.notifyDataSetChanged();
 
                 recyclerView.setAdapter(playedGamesAdapter);
+            }
+
+            @Override
+            public void onSessionExpired() {
+                super.onSessionExpired();
+                Dialog dialog = Helper.getSessionExpiredDialog(HistoryActivity.this);
+                dialog.show();
             }
         });
     }

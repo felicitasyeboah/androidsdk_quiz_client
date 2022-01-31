@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -120,6 +124,13 @@ public class HighscoreActivity extends AppCompatActivity {
                 // set highscoreAdapter to recyclerView
                 recyclerView.setAdapter(highscoreAdapter);
                 highscoreAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onSessionExpired() {
+                super.onSessionExpired();
+                Dialog dialog = Helper.getSessionExpiredDialog(HighscoreActivity.this);
+                dialog.show();
             }
         });
     }

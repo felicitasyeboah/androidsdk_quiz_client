@@ -13,6 +13,8 @@ public abstract class RestServiceListener {
     public void onRegister(String username) {
 
     }
+    public void onSessionExpired() {
+    }
 
     public void onGetHighScores(JSONArray highScores) {
     }
@@ -20,6 +22,5 @@ public abstract class RestServiceListener {
     public void onGetPlayedGames(JSONObject history) {
 
     }
-    public void onGetImageFiles(JSONArray getImageFiles) {}
 
 }

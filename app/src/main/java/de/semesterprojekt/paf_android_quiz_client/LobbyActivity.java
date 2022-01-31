@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,7 +50,6 @@ public class LobbyActivity extends AppCompatActivity {
         // Get JWT userToken and Username from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
         userName = sessionManager.getUserDatafromSession().get(getString(R.string.username));
-        Log.d("Quiz", "Username: " + userName + " Usertoken: " + userToken);
         setContentView(R.layout.activity_lobby);
         initViews();
         setViews();
@@ -89,7 +87,6 @@ public class LobbyActivity extends AppCompatActivity {
         });
 
     }
-    //TODO: make Activity and LayoutView for Profil
 
     /**
      * Displays Menu in the upper right corner in App-/Toolbar
