@@ -18,31 +18,39 @@ import java.util.Locale;
 
 import de.semesterprojekt.paf_android_quiz_client.SessionManager;
 
+/**
+ * The Helper class is an utility class which holds different static methods to make the life easier
+ */
 public final class Helper {
     private static LruCache picassoCache;
     private static Picasso picassoInstance;
-        private Helper() {
-        }
+
+    /**
+     * Constructor
+     */
+    private Helper() {
+    }
 
     /**
      * Formats a timeStamp String YYYY-MM-DD HH:MM:SS into Local (German) Format
+     *
      * @param timeStamp String YYYY-MM-DD HH:MM:SS+HH:SS
      * @return String DD.MM.YYYY, HH:MM
      */
     public static String formatDate(String timeStamp) {
-            DateTimeFormatter formatter
-                    = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-                    .withLocale(Locale.GERMANY);
+        DateTimeFormatter formatter
+                = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                .withLocale(Locale.GERMANY);
 
-            LocalDateTime dateTime = LocalDateTime.parse(timeStamp.substring(0, timeStamp.length() - 6));
-            return dateTime.format(formatter);
-
+        LocalDateTime dateTime = LocalDateTime.parse(timeStamp.substring(0, timeStamp.length() - 6));
+        return dateTime.format(formatter);
     }
 
     /**
      * Creats a Session Expired Dialog with submit Button, to logout user, when jwt has
      * expired
-     * @param context Application Context
+     *
+     * @param context ApplicationContext
      * @return Dialog
      */
     public static Dialog getSessionExpiredDialog(Context context) {
@@ -62,7 +70,8 @@ public final class Helper {
     }
 
     /**
-     * Transforms Bitmapdata into ByteArray
+     * Transforms Bitmapdata into ByteArray for the ImageUpload
+     *
      * @param bitmap Bitmap
      * @return byte[] Array
      */
@@ -73,9 +82,13 @@ public final class Helper {
     }
 
 
-    /** SINGLETON PATTERN FOR CUSTOM PICASSO INSTANCE */
+    /* #### SINGLETON PATTERN FOR CUSTOM PICASSO INSTANCE #### */
 
-    // sets custom Picasso instance with cache-control
+    /**
+     * Creates a custom Picasso instance to control caching
+     *
+     * @param appContext ApplicationContext
+     */
     public static void setPicasso(Context appContext) {
         Picasso.Builder builder = new Picasso.Builder(appContext);
         picassoCache = new LruCache(appContext);
@@ -83,8 +96,14 @@ public final class Helper {
         picassoInstance = builder.build();
     }
 
-    // Get custom Picasso instance (as singleton)
-    public static Picasso getPicassoInstance(Context appContext) {
+    /**
+     * Returns the custom picasso instance if one already exists, Otherwise it creates a new custom
+     * Picasso instance.
+     *
+     * @param appContext ApplicationContext
+     * @return Picasso instance
+     */
+    public static synchronized Picasso getPicassoInstance(Context appContext) {
         if (picassoInstance == null) {
             setPicasso(appContext);
             Log.d("PicassoSet", picassoInstance.toString());
@@ -94,12 +113,18 @@ public final class Helper {
         return picassoInstance;
     }
 
-    // Clears cache
+    /**
+     * Clears cache from custom Picasso instance
+     */
     public static void clearPicassoCache() {
         picassoCache.clear();
     }
-    // Stops Instance from retrieving further requests
-    public static void shutdownPicasso () {
+
+    /**
+     * Stops Picasso instance from accepting further requests
+     * and sets instance to null, so on next instantiation there will be create a new instance
+     */
+    public static void shutdownPicasso() {
         picassoInstance.shutdown();
         picassoInstance = null;
     }
