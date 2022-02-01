@@ -128,16 +128,23 @@ public class HistoryActivity extends AppCompatActivity {
                 }.getType();
                 playedGamesArrayList = gson.fromJson(String.valueOf(playedGames), playedGamesListType);
 
-                tv_historyGamesCounter.setText(gameCount);
-                tv_historyAverage.setText(average);
-                tv_historyDraw.setText(draw);
-                tv_historyLost.setText(lost);
-                tv_historyWon.setText(won);
+                setViews();
 
                 playedGamesAdapter = new PlayedGamesAdapter(HistoryActivity.this, playedGamesArrayList);
                 playedGamesAdapter.notifyDataSetChanged();
 
                 recyclerView.setAdapter(playedGamesAdapter);
+            }
+
+            @Override
+            public void onGetNoPlayedGames() {
+                super.onGetNoPlayedGames();
+                won = "WON: 0";
+                lost = "LOST: 0";
+                draw = "DRAW: 0";
+                average = "Average Score: 0";
+                gameCount = "Games played: 0";
+                setViews();
             }
 
             @Override
@@ -157,6 +164,14 @@ public class HistoryActivity extends AppCompatActivity {
         tv_historyWon = findViewById(R.id.tv_history_won);
 
         recyclerView = findViewById(R.id.recyclerview_history);
+    }
+
+    private void setViews() {
+        tv_historyGamesCounter.setText(gameCount);
+        tv_historyAverage.setText(average);
+        tv_historyDraw.setText(draw);
+        tv_historyLost.setText(lost);
+        tv_historyWon.setText(won);
     }
 
     private void getSesssionData() {

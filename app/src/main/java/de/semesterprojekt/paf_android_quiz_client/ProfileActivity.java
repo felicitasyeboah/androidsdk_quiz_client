@@ -81,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        assert data != null;
         Uri picUri = data.getData();
         if (requestCode == 10 && resultCode == RESULT_OK) {
             try {
@@ -163,14 +164,21 @@ public class ProfileActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                tv_gamesCounter.setText(gameCount);
-                tv_average.setText(average);
-                tv_draw.setText(draw);
-                tv_lost.setText(lost);
-                tv_won.setText(won);
+                setViews();
 
             }
+
+            @Override
+            public void onGetNoPlayedGames() {
+                super.onGetNoPlayedGames();
+                won = "WON: 0";
+                lost = "LOST: 0";
+                draw = "DRAW: 0";
+                average = "Average Score: 0";
+                gameCount = "Games played: 0";
+                setViews();
+            }
+
             @Override
             public void onSessionExpired() {
                 super.onSessionExpired();
@@ -192,6 +200,13 @@ public class ProfileActivity extends AppCompatActivity {
         tv_lost = findViewById(R.id.tv_profile_lost);
         tv_won = findViewById(R.id.tv_profile_won);
 
+    }
+    private void setViews() {
+        tv_gamesCounter.setText(gameCount);
+        tv_average.setText(average);
+        tv_draw.setText(draw);
+        tv_lost.setText(lost);
+        tv_won.setText(won);
     }
 
     private void getSesssionData() {

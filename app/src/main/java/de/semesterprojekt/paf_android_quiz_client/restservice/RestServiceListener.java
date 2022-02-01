@@ -26,6 +26,8 @@ public abstract class RestServiceListener {
     }
 
     public void onGetPlayedGames(JSONObject history) {
+    }
+    public void onGetNoPlayedGames() {
 
     }
     public void onAuthFailure(Context ctx) {

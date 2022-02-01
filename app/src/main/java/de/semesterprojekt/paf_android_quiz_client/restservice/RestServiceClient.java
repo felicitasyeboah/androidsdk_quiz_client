@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.ClientError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
@@ -212,7 +213,10 @@ public class RestServiceClient {
 
             } else if (error instanceof NoConnectionError) {
                 listener.onNoConnectionError(ctx);
-            } else {
+            } else if ((error instanceof ClientError) && (error.networkResponse.statusCode == 400)) {
+                listener.onGetNoPlayedGames();
+            }
+            else {
                 listener.onError(ctx, error);
             }
             Log.d("GetRequest", error.toString());
