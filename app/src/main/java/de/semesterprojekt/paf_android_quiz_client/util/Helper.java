@@ -1,5 +1,6 @@
 package de.semesterprojekt.paf_android_quiz_client.util;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -54,12 +55,14 @@ public final class Helper {
      * @return Dialog
      */
     public static Dialog getSessionExpiredDialog(Context context) {
-        SessionManager sessionManager = SessionManager.getSingletonInstance(context);
+        SessionManager sessionManager = SessionManager.getSingletonInstance(context.getApplicationContext());
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        Activity a = (Activity) context;
         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // clears session data and brings user back to the app startscreen to log in again
                 sessionManager.logout();
+                a.finish(); // to avoid leaked window on startDialog
             }
         });
         builder.setMessage("Your session has expired. Please log in again.")
