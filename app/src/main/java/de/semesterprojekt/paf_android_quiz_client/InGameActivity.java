@@ -356,7 +356,6 @@ public class InGameActivity extends AppCompatActivity {
         builder.setCancelable(false);
         return builder.create();
     }
-    //TODO: Entweeder bilder wieder ausnehmen im startdialog oder flackern beheben!!
 
     /**
      * Assign views to startDialog

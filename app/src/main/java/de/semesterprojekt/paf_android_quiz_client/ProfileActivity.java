@@ -171,7 +171,14 @@ public class ProfileActivity extends AppCompatActivity {
                 tv_won.setText(won);
 
             }
+            @Override
+            public void onSessionExpired() {
+                super.onSessionExpired();
+                Dialog dialog = Helper.getSessionExpiredDialog(ProfileActivity.this);
+                dialog.show();
+            }
         });
+
     }
 
     private void initViews() {

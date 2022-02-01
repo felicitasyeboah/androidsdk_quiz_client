@@ -7,9 +7,11 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -71,8 +73,17 @@ public class RestServiceClient {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    //TODO: Time out und authentification errors dem user melden beim login
-                    Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
+                    if(error instanceof AuthFailureError) {
+                        listener.onAuthFailure(ctx);
+
+                    } else if(error instanceof TimeoutError) {
+                        listener.onTimeoutError(ctx);
+
+                    }else if(error instanceof NoConnectionError) {
+                        listener.onNoConnectionError(ctx);
+                    } else {
+                        listener.onError(ctx, error);
+                    }
                 }
             };
 
@@ -111,8 +122,19 @@ public class RestServiceClient {
                     Toast.makeText(ctx, "JSON Exception oben: " + e.toString(), Toast.LENGTH_SHORT).show();
                 }
             };
-            //TODO: TimeOut error an user ausgeben
-            Response.ErrorListener errorListener = error -> Toast.makeText(ctx, "error response : " + error, Toast.LENGTH_SHORT).show();
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                     if(error instanceof TimeoutError) {
+                        listener.onTimeoutError(ctx);
+                    }else if(error instanceof NoConnectionError) {
+                        listener.onNoConnectionError(ctx);
+                    } else {
+                         listener.onError(ctx, error);
+                     }
+                }
+            };
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, ServerConfig.REGISTER_API, jsonObject, successListener, errorListener);
             requestQueue.add(request);

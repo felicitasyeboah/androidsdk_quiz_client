@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.StringReader;
 
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
@@ -94,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void loginToRestService(String username, String password) {
         RestServiceSingleton restServiceSingleton = RestServiceSingleton.getInstance(LoginActivity.this.getApplication());
         restServiceSingleton.login(username, password, new RestServiceListener() {
+
             @Override
             public void onLogin(String userToken) {
                 super.onLogin(userToken);
@@ -103,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid login", Toast.LENGTH_LONG).show();
                 }
+
             }
         });
     }
