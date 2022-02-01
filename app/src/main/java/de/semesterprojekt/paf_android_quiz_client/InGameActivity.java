@@ -57,7 +57,7 @@ public class InGameActivity extends AppCompatActivity {
             tv_awaitingStart, tv_pvp,
             tv_gameStartIn, tv_startCounter, tv_dsUserName, tv_dsOpponentName,
             tv_dsUserScore, tv_dsOpponentScore, tv_dsNextQuestionTimer,
-            tv_dr_textBox, tv_drWinner, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
+            tv_dr_textBox, tv_drUserName, tv_drOpponentName, tv_drUserScore, tv_drOpponentScore,
             tv_drHighscore;
     ImageView iv_userImage, iv_opponentImage, iv_dsUser, iv_dsOpponent, iv_drUser, iv_drOpponent, iv_sdUser, iv_sdOpponent;
     ProgressBar prog_timer;
@@ -543,7 +543,6 @@ public class InGameActivity extends AppCompatActivity {
      * Assigning views to resultDialog
      */
     protected void setResultDialog() {
-        tv_drWinner = resultDialog.findViewById(R.id.tv_dr_winner);
         tv_drUserName = resultDialog.findViewById(R.id.tv_dr_user_name);
         tv_drOpponentName = resultDialog.findViewById(R.id.tv_dr_opponent_name);
         tv_drUserScore = resultDialog.findViewById(R.id.tv_dr_user_score);
@@ -552,9 +551,12 @@ public class InGameActivity extends AppCompatActivity {
         iv_drUser = resultDialog.findViewById(R.id.iv_dr_user);
         iv_drOpponent = resultDialog.findViewById(R.id.iv_dr_opponent);
         if(resultMessage.getWinner() != null) {
-            tv_drWinner.setText(resultMessage.getWinner().getUserName());
+            if(resultMessage.getWinner().getUserName().equals(resultMessage.getUserName())) {
+                tv_dr_textBox.setText("You won!");
+            } else if (resultMessage.getWinner().getUserName().equals(resultMessage.getOpponentName())) {
+                tv_dr_textBox.setText("You lost!");
+            }
         } else {
-            tv_drWinner.setVisibility(View.INVISIBLE);
             tv_dr_textBox.setText("There is a draw!");
         }
         tv_drUserName.setText(resultMessage.getUserName());
@@ -568,7 +570,7 @@ public class InGameActivity extends AppCompatActivity {
         Helper.getPicassoInstance(getApplicationContext()).load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
 
         if(resultMessage.isHighScore()) {
-            tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" "+ tv_drHighscore.getText());
+            tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" set a new highscore!");
         } else {
             tv_drHighscore.setVisibility(View.GONE);
         }

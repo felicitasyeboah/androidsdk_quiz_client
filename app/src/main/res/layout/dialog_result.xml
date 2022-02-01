@@ -12,16 +12,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="16dp"
-        android:text="Winner is"
+        android:text=""
         android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/tv_dr_winner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:text="Username" />
 
     <TextView
         android:id="@+id/tv_dr_highscore"
