@@ -73,13 +73,13 @@ public class RestServiceClient {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    if(error instanceof AuthFailureError) {
+                    if (error instanceof AuthFailureError) {
                         listener.onAuthFailure(ctx);
 
-                    } else if(error instanceof TimeoutError) {
+                    } else if (error instanceof TimeoutError) {
                         listener.onTimeoutError(ctx);
 
-                    }else if(error instanceof NoConnectionError) {
+                    } else if (error instanceof NoConnectionError) {
                         listener.onNoConnectionError(ctx);
                     } else {
                         listener.onError(ctx, error);
@@ -126,13 +126,13 @@ public class RestServiceClient {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                     if(error instanceof TimeoutError) {
+                    if (error instanceof TimeoutError) {
                         listener.onTimeoutError(ctx);
-                    }else if(error instanceof NoConnectionError) {
+                    } else if (error instanceof NoConnectionError) {
                         listener.onNoConnectionError(ctx);
                     } else {
-                         listener.onError(ctx, error);
-                     }
+                        listener.onError(ctx, error);
+                    }
                 }
             };
 
@@ -147,8 +147,9 @@ public class RestServiceClient {
 
     /**
      * Gets Highscores from RestAPI
+     *
      * @param userToken userToken, user receivev when he logs in
-     * @param listener reacts on the gethighscore-response from the restAPI
+     * @param listener  reacts on the gethighscore-response from the restAPI
      */
     public void getHighScores(String userToken, RestServiceListener listener) {
 
@@ -161,8 +162,15 @@ public class RestServiceClient {
             }
         };
         Response.ErrorListener errorListener = error -> {
-            if(error instanceof AuthFailureError) {
+            if (error instanceof AuthFailureError) {
                 listener.onSessionExpired();
+            } else if (error instanceof TimeoutError) {
+                listener.onTimeoutError(ctx);
+
+            } else if (error instanceof NoConnectionError) {
+                listener.onNoConnectionError(ctx);
+            } else {
+                listener.onError(ctx, error);
             }
             Log.d("GetRequest", error.toString());
         };
@@ -183,8 +191,9 @@ public class RestServiceClient {
 
     /**
      * Gets PlayedGames and statistic of played Games from RestAPI
+     *
      * @param userToken userToken, user received when he logs in
-     * @param listener reacts on the gethistory-response from the restAPI
+     * @param listener  reacts on the gethistory-response from the restAPI
      */
     public void getPlayedGames(String userToken, RestServiceListener listener) {
 
@@ -196,13 +205,20 @@ public class RestServiceClient {
             }
         };
         Response.ErrorListener errorListener = error -> {
-            if(error instanceof AuthFailureError) {
+            if (error instanceof AuthFailureError) {
                 listener.onSessionExpired();
+            } else if (error instanceof TimeoutError) {
+                listener.onTimeoutError(ctx);
+
+            } else if (error instanceof NoConnectionError) {
+                listener.onNoConnectionError(ctx);
+            } else {
+                listener.onError(ctx, error);
             }
             Log.d("GetRequest", error.toString());
             error.printStackTrace();
         };
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ServerConfig.PLAYED_GAMES_API,null, successListener, errorListener) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ServerConfig.PLAYED_GAMES_API, null, successListener, errorListener) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -232,8 +248,15 @@ public class RestServiceClient {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if(error instanceof AuthFailureError) {
+                        if (error instanceof AuthFailureError) {
                             listener.onSessionExpired();
+                        } else if (error instanceof TimeoutError) {
+                            listener.onTimeoutError(ctx);
+
+                        } else if (error instanceof NoConnectionError) {
+                            listener.onNoConnectionError(ctx);
+                        } else {
+                            listener.onError(ctx, error);
                         }
                         Log.e("GotError", "" + error.getMessage());
                     }
