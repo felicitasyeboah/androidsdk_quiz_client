@@ -155,7 +155,7 @@ public class InGameActivity extends AppCompatActivity {
      * Init ClassVars
      */
     protected void initClassVars() {
-        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager = SessionManager.getSingletonInstance(getApplicationContext());
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }
 

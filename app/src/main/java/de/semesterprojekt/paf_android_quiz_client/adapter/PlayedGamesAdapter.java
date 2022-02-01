@@ -28,7 +28,7 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
     public PlayedGamesAdapter(Context context, ArrayList<PlayedGames> playedGamesArrayList) {
         this.context = context;
         this.playedGamesArrayList = playedGamesArrayList;
-        sessionManager = new SessionManager(context);
+        sessionManager = SessionManager.getSingletonInstance(context);
 
     }
 

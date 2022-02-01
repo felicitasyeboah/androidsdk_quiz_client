@@ -195,7 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getSesssionData() {
-        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager = SessionManager.getSingletonInstance(getApplicationContext());
         // Get JWT userToken from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }

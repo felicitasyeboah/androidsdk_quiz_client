@@ -9,6 +9,7 @@ import java.util.HashMap;
 import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 public class SessionManager {
+    private static SessionManager instance;
     SharedPreferences userSession;
     SharedPreferences.Editor editor;
     Context context;
@@ -21,6 +22,12 @@ public class SessionManager {
         this.editor = userSession.edit();
     }
 
+    public static synchronized SessionManager getSingletonInstance(Context context) {
+        if(instance == null) {
+            instance = new SessionManager(context);
+        }
+        return instance;
+    }
 
     public void createLoginSession(String userName, String userToken) {
         editor.putBoolean(LOGGED_IN, true);
@@ -54,8 +61,6 @@ public class SessionManager {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
-
-
     }
 
     public HashMap<String, String> getUserDatafromSession() {

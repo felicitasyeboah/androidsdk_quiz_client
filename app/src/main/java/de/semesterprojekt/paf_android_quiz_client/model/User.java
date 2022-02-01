@@ -13,7 +13,6 @@ public class User {
         this.userName = userName;
     }
 
-    //TODO: prüfen, warum habe ich das nochmal drin?
     @Override
     public boolean equals(Object obj) {
         boolean result = false;

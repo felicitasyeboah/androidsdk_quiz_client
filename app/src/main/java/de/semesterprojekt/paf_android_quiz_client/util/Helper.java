@@ -54,7 +54,7 @@ public final class Helper {
      * @return Dialog
      */
     public static Dialog getSessionExpiredDialog(Context context) {
-        SessionManager sessionManager = new SessionManager(context);
+        SessionManager sessionManager = SessionManager.getSingletonInstance(context);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

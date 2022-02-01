@@ -42,7 +42,7 @@ public class LobbyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sessionManager = new SessionManager(getApplicationContext());
+        sessionManager = SessionManager.getSingletonInstance(getApplicationContext());
         // Get JWT userToken and Username from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
         userName = sessionManager.getUserDatafromSession().get(getString(R.string.username));
