@@ -28,8 +28,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,7 +94,7 @@ public class InGameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game);
-        Helper.clearPicassoCache();
+        Helper.clearPicassoCache(); // because opponent needs to see updated userimages
         initClassVars();
         initDialogs();
         initViews();
@@ -378,9 +376,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_awaitingStart.setText("Player found.");
         tv_pvp.setText(sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)) + " vs. " +
                 startMessage.getOpponent().getUserName());
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)))
+        Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getApplicationContext().getString(R.string.username)))
                 .fit().centerInside().into(iv_sdUser);
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + startMessage.getOpponent().getUserName())
+        Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + startMessage.getOpponent().getUserName())
                 .fit().centerInside().into(iv_sdOpponent);
     }
     protected void updateStartDialog() {
@@ -431,9 +429,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_userScore.setText(Integer.toString(gameMessage.getUserScore()));
         tv_opponentScore.setText(Integer.toString(gameMessage.getOpponentScore()));
 
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getUserName())
+        Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getUserName())
                 .fit().centerInside().into(iv_userImage);
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getOpponentName())
+        Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + gameMessage.getOpponentName())
                 .fit().centerInside().into(iv_opponentImage);
     }
 
@@ -492,9 +490,9 @@ public class InGameActivity extends AppCompatActivity {
         tv_dsOpponentScore.setText("+" + Integer.toString(scoreMessage.getOpponentScore()));
         tv_dsUserScore.setText("+" + Integer.toString(scoreMessage.getUserScore()));
         String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getUser().getUserName();
-        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_dsUser);
+        Helper.getPicassoInstance(getApplicationContext()).load(imageUrlUser).fit().centerInside().into(iv_dsUser);
         String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + scoreMessage.getOpponent().getUserName();
-        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_dsOpponent);
+        Helper.getPicassoInstance(getApplicationContext()).load(imageUrlOpponent).fit().centerInside().into(iv_dsOpponent);
     }
 
     /**
@@ -559,8 +557,8 @@ public class InGameActivity extends AppCompatActivity {
         tv_drHighscore = resultDialog.findViewById(R.id.tv_dr_highscore);
         String imageUrlUser = ServerConfig.PROFILE_IMAGE_API + resultMessage.getUserName();
         String imageUrlOpponent = ServerConfig.PROFILE_IMAGE_API + resultMessage.getOpponentName();
-        Picasso.get().load(imageUrlUser).fit().centerInside().into(iv_drUser);
-        Picasso.get().load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
+        Helper.getPicassoInstance(getApplicationContext()).load(imageUrlUser).fit().centerInside().into(iv_drUser);
+        Helper.getPicassoInstance(getApplicationContext()).load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
 
         if(resultMessage.isHighScore()) {
             tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" "+ tv_drHighscore.getText());
@@ -769,11 +767,6 @@ public class InGameActivity extends AppCompatActivity {
         else if (itemId == R.id.logout) {
             quitSession();
             logout();
-        }
-        //TODO: APP muss sich komplett schließen, wenn nicht zu loesen, dann aus dem menu nehmen!
-        else if (itemId == R.id.quit) {
-            finish();
-            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }

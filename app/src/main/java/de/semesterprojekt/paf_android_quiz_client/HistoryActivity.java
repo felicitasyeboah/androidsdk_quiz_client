@@ -98,10 +98,6 @@ public class HistoryActivity extends AppCompatActivity {
             goToHighScores();
         } else if (itemId == R.id.logout) {
             logout();
-        } else if (itemId == R.id.quit) {
-            //TODO: APP schließen!! Wenn nicht zu loesen, dann exit aus menue loeschen
-            finish();
-            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }

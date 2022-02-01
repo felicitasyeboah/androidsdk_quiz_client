@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
@@ -15,11 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
-import de.semesterprojekt.paf_android_quiz_client.MainActivity;
 import de.semesterprojekt.paf_android_quiz_client.SessionManager;
 
 public final class Helper {
     private static LruCache picassoCache;
+    private static Picasso picassoInstance;
         private Helper() {
         }
 
@@ -71,15 +72,36 @@ public final class Helper {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static void setPicassoCache(Context context) {
-        Picasso.Builder builder = new Picasso.Builder(context);
-        picassoCache = new LruCache(context);
+
+    /** SINGLETON PATTERN FOR CUSTOM PICASSO INSTANCE */
+
+    // sets custom Picasso instance with cache-control
+    public static void setPicasso(Context appContext) {
+        Picasso.Builder builder = new Picasso.Builder(appContext);
+        picassoCache = new LruCache(appContext);
         builder.memoryCache(picassoCache);
-        Picasso.setSingletonInstance(builder.build());
+        picassoInstance = builder.build();
     }
 
+    // Get custom Picasso instance (as singleton)
+    public static Picasso getPicassoInstance(Context appContext) {
+        if (picassoInstance == null) {
+            setPicasso(appContext);
+            Log.d("PicassoSet", picassoInstance.toString());
+
+        }
+        Log.d("PicassoGet", picassoInstance.toString());
+        return picassoInstance;
+    }
+
+    // Clears cache
     public static void clearPicassoCache() {
-        // Clear cache
         picassoCache.clear();
     }
+    // Stops Instance from retrieving further requests
+    public static void shutdownPicasso () {
+        picassoInstance.shutdown();
+        picassoInstance = null;
+    }
+
 }

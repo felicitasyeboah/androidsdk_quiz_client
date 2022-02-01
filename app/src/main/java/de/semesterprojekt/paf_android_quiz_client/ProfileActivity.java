@@ -23,8 +23,6 @@ import android.widget.Toast;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
         getSesssionData();
         initViews();
         String url = ServerConfig.PROFILE_IMAGE_API + sessionManager.getUserDatafromSession().get(getString(R.string.username));
-        Picasso.get().load(url).fit().centerInside().into(iv_profile_image);
+        Helper.getPicassoInstance(getApplicationContext()).load(url).fit().centerInside().into(iv_profile_image);
 
         fab_changeProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,10 +143,6 @@ public class ProfileActivity extends AppCompatActivity {
             goToHighScores();
         } else if (itemId == R.id.logout) {
             logout();
-        } else if (itemId == R.id.quit) {
-            //TODO: APP schließen!! Wenn nicht zu loesen, dann exit aus menue loeschen
-            finish();
-            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }

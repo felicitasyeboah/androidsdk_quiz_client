@@ -15,8 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
 import de.semesterprojekt.paf_android_quiz_client.config.ServerConfig;
 import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
@@ -49,7 +47,6 @@ public class LobbyActivity extends AppCompatActivity {
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
         userName = sessionManager.getUserDatafromSession().get(getString(R.string.username));
         setContentView(R.layout.activity_lobby);
-        Helper.clearPicassoCache();
         initViews();
         setViews();
 
@@ -115,10 +112,6 @@ public class LobbyActivity extends AppCompatActivity {
             goToHighScores();
         } else if (itemId == R.id.logout) {
             logout();
-        } else if (itemId == R.id.quit) {
-            //TODO: APP schließen!! Wenn nicht zu loesen, dann exit aus menue loeschen
-            finish();
-            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +136,7 @@ public class LobbyActivity extends AppCompatActivity {
      */
     protected void setViews() {
         tv_username.setText(userName);
-        Picasso.get().load(ServerConfig.PROFILE_IMAGE_API + userName).fit().centerInside().into(iv_user_icon);
+        Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + userName).fit().centerInside().into(iv_user_icon);
     }
 
 

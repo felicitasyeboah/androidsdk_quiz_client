@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -54,7 +52,7 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
         holder.tv_hsDate.setText(date);
         holder.tv_hsUserName.setText(username);
         holder.tv_hsUserScore.setText(score);
-        Picasso.get().load(url).fit().centerInside().into(holder.iv_hsUserImage);
+        Helper.getPicassoInstance(context.getApplicationContext()).load(url).fit().centerInside().into(holder.iv_hsUserImage);
     }
 
     @Override

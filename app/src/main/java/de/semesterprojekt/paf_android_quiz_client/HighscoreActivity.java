@@ -54,7 +54,7 @@ public class HighscoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_highscore);
         getSesssionData();
 
-        Helper.clearPicassoCache();
+        Helper.clearPicassoCache(); // because opponent needs to see updated userimages
         recyclerView = findViewById(R.id.recyclerview_highscore);
         recyclerView.setHasFixedSize(true);
 
@@ -95,10 +95,6 @@ public class HighscoreActivity extends AppCompatActivity {
             goToHighScores();
         } else if (itemId == R.id.logout) {
             logout();
-        } else if (itemId == R.id.quit) {
-            //TODO: APP schließen!! Wenn nicht zu loesen, dann exit aus menue loeschen
-            finish();
-            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }

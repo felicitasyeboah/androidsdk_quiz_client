@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 
 import java.util.HashMap;
 
-import de.semesterprojekt.paf_android_quiz_client.MainActivity;
-import de.semesterprojekt.paf_android_quiz_client.R;
-
+import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
 public class SessionManager {
     SharedPreferences userSession;
@@ -22,6 +20,7 @@ public class SessionManager {
         this.userSession = this.context.getSharedPreferences(this.context.getString(R.string.pref_file_key), Context.MODE_PRIVATE);
         this.editor = userSession.edit();
     }
+
 
     public void createLoginSession(String userName, String userToken) {
         editor.putBoolean(LOGGED_IN, true);
@@ -49,10 +48,14 @@ public class SessionManager {
         editor.clear();
         editor.commit();
 
+        Helper.shutdownPicasso();
+
         Intent intent = new Intent(context, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+
     }
 
     public HashMap<String, String> getUserDatafromSession() {
