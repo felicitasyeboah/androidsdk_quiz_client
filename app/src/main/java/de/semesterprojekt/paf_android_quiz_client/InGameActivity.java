@@ -453,10 +453,6 @@ public class InGameActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    btn_answer1.setEnabled(false);
-                    btn_answer2.setEnabled(false);
-                    btn_answer3.setEnabled(false);
-                    btn_answer4.setEnabled(false);
                     prog_timer.setProgress(GameConfig.SECONDS_TO_SOLVE_QUESTION);
                     tv_timer.setText("Time is up!");
                 }
