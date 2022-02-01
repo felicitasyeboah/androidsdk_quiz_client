@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.semesterprojekt.paf_android_quiz_client.adapter.EmptyAdapter;
 import de.semesterprojekt.paf_android_quiz_client.model.PlayedGames;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
@@ -62,7 +63,8 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        EmptyAdapter emptyAdapter = new EmptyAdapter();
+        recyclerView.setAdapter(emptyAdapter);
         playedGamesArrayList = new ArrayList<>();
 
         getHistory();

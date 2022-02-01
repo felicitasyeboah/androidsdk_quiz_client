@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.semesterprojekt.paf_android_quiz_client.adapter.EmptyAdapter;
 import de.semesterprojekt.paf_android_quiz_client.model.Highscore;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
@@ -59,7 +60,8 @@ public class HighscoreActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        EmptyAdapter emptyAdapter = new EmptyAdapter();
+        recyclerView.setAdapter(emptyAdapter);
         highscoreArrayList = new ArrayList<>();
 
         getHighScores();
