@@ -37,7 +37,6 @@ public class RestServiceClient {
 
     private final Context ctx;
     private final RequestQueue requestQueue;
-    Gson gson = new Gson();
 
     //Constructor
     public RestServiceClient(Context context) {
@@ -131,7 +130,9 @@ public class RestServiceClient {
                         listener.onTimeoutError(ctx);
                     } else if (error instanceof NoConnectionError) {
                         listener.onNoConnectionError(ctx);
-                    } else {
+                    } else if ((error instanceof ClientError) && (error.networkResponse.statusCode == 400)) {
+                    listener.onUserAlreadyExists(ctx);
+                } else {
                         listener.onError(ctx, error);
                     }
                 }
@@ -234,6 +235,12 @@ public class RestServiceClient {
         requestQueue.add(request);
     }
 
+    /**
+     *  Uploads a new ProfileImage from the user
+     * @param userToken userToken, user received when he logs in
+     * @param bitmap Bitmap the user has chosen
+     * @param listener responds to errors that may occur when uploading the image file to the server
+     */
     public void uploadImage(String userToken, Bitmap bitmap, RestServiceListener listener) {
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(Request.Method.POST, ServerConfig.UPLOAD_FILE_API,
                 new Response.Listener<NetworkResponse>() {

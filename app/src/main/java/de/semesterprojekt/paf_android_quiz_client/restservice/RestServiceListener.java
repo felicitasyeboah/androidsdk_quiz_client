@@ -9,11 +9,13 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Abstract class for responses from the RestServerAPI
+ */
 public abstract class RestServiceListener {
 
 
     public void onLogin(String userToken) {
-
     }
 
     public void onRegister(String username) {
@@ -26,6 +28,12 @@ public abstract class RestServiceListener {
     }
 
     public void onGetPlayedGames(JSONObject history) {
+    }
+
+    public void onUserAlreadyExists(Context ctx) {
+        Toast toast = Toast.makeText(ctx, "Username already exists!" + "\n" + "Please choose another name.", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP, 0, 140);
+        toast.show();
     }
 
     public void onAuthFailure(Context ctx) {

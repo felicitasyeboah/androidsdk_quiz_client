@@ -84,9 +84,6 @@ public class RestServiceSingleton {
 
 
     // Getters & Setters
-    public Context getCtx() {
-        return ctx;
-    }
 
     public User getUser() {
         return this.user;

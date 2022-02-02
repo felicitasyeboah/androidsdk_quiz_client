@@ -14,6 +14,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+
+/**
+ * Custom class to handle Multipart Uploads via VolleyLibrary
+ */
 public class VolleyMultipartRequest extends Request<NetworkResponse> {
 
 
@@ -147,16 +151,14 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         dataOutputStream.writeBytes(lineEnd);
     }
 
+    /**
+     * Creates key value pair including bytedata from an image and string for the filename
+     */
     protected class DataPart {
         private String fileName;
         private byte[] content;
-        private String type;
+        private String type; // to be continued...
 
-        public DataPart() {
-        }
-        public DataPart(byte[] data) {
-            content = data;
-        }
         public DataPart(String name, byte[] data) {
             fileName = name;
             content = data;
