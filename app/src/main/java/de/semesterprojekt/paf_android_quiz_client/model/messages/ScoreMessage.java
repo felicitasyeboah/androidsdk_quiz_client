@@ -1,7 +1,9 @@
 package de.semesterprojekt.paf_android_quiz_client.model.messages;
 
 import de.semesterprojekt.paf_android_quiz_client.model.User;
-
+/**
+ * Creates a ScoreMessageobject from JSONString-Data received from the server via Websocket
+ */
 public class ScoreMessage {
     private User user;
     private User opponent;
@@ -14,10 +16,6 @@ public class ScoreMessage {
         this.user = user;
         this.opponent = opponent;
     }
-// {"user":{"userName":"ali","profileImage":"default7.png"},
-// "opponent":{"userName":"feli",
-// "profileImage":"default2.png"},"userScore":0,"opponentScore":985,"type":"SCORE_MESSAGE"}
-
 
     public int getUserScore() {
         return userScore;

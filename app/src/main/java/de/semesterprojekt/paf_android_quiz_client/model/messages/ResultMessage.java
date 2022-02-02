@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 
 import de.semesterprojekt.paf_android_quiz_client.model.User;
 
+/**
+ * Creates a ResultMessageobject from JSONString-Data received from the server via Websocket
+ */
 public class ResultMessage {
 
     boolean isHighScore;
@@ -12,11 +15,6 @@ public class ResultMessage {
     User opponent;
     int userScore;
     int opponentScore;
-/*{"isHighScore":false,
-"winner":{"userName":"ali","profileImage":"default7.png"},
-"user":{"userName":"ali","profileImage":"default7.png"},
-"opponent":{"userName":"feli","profileImage":"default2.png"},
-"userScore":1546,"opponentScore":0,"type":"RESULT_MESSAGE"} */
 
     public ResultMessage(boolean isHighScore, User winner, User user, User opponent, int userScore, int opponentScore) {
         this.isHighScore = isHighScore;
@@ -48,14 +46,13 @@ public class ResultMessage {
     public User getUser() {
         return user;
     }
+
     public String getUserName() {
         return user.getUserName();
     }
+
     public String getOpponentName() {
         return opponent.getUserName();
-    }
-    public User getOpponent() {
-        return opponent;
     }
 
     public int getUserScore() {
