@@ -44,21 +44,6 @@ public class GameMessage {
         this.opponent = opponent;
     }
 
-//BODY: {
-// "category":"Kultur",
-// "question":"Wer oder was ist \"Debussy\"?",
-// "answer1":"ein Theaterstück von Roger Vontobel",
-// "answer2":"ein Notenschlüssel aus Asien","answer3":"eine Gitarre aus Kolumbien",
-// "answer4":"ein französischer Komponist des Impressionismus",
-// "correctAnswer":4,
-// "totalRounds":3,
-// "currentRound":3
-// "user":{"userName":"alf","profileImage":"default10.png"},
-// "opponent":{"userName":"feli","profileImage":"default9.png"},
-// "userScore":0,
-// "opponentScore":0,
-// "type":"GAME_MESSAGE"}
-
 
     // Getter & Setter
 
@@ -74,56 +59,28 @@ public class GameMessage {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getQuestion() {
         return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
     }
 
     public String getAnswer1() {
         return answer1;
     }
 
-    public void setAnswer1(String answer1) {
-        this.answer1 = answer1;
-    }
-
     public String getAnswer2() {
         return answer2;
-    }
-
-    public void setAnswer2(String answer2) {
-        this.answer2 = answer2;
     }
 
     public String getAnswer3() {
         return answer3;
     }
 
-    public void setAnswer3(String answer3) {
-        this.answer3 = answer3;
-    }
-
     public String getAnswer4() {
         return answer4;
     }
 
-    public void setAnswer4(String answer4) {
-        this.answer4 = answer4;
-    }
-
     public int getCorrectAnswer() {
         return correctAnswer;
-    }
-
-    public void setCorrectAnswer(int correctAnswer) {
-        this.correctAnswer = correctAnswer;
     }
 
     public String getTotalRounds() {
@@ -133,6 +90,7 @@ public class GameMessage {
     public String getCurrentRound() {
         return currentRound;
     }
+
     public User getUser() {
         return user;
     }
@@ -148,30 +106,18 @@ public class GameMessage {
     public User getOpponent() {
         return opponent;
     }
+
     public String getOpponentName() {
         return opponent.getUserName();
-    }
-
-    public void setOpponent(User opponent) {
-        this.opponent = opponent;
     }
 
     public int getUserScore() {
         return userScore;
     }
 
-    public void setUserScore(int userScore) {
-        this.userScore = userScore;
-    }
-
     public int getOpponentScore() {
         return opponentScore;
     }
-
-    public void setOpponentScore(int opponentScore) {
-        this.opponentScore = opponentScore;
-    }
-
 
 
     @NonNull
