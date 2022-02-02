@@ -9,4 +9,4 @@
 #
 # Please insert your server IP_Address in config.ServerData.java
 #
-# Displayresolution > 768x1280
+#  Finale Abgabe 2022-02-02 22:52 Uhr
