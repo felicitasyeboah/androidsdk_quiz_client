@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -114,7 +115,9 @@ public class HistoryActivity extends AppCompatActivity {
                 super.onGetPlayedGames(history);
                 JSONArray playedGames = null;
                 try {
-                    playedGames = history.getJSONArray("playedGames");
+                    if(!history.isNull("playedGames")) {
+                        playedGames = history.getJSONArray("playedGames");
+                    }
                     won = "WON: " + history.getInt("wonGames");
                     lost = "LOST: " + history.getInt("lostGames");
                     draw = "DRAW: " + history.getInt("drawGames");
@@ -137,17 +140,6 @@ public class HistoryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onGetNoPlayedGames() {
-                super.onGetNoPlayedGames();
-                won = "WON: 0";
-                lost = "LOST: 0";
-                draw = "DRAW: 0";
-                average = "Average Score: 0";
-                gameCount = "Games played: 0";
-                setViews();
-            }
-
-            @Override
             public void onSessionExpired() {
                 super.onSessionExpired();
                 Dialog dialog = Helper.getSessionExpiredDialog(HistoryActivity.this);
@@ -167,6 +159,8 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void setViews() {
+        Log.d("Quiz", "Keine Spiele");
+
         tv_historyGamesCounter.setText(gameCount);
         tv_historyAverage.setText(average);
         tv_historyDraw.setText(draw);

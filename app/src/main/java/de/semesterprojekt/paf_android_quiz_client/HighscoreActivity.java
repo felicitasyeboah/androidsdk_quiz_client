@@ -111,16 +111,18 @@ public class HighscoreActivity extends AppCompatActivity {
             @Override
             public void onGetHighScores(JSONArray highScores) {
                 super.onGetHighScores(highScores);
+                if(highScores != null) {
 
-                Type highScoreListType = new TypeToken<List<Highscore>>() {
-                }.getType();
-                // parse JsonArray from Restservice-Response to Highscore-Objects and add then to highscoreArrayList
-                highscoreArrayList = gson.fromJson(String.valueOf(highScores), highScoreListType);
-                // pass HighscoreArrayList to highscoreAdapter
-                highscoreAdapter = new HighscoreAdapter(HighscoreActivity.this, highscoreArrayList);
-                // set highscoreAdapter to recyclerView
-                recyclerView.setAdapter(highscoreAdapter);
-                highscoreAdapter.notifyDataSetChanged();
+                    Type highScoreListType = new TypeToken<List<Highscore>>() {
+                    }.getType();
+                    // parse JsonArray from Restservice-Response to Highscore-Objects and add then to highscoreArrayList
+                    highscoreArrayList = gson.fromJson(String.valueOf(highScores), highScoreListType);
+                    // pass HighscoreArrayList to highscoreAdapter
+                    highscoreAdapter = new HighscoreAdapter(HighscoreActivity.this, highscoreArrayList);
+                    // set highscoreAdapter to recyclerView
+                    recyclerView.setAdapter(highscoreAdapter);
+                    highscoreAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

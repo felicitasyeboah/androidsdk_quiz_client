@@ -169,17 +169,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onGetNoPlayedGames() {
-                super.onGetNoPlayedGames();
-                won = "WON: 0";
-                lost = "LOST: 0";
-                draw = "DRAW: 0";
-                average = "Average Score: 0";
-                gameCount = "Games played: 0";
-                setViews();
-            }
-
-            @Override
             public void onSessionExpired() {
                 super.onSessionExpired();
                 Dialog dialog = Helper.getSessionExpiredDialog(ProfileActivity.this);

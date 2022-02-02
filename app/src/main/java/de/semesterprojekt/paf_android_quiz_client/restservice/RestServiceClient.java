@@ -213,8 +213,6 @@ public class RestServiceClient {
 
             } else if (error instanceof NoConnectionError) {
                 listener.onNoConnectionError(ctx);
-            } else if ((error instanceof ClientError) && (error.networkResponse.statusCode == 400)) {
-                listener.onGetNoPlayedGames();
             }
             else {
                 listener.onError(ctx, error);

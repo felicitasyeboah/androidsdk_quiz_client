@@ -41,11 +41,15 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
 
     @Override
     public void onBindViewHolder(@NonNull HighscoreAdapter.HighscoreViewHolder holder, int position) {
+        if(highscoreArrayList == null) {
+            holder.tv_hsDate.setText("Es wurden bisher keine HighScores erstellt.");
+            return;
+        }
         Highscore currentHighscore = highscoreArrayList.get(position);
 
         String date = Helper.formatDate(currentHighscore.getTimeStamp()) + " Uhr";
-        String username = "User: " + currentHighscore.getUser().getUserName();
-        String score = "Score: " + currentHighscore.getUserScore();
+        String username = currentHighscore.getUser().getUserName();
+        String score = currentHighscore.getUserScore() + " points";
         String url = ServerConfig.PROFILE_IMAGE_API + currentHighscore.getUser().getUserName();
         String pos = Integer.toString(position + 1);
         holder.tv_hsPos.setText(pos);
@@ -57,7 +61,8 @@ public class HighscoreAdapter extends RecyclerView.Adapter<HighscoreAdapter.High
 
     @Override
     public int getItemCount() {
-        return highscoreArrayList.size();
+        if (highscoreArrayList != null) return highscoreArrayList.size();
+        return 1;
     }
 
     /**

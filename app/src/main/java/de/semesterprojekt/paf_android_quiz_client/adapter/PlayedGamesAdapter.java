@@ -1,6 +1,7 @@
 package de.semesterprojekt.paf_android_quiz_client.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,11 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull PlayedGamesViewHolder holder, int position) {
+        if(playedGamesArrayList == null) {
+            holder.tv_historyDate.setText("Du hast bisher keine Spiele gespielt.");
+            holder.tv_historyVs.setVisibility(View.INVISIBLE);
+            return;
+        }
         PlayedGames current = playedGamesArrayList.get(position);
 
         String date = Helper.formatDate(current.getTimeStamp()) + " Uhr";
@@ -63,7 +69,8 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
 
     @Override
     public int getItemCount() {
-        return playedGamesArrayList.size();
+        if(playedGamesArrayList != null)  return playedGamesArrayList.size();
+        return 1;
     }
 
     /**
@@ -71,7 +78,7 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
      */
     public static class PlayedGamesViewHolder extends RecyclerView.ViewHolder {
         TextView tv_historyDate, tv_historyUserName, tv_historyUserScore,
-                tv_historyOpponentName, tv_historyOpponentScore;
+                tv_historyOpponentName, tv_historyOpponentScore, tv_historyVs;
         CircleImageView iv_historyUserImage, iv_historyOpponentImage;
 
         public PlayedGamesViewHolder(@NonNull View itemView) {
@@ -83,6 +90,7 @@ public class PlayedGamesAdapter extends RecyclerView.Adapter<PlayedGamesAdapter.
             tv_historyOpponentScore = itemView.findViewById(R.id.tv_history_opponent_score);
             iv_historyUserImage = itemView.findViewById(R.id.iv_history_user_image);
             iv_historyOpponentImage = itemView.findViewById(R.id.iv_history_opponent_image);
+            tv_historyVs = itemView.findViewById(R.id.tv_history_vs);
         }
     }
 }

@@ -27,9 +27,7 @@ public abstract class RestServiceListener {
 
     public void onGetPlayedGames(JSONObject history) {
     }
-    public void onGetNoPlayedGames() {
 
-    }
     public void onAuthFailure(Context ctx) {
         Toast toast = Toast.makeText(ctx, "Wrong username or password!" + "\n" + "Try again.", Toast.LENGTH_LONG);
         toast.setGravity(Gravity.TOP, 0, 140);
