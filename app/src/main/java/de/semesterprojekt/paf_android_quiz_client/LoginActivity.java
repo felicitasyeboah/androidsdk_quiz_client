@@ -6,13 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.StringReader;
 
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListener;
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;

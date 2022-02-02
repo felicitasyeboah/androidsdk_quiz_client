@@ -98,6 +98,8 @@ public class LobbyActivity extends AppCompatActivity {
     }
 
     /**
+     * HamburgerMenu Handler
+     *
      * @param item menu item
      * @return boolean
      */
@@ -141,23 +143,27 @@ public class LobbyActivity extends AppCompatActivity {
 
 
     /**
-     * Called when the user taps the Highscore button
+     * moves user to the HighScoreView
      */
     private void goToHighScores() {
         // move to highscoreview
         Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
         startActivity(intent);
     }
-
+    /**
+     * moves user to the ProfileView
+     */
     private void goToProfile() {
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
-
+    /**
+     * moves user to the HistoryView
+     */
     private void goToHistory() {
         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
     }
     /**
-     * Called when the user taps the Start Game button
+     * moves user to the InGame to start a new game
      */
     private void startGame(View view) {
         Intent intent = new Intent(getApplicationContext(), InGameActivity.class);

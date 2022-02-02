@@ -48,6 +48,9 @@ import de.semesterprojekt.paf_android_quiz_client.stomp.StompHeader;
 import de.semesterprojekt.paf_android_quiz_client.stomp.client.StompClient;
 import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
+/**
+ * Controlls Profile View / Layout
+ */
 public class InGameActivity extends AppCompatActivity {
     SessionManager sessionManager;
     Button btn_answer1, btn_answer2, btn_answer3, btn_answer4;
@@ -199,7 +202,6 @@ public class InGameActivity extends AppCompatActivity {
                 public void run() {
                     String message = stompFrame.getBody();
                     MessageType messageType = MessageType.valueOf(stompFrame.getHeaders().get("type"));
-                    //TODO: refactoring
 
                     //Client gamelogic
                     switch (Objects.requireNonNull(messageType)) {
@@ -388,6 +390,10 @@ public class InGameActivity extends AppCompatActivity {
         Helper.getPicassoInstance(getApplicationContext()).load(ServerConfig.PROFILE_IMAGE_API + startMessage.getOpponent().getUserName())
                 .fit().centerInside().into(iv_sdOpponent);
     }
+
+    /**
+     * updates timer in the startdialog
+     */
     protected void updateStartDialog() {
         tv_startCounter.setText(Integer.toString(startTimer.getTimeLeft()));
         if (startTimer.getTimeLeft() == 1) {
@@ -566,7 +572,7 @@ public class InGameActivity extends AppCompatActivity {
         Helper.getPicassoInstance(getApplicationContext()).load(imageUrlOpponent).fit().centerInside().into(iv_drOpponent);
 
         if(resultMessage.isHighScore()) {
-            tv_drHighscore.setText(resultMessage.getWinner().getUserName() +" set a new highscore!");
+            tv_drHighscore.setText("Grats! You set a new highscore!");
         } else {
             tv_drHighscore.setVisibility(View.GONE);
         }

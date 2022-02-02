@@ -33,6 +33,9 @@ import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceListene
 import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSingleton;
 import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
+/**
+ * Controlls Profile View / Layout
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     SessionManager sessionManager;

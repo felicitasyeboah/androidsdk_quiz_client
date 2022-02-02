@@ -1,7 +1,9 @@
 package de.semesterprojekt.paf_android_quiz_client.config;
 
 /**
- * Enter the IP of the server here
+ * Enter the IP of the server here!!
+ * on Android client we cant use localhost for the server, if its running on localhost,
+ * because the android client thinks the localhost is the client itself...
  */
 public class ServerConfig {
     // IP and Port from SERVER

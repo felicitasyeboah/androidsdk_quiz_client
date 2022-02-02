@@ -5,6 +5,10 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * EmptyAdapter class to assing to the recyclerview to avoid "no adapter attached "
+ * warning when starting recyclerview
+ */
 public class EmptyAdapter extends RecyclerView.Adapter<EmptyAdapter.EmptyHolder> {
     @Override
     public EmptyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -13,7 +17,6 @@ public class EmptyAdapter extends RecyclerView.Adapter<EmptyAdapter.EmptyHolder>
 
     @Override
     public void onBindViewHolder(EmptyHolder holder, int position) {
-
     }
 
     @Override

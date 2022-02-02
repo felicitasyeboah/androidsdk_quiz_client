@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +32,9 @@ import de.semesterprojekt.paf_android_quiz_client.restservice.RestServiceSinglet
 import de.semesterprojekt.paf_android_quiz_client.adapter.PlayedGamesAdapter;
 import de.semesterprojekt.paf_android_quiz_client.util.Helper;
 
+/**
+ * Controlls History View / Layout
+ */
 public class HistoryActivity extends AppCompatActivity {
     SessionManager sessionManager;
     String userToken;
@@ -57,15 +59,17 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
         getSesssionData();
         Helper.clearPicassoCache();
         initViews();
 
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         EmptyAdapter emptyAdapter = new EmptyAdapter();
         recyclerView.setAdapter(emptyAdapter);
+
         playedGamesArrayList = new ArrayList<>();
 
         getHistory();
@@ -84,6 +88,8 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     /**
+     * HamburgerMenu Handler
+     *
      * @param item menu item
      * @return boolean
      */
@@ -104,7 +110,9 @@ public class HistoryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    /**
+     * Gets History (/playedGames) from Rest-API and puts it into the recyclerview
+     */
     private void getHistory() {
 
         final RestServiceSingleton restServiceSingleton = RestServiceSingleton.getInstance(HistoryActivity.this.getApplication());
@@ -115,6 +123,7 @@ public class HistoryActivity extends AppCompatActivity {
                 super.onGetPlayedGames(history);
                 JSONArray playedGames = null;
                 try {
+                    // if user hasn't played yes -> has no history yet
                     if(!history.isNull("playedGames")) {
                         playedGames = history.getJSONArray("playedGames");
                     }
@@ -129,14 +138,17 @@ public class HistoryActivity extends AppCompatActivity {
 
                 Type playedGamesListType = new TypeToken<List<PlayedGames>>() {
                 }.getType();
+
+                // parse JsonArray from Restservice-Response to PlayedGames-Objects and add them to playedGamesArrayList
                 playedGamesArrayList = gson.fromJson(String.valueOf(playedGames), playedGamesListType);
 
                 setViews();
 
+                // pass playedGamesArrayList to PlayedGamesAdapter
                 playedGamesAdapter = new PlayedGamesAdapter(HistoryActivity.this, playedGamesArrayList);
-                playedGamesAdapter.notifyDataSetChanged();
-
+                // pass playedGamesAdapter to recyclerView
                 recyclerView.setAdapter(playedGamesAdapter);
+                playedGamesAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -147,7 +159,9 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * assigning values from textViews and RecyclerView from the layout
+     */
     private void initViews() {
         tv_historyAverage = findViewById(R.id.tv_history_average);
         tv_historyGamesCounter = findViewById(R.id.tv_history_played_games_counter);
@@ -157,38 +171,37 @@ public class HistoryActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview_history);
     }
-
+    /**
+     * set values to views
+     */
     private void setViews() {
-        Log.d("Quiz", "Keine Spiele");
-
         tv_historyGamesCounter.setText(gameCount);
         tv_historyAverage.setText(average);
         tv_historyDraw.setText(draw);
         tv_historyLost.setText(lost);
         tv_historyWon.setText(won);
     }
-
+    // Get JWT userToken from session
     private void getSesssionData() {
         sessionManager = SessionManager.getSingletonInstance(getApplicationContext());
         // Get JWT userToken from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }
-    /**
-     * Called when the user taps the Highscore button
-     */
+
+    // moves user to HighScore View
     private void goToHighScores() {
-        // move to highscoreview
         Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
         startActivity(intent);
     }
-
+    // moves user to Profle View
     private void goToProfile() {
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
-
+    // moves user to History view
     private void goToHistory() {
         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
     }
+    // moves User to Lobby View
     private void goToLobby() {
         Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
         startActivity(intent);

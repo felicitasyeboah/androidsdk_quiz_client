@@ -55,13 +55,14 @@ public class HighscoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_highscore);
         getSesssionData();
 
-        Helper.clearPicassoCache(); // because opponent needs to see updated userimages
+        Helper.clearPicassoCache(); // because opponent also needs to see updated userimages
         recyclerView = findViewById(R.id.recyclerview_highscore);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         EmptyAdapter emptyAdapter = new EmptyAdapter();
         recyclerView.setAdapter(emptyAdapter);
+
         highscoreArrayList = new ArrayList<>();
 
         getHighScores();
@@ -80,6 +81,8 @@ public class HighscoreActivity extends AppCompatActivity {
     }
 
     /**
+     * HamburgerMenu Handler
+     *
      * @param item menu item
      * @return boolean
      */
@@ -115,7 +118,7 @@ public class HighscoreActivity extends AppCompatActivity {
 
                     Type highScoreListType = new TypeToken<List<Highscore>>() {
                     }.getType();
-                    // parse JsonArray from Restservice-Response to Highscore-Objects and add then to highscoreArrayList
+                    // parse JsonArray from Restservice-Response to Highscore-Objects and add them to highscoreArrayList
                     highscoreArrayList = gson.fromJson(String.valueOf(highScores), highScoreListType);
                     // pass HighscoreArrayList to highscoreAdapter
                     highscoreAdapter = new HighscoreAdapter(HighscoreActivity.this, highscoreArrayList);
@@ -139,22 +142,21 @@ public class HighscoreActivity extends AppCompatActivity {
         // Get JWT userToken from session
         userToken = sessionManager.getUserDatafromSession().get(getString(R.string.user_token));
     }
-    /**
-     * Called when the user taps the Highscore button
-     */
+
+    // moves user to HighScore Voew
     private void goToHighScores() {
-        // move to highscoreview
         Intent intent = new Intent(getApplicationContext(), HighscoreActivity.class);
         startActivity(intent);
     }
-
+    // moves user to Profle View
     private void goToProfile() {
         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
     }
-
+    // moves user to History view
     private void goToHistory() {
         startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
     }
+    // moves User to Lobby View
     private void goToLobby() {
         Intent intent = new Intent(getApplicationContext(), LobbyActivity.class);
         startActivity(intent);
