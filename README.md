@@ -3,9 +3,9 @@
 # Android Client für das Quiz
 #
 # Gruppenmitglieder:
-# Martine Weidig (258425) - verantwortlich für den Vue.js-Client
-# Felicitas Yeboah (290784) - verantwortlich für den Android-Client
-# Christian Kobialka (306759) - verantwortlich für den Spring-Server
+# M.W.
+# Felicitas Yeboah
+# C.K. 
 #
 # Please insert your server IP_Address in config.ServerData.java
 #
